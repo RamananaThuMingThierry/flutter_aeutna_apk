@@ -3,7 +3,7 @@ import 'user.dart';
 class Commentaires{
   int? id;
   String? commentaire;
-  User? user;
+  Users? user;
 
   Commentaires({this.id, this.commentaire, this.user});
 
@@ -12,7 +12,7 @@ class Commentaires{
     return Commentaires(
       id: c['id'],
       commentaire: c['commentaire'],
-      user: User(
+      user: Users(
         id: c['user']['id'],
         pseudo: c['user']['pseudo'],
         image: c['user']['image']

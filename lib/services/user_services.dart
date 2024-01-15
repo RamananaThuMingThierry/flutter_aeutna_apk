@@ -39,7 +39,7 @@ Future<ApiResponse> getUserDetail() async{
 
     switch(response.statusCode){
       case 200:
-        apiResponse.data = User.fromJson(jsonDecode(response.body));
+        apiResponse.data = Users.fromJson(jsonDecode(response.body));
         break;
       case 401:
         apiResponse.error = unauthorized;
@@ -95,11 +95,11 @@ Future<ApiResponse> updateUser(String name, String? image) async{
 
 Future<ApiResponse> login(String email, String mot_de_passe) async{
   ApiResponse apiResponse = ApiResponse();
-
   try{
-
+    var url = Uri.parse(loginURL);
+    print(url);
     final response = await http.post(
-      Uri.parse(loginURL),
+      url,
       headers: {'Accept': 'application/json'},
       body: {
         'email':email,
@@ -107,9 +107,12 @@ Future<ApiResponse> login(String email, String mot_de_passe) async{
       }
     );
 
+    print(jsonDecode(response.body));
+    print(Users.fromJson(jsonDecode(response.body)));
+
     switch(response.statusCode){
       case 200:
-        apiResponse.data = User.fromJson(jsonDecode(response.body));
+        apiResponse.data = Users.fromJson(jsonDecode(response.body));
         break;
       case 422:
         final errors = jsonDecode(response.body)['errors'];
@@ -145,11 +148,9 @@ Future<ApiResponse> register(String name, String email, String password) async{
         }
     );
 
-    print("***************** Users : ${response.statusCode}");
-
     switch(response.statusCode){
       case 200:
-        apiResponse.data = User.fromJson(jsonDecode(response.body));
+        apiResponse.data = Users.fromJson(jsonDecode(response.body));
         break;
       case 422:
         final errors = jsonDecode(response.body)['errors'];

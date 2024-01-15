@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/Acceuil.dart';
@@ -21,23 +23,6 @@ class _LoginState extends State<Login> {
   // Déclarations des variables
   bool visibility = true;
   bool loading  = false;
-  var connectionStatus;
-  late InternetConnectionChecker connectionChecker;
-
-  @override
-  void initState() {
-    super.initState();
-    connectionChecker = InternetConnectionChecker();
-    connectionChecker.onStatusChange.listen((status) {
-      setState(() {
-        connectionStatus = status.toString();
-      });
-      if (connectionStatus ==
-          InternetConnectionStatus.disconnected.toString()) {
-          //Message(context);
-      }
-    });
-  }
 
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   TextEditingController email = TextEditingController();
@@ -47,19 +32,22 @@ class _LoginState extends State<Login> {
 (([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$''');
 
 
-  Future<void> _saveAndRedirectToHome(User user) async{
+  void _saveAndRedirectToHome(Users user) async{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences.setString('token', user.token ?? '');
     await sharedPreferences.setInt('userId', user.id ?? 0);
     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Acceuil()), (route) => false);
   }
 
-  Future<void> loginUser() async{
+  void loginUser() async{
     if(_key.currentState!.validate()){
+      print("Email : ${email.text} et Mot de passe : ${mot_de_passe.text}");
       ApiResponse apiResponse = await login(email.text, mot_de_passe.text);
+
       print(apiResponse.error);
+
       if(apiResponse.error == null){
-        _saveAndRedirectToHome(apiResponse.data as User);
+        _saveAndRedirectToHome(apiResponse.data as Users);
       }else{
         setState(() {
           loading = false;

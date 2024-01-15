@@ -7,7 +7,7 @@ class Post{
   String? image;
   int? likesCount;
   int? commentairesCount;
-  User? user;
+  Users? user;
   bool? selfLiked;
 
   Post({
@@ -28,7 +28,7 @@ class Post{
       image: p['image'],
       likesCount: p['likes_count'],
       commentairesCount: p['commentaires_count'],
-      user: User(
+      user: Users(
         id: p['user']['id'],
         pseudo: p['user']['pseudo'],
         image: p['user']['image'],
