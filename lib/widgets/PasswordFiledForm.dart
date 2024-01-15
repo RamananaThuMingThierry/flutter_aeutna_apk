@@ -7,14 +7,12 @@ class PasswordFieldForm extends StatelessWidget {
   final Function validator;
   final Function onChanged;
   final Function onTap;
-  final TextEditingController nom_controller;
 
-  const PasswordFieldForm({Key? key, required this.visibility, required this.validator, required this.name, required this.onTap, required this.onChanged, required this.nom_controller}) : super(key: key);
+  const PasswordFieldForm({Key? key, required this.visibility, required this.validator, required this.name, required this.onTap, required this.onChanged}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return    TextFormField(
-      controller: nom_controller,
       decoration: InputDecoration(
         hintText: name,
         suffixIconColor: Colors.grey,

@@ -9,13 +9,11 @@ class MyTextFieldForm extends StatelessWidget {
   final Function validator;
   final IconData iconData;
   final TextInputType textInputType;
-  final TextEditingController nom_controller;
 
-  const MyTextFieldForm({Key? key,required this.nom_controller, required this.name, required this.onChanged, required this.validator, required this.iconData, required this.textInputType, required this.edit, required this.value}) : super(key: key);
+  const MyTextFieldForm({Key? key,required this.name, required this.onChanged, required this.validator, required this.iconData, required this.textInputType, required this.edit, required this.value}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return   TextFormField(
-      controller: nom_controller,
       style: TextStyle(color: Colors.blueGrey),
       initialValue: edit ? value : null,
       decoration: InputDecoration(

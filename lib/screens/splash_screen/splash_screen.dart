@@ -1,5 +1,6 @@
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/Acceuil.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/services/user_services.dart';
@@ -19,10 +20,13 @@ class SplashScreenState extends State<SplashScreen>{
 
   void _loading() async{
     String token = await getToken();
+    print("Token $token");
     if(token == ''){
       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (ctx) => Login()), (route) => false);
     }else{
+
       ApiResponse apiResponse = await getUserDetail();
+
       if(apiResponse.error == null){
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (ctx) => Acceuil()), (route) => false);
       }else if(apiResponse.error == unauthorized){

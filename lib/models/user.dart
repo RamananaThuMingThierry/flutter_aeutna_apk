@@ -1,4 +1,4 @@
-class Users{
+class User{
 
   int? id;
   String? pseudo;
@@ -10,7 +10,7 @@ class Users{
   String? status;
   String? token;
 
-  Users({
+  User({
     this.id,
     this.pseudo,
     this.email,
@@ -23,16 +23,12 @@ class Users{
   });
 
   // function to convert json data to user model
-  factory  Users.fromJson(Map<String, dynamic> j){
-    return Users(
+  factory User.fromJson(Map<String, dynamic> j){
+    return User(
       id: j['user']['id'],
       pseudo: j['user']['pseudo'],
-      image: j['user']['image'],
-      contact: j['user']['contact'],
-      adresse: j['user']['adresse'],
       email: j['user']['email'],
-      roles: j['user']['roles'],
-      status: j['user']['status'],
+      image: j['user']['image'],
       token: j['token'],
     );
   }

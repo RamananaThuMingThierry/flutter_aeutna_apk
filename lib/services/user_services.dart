@@ -39,7 +39,7 @@ Future<ApiResponse> getUserDetail() async{
 
     switch(response.statusCode){
       case 200:
-        apiResponse.data = Users.fromJson(jsonDecode(response.body));
+        apiResponse.data = User.fromJson(jsonDecode(response.body));
         break;
       case 401:
         apiResponse.error = unauthorized;
@@ -54,7 +54,6 @@ Future<ApiResponse> getUserDetail() async{
 
   return apiResponse;
 }
-
 
 Future<ApiResponse> updateUser(String name, String? image) async{
   ApiResponse apiResponse = ApiResponse();
@@ -93,7 +92,7 @@ Future<ApiResponse> updateUser(String name, String? image) async{
   return apiResponse;
 }
 
-Future<ApiResponse> login(String email, String mot_de_passe) async{
+Future<ApiResponse> login({String? email, String? mot_de_passe}) async{
   ApiResponse apiResponse = ApiResponse();
   try{
     var url = Uri.parse(loginURL);
@@ -107,12 +106,11 @@ Future<ApiResponse> login(String email, String mot_de_passe) async{
       }
     );
 
-    print(jsonDecode(response.body));
-    print(Users.fromJson(jsonDecode(response.body)));
+    print(User.fromJson(jsonDecode(response.body)));
 
     switch(response.statusCode){
       case 200:
-        apiResponse.data = Users.fromJson(jsonDecode(response.body));
+        apiResponse.data = User.fromJson(jsonDecode(response.body));
         break;
       case 422:
         final errors = jsonDecode(response.body)['errors'];
@@ -132,7 +130,7 @@ Future<ApiResponse> login(String email, String mot_de_passe) async{
   return apiResponse;
 }
 
-Future<ApiResponse> register(String name, String email, String password) async{
+Future<ApiResponse> register({String? pseudo, String? email, String? mot_de_passe, String? contact, String? adresse}) async{
   ApiResponse apiResponse = ApiResponse();
 
   try{
@@ -141,16 +139,20 @@ Future<ApiResponse> register(String name, String email, String password) async{
         Uri.parse(registerURL),
         headers: {'Accept': 'application/json'},
         body: {
-          'name' : name,
+          'pseudo' : pseudo,
           'email': email,
-          'password': password,
-          'password_confirmation': password
+          'contact': contact,
+          'adresse': adresse,
+          'mot_de_passe': mot_de_passe,
+          'mot_de_passe_confirmation': mot_de_passe
         }
     );
 
+    print(response.statusCode);
+
     switch(response.statusCode){
       case 200:
-        apiResponse.data = Users.fromJson(jsonDecode(response.body));
+        apiResponse.data = User.fromJson(jsonDecode(response.body));
         break;
       case 422:
         final errors = jsonDecode(response.body)['errors'];

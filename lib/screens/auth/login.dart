@@ -23,16 +23,15 @@ class _LoginState extends State<Login> {
   // Déclarations des variables
   bool visibility = true;
   bool loading  = false;
-
+  String? email;
+  String? mot_de_passe;
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
-  TextEditingController email = TextEditingController();
-  TextEditingController mot_de_passe = TextEditingController();
 
   RegExp regExp = RegExp(r'''
 (([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$''');
 
 
-  void _saveAndRedirectToHome(Users user) async{
+  void _saveAndRedirectToHome(User user) async{
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences.setString('token', user.token ?? '');
     await sharedPreferences.setInt('userId', user.id ?? 0);
@@ -41,13 +40,13 @@ class _LoginState extends State<Login> {
 
   void loginUser() async{
     if(_key.currentState!.validate()){
-      print("Email : ${email.text} et Mot de passe : ${mot_de_passe.text}");
-      ApiResponse apiResponse = await login(email.text, mot_de_passe.text);
+
+      ApiResponse apiResponse = await login(email: email!,mot_de_passe: mot_de_passe!);
 
       print(apiResponse.error);
 
       if(apiResponse.error == null){
-        _saveAndRedirectToHome(apiResponse.data as Users);
+        _saveAndRedirectToHome(apiResponse.data as User);
       }else{
         setState(() {
           loading = false;
@@ -126,7 +125,7 @@ class _LoginState extends State<Login> {
                           },
                           iconData: Icons.mail,
                           textInputType: TextInputType.emailAddress,
-                          nom_controller: email,),
+                          ),
                       // Password
                       PasswordFieldForm(
                           visibility: visibility,
@@ -147,7 +146,7 @@ class _LoginState extends State<Login> {
                           },
                           onChanged: () => (value) => setState(() {
                             mot_de_passe = value;
-                          }), nom_controller: mot_de_passe,
+                          }),
                       )
                     ],
                   ),

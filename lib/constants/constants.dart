@@ -6,7 +6,7 @@ const baseURL = 'http://192.168.1.107:8000/api';
 const loginURL = baseURL + '/login';
 const registerURL = baseURL + '/register';
 const logoutURL = baseURL + '/logout';
-const userURL = baseURL + '/user';
+const userURL = baseURL + '/users';
 const postsURL = baseURL + '/posts';
 const commentsURL = baseURL + '/comments';
 
