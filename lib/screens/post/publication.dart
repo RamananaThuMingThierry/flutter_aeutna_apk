@@ -83,6 +83,7 @@ class _PublicationState extends State<Publication> {
         itemCount: _postList!.length,
         itemBuilder: (BuildContext context, int index){
           Post post = _postList![index];
+          print(post.image);
           return Card(
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,7 +154,13 @@ class _PublicationState extends State<Publication> {
                         ?
                     Column(
                       children: [
-                        Text("${post.description}"),
+                        SizedBox(
+                          child: Row(
+                            children: [
+                              Expanded(child: Text("${post.description}", textAlign: TextAlign.left,)),
+                            ],
+                          ),
+                        ),
                         Container(
                             width: MediaQuery.of(context).size.width,
                             height: 180,
@@ -168,10 +175,15 @@ class _PublicationState extends State<Publication> {
                       ],
                     )
                         : Container(
-                      height: 180,
+                      constraints: BoxConstraints(
+                        minHeight: 180.0, // Set a minimum height if needed
+                      ),
                       color: Colors.blueGrey,
                       child: Center(
-                        child: Text("${post.description}", style: TextStyle(color: Colors.white),),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text("${post.description}", style: TextStyle(color: Colors.white),textAlign: TextAlign.justify,),
+                        ),
                       ),
                     ),
                     Row(
@@ -187,7 +199,6 @@ class _PublicationState extends State<Publication> {
                         Container(
                           height: 40,
                           width: .5,
-                          color: Colors.black38,
                         ),
                         KBtnLikesOrComment(value: post.commentairesCount, onTap: (){
                         //  Navigator.push(context, MaterialPageRoute(builder: (ctx) => Commentaires(postId: post.id,)));
