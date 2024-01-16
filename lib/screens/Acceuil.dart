@@ -70,7 +70,7 @@ class _AcceuilState extends State<Acceuil> {
         ),
       )
           :
-      Profiles(),
+      Profiles(user: users,),
     ];
 
     return

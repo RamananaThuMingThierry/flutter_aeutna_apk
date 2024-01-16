@@ -7,7 +7,7 @@ class User{
   String? image;
   String? roles;
   String? adresse;
-  String? status;
+  int? status;
   String? token;
 
   User({
@@ -27,8 +27,12 @@ class User{
     return User(
       id: j['user']['id'],
       pseudo: j['user']['pseudo'],
-      email: j['user']['email'],
       image: j['user']['image'],
+      email: j['user']['email'],
+      adresse: j['user']['adresse'],
+      contact: j['user']['contact'],
+      roles: j['user']['roles'],
+      status: j['user']['status'],
       token: j['token'],
     );
   }

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/models/post.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,8 +13,9 @@ Future<ApiResponse> getAllPosts() async{
   try{
     String token = await getToken();
     var url = Uri.parse(postsURL);
-    print("*---------------- Url : $url");
-    final response = await http.get(url,
+    print("*-------123--------- Url : $url et token : $token");
+    final response = await http.get(
+     url,
       headers: {
         'Accept': 'application/json',
         'Authorization' : 'Bearer $token'
@@ -24,6 +26,7 @@ Future<ApiResponse> getAllPosts() async{
       case 200:
         apiResponse.data = jsonDecode(response.body)['posts'];
         apiResponse.data as List<dynamic>;
+        print("Atooooooooooooooooooooooooh ${apiResponse.data}");
         break;
       case 401:
         apiResponse.error = unauthorized;
@@ -42,9 +45,12 @@ Future<ApiResponse> getAllPosts() async{
 Future<ApiResponse> createPost({String? description, String? image}) async{
   ApiResponse apiResponse = ApiResponse();
 
+  print("Description $description et Image : $image");
+
   try{
     String token = await getToken();
     var url = Uri.parse(postsURL);
+    print("Url $url et Token $token");
     final rep = await http.post(
       url,
       headers: {
@@ -61,7 +67,7 @@ Future<ApiResponse> createPost({String? description, String? image}) async{
       }
     );
 
-    print("Status : ${rep.statusCode}");
+    print(rep.statusCode);
 
     switch(rep.statusCode){
       case 200:

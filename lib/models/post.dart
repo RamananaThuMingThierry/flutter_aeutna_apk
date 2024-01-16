@@ -29,9 +29,9 @@ class Post{
       likesCount: p['likes_count'],
       commentairesCount: p['commentaires_count'],
       user: User(
-        id: p['user']['id'],
-        pseudo: p['user']['pseudo'],
-        image: p['user']['image'],
+        id: p['users']['id'],
+        pseudo: p['users']['pseudo'],
+        image: p['users']['image'],
       ),
       selfLiked: p['likes'].length > 0,
     );
