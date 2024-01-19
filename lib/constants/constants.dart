@@ -7,8 +7,16 @@ const loginURL = baseURL + '/login';
 const registerURL = baseURL + '/register';
 const logoutURL = baseURL + '/logout';
 const userURL = baseURL + '/users';
+const axesURL = baseURL + '/axes';
+const commentairesURl = baseURL + '/commentaires';
+const fonctionsURL = baseURL + '/fonctions';
+const filieresURL = baseURL + '/filieres';
 const postsURL = baseURL + '/posts';
 const commentsURL = baseURL + '/comments';
+const avisURL = baseURL + '/avis';
+const niveauURL = baseURL + '/niveau';
+const messagesURL = baseURL + '/messages';
+const membresURL = baseURL + '/membres';
 
 /** -------------- Erreurs -------------- **/
 const serverError = 'Erreur du serveur';

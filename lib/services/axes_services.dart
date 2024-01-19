@@ -2,28 +2,27 @@ import 'dart:convert';
 
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
-import 'package:aeutna/models/post.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:http/http.dart' as http;
 
-/** ---------------- Get alL Posts ---------------- **/
-Future<ApiResponse> getAllPosts() async{
+/** ---------------- Get alL Axes ---------------- **/
+Future<ApiResponse> getAllAxes() async{
   ApiResponse apiResponse = ApiResponse();
 
   try{
     String token = await getToken();
-    var url = Uri.parse(postsURL);
+    var url = Uri.parse(axesURL);
     final response = await http.get(
-     url,
-      headers: {
-        'Accept': 'application/json',
-        'Authorization' : 'Bearer $token'
-      }
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
     );
 
-   switch(response.statusCode){
+    switch(response.statusCode){
       case 200:
-        apiResponse.data = jsonDecode(response.body)['posts'];
+        apiResponse.data = jsonDecode(response.body)['axes'];
         apiResponse.data as List<dynamic>;
         break;
       case 401:
@@ -39,33 +38,25 @@ Future<ApiResponse> getAllPosts() async{
   return apiResponse;
 }
 
-/** --------------- Créer un Post ----------------- **/
-Future<ApiResponse> createPost({String? description, String? image}) async{
+/** --------------- Créer un Axes ----------------- **/
+Future<ApiResponse> createAxes({String? nom_axes}) async{
   ApiResponse apiResponse = ApiResponse();
-
-  print("Description $description et Image : $image");
 
   try{
     String token = await getToken();
-    var url = Uri.parse(postsURL);
-    print("Url $url et Token $token");
+    var url = Uri.parse(axesURL);
     final rep = await http.post(
-      url,
-      headers: {
-        'Accept': 'application/json',
-        'Authorization' : 'Bearer $token'
-      },
-      body: image != null
-          ? {
-        'description' : description,
-        'image' : image,
-          }
-          :{
-        'description': description
-      }
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        },
+        body: {
+          'nom_axes': nom_axes,
+        }
     );
 
-    print(rep.statusCode);
+    print(jsonDecode(rep.body)['message']);
 
     switch(rep.statusCode){
       case 200:
@@ -78,6 +69,9 @@ Future<ApiResponse> createPost({String? description, String? image}) async{
       case 401:
         apiResponse.error = unauthorized;
         break;
+      case 403:
+        apiResponse.error = jsonDecode(rep.body)['message'];
+        break;
       default:
         apiResponse.error = somethingWentWrong;
         break;
@@ -88,18 +82,18 @@ Future<ApiResponse> createPost({String? description, String? image}) async{
   return apiResponse;
 }
 
-/** --------------- Modifier un Post ----------------- **/
-Future<ApiResponse> updatePost(int postId, String description) async{
+/** --------------- Modifier un axes ----------------- **/
+Future<ApiResponse> updateAxes(int axesId, String nom_axes) async{
   ApiResponse apiResponse = ApiResponse();
   try{
     String token = await getToken();
-    final rep = await http.put(Uri.parse('$postsURL/$postId'),
+    final rep = await http.put(Uri.parse('$axesURL/$axesId'),
         headers: {
           'Accept': 'application/json',
           'Authorization' : 'Bearer $token'
         },
         body: {
-          'description': description
+          'nom_axes': nom_axes
         }
     );
 
@@ -123,12 +117,12 @@ Future<ApiResponse> updatePost(int postId, String description) async{
   return apiResponse;
 }
 
-/** --------------- Supprimer un Post ----------------- **/
-Future<ApiResponse> deletePost(int postId) async{
+/** --------------- Supprimer un axes ----------------- **/
+Future<ApiResponse> deleteAxes(int axesId) async{
   ApiResponse apiResponse = ApiResponse();
   try{
     String token = await getToken();
-    final rep = await http.delete(Uri.parse('$postsURL/$postId'),
+    final rep = await http.delete(Uri.parse('$axesURL/$axesId'),
         headers: {
           'Accept': 'application/json',
           'Authorization' : 'Bearer $token'
@@ -141,41 +135,6 @@ Future<ApiResponse> deletePost(int postId) async{
         break;
       case 403:
         apiResponse.data = jsonDecode(rep.body)['message'];
-        break;
-      case 401:
-        apiResponse.error = unauthorized;
-        break;
-      default:
-        apiResponse.error = somethingWentWrong;
-        break;
-    }
-  }catch(e){
-    apiResponse.error = serverError;
-  }
-  return apiResponse;
-}
-
-/** ---------- Like or Dislike Post ---------------- **/
-Future<ApiResponse> likeUnlikePost(int postId) async{
-  ApiResponse apiResponse = ApiResponse();
-
-  try{
-    String token = await getToken();
-    var url = Uri.parse('$postsURL/$postId/likes');
-
-    print("url : ${url}");
-
-    final response = await http.post(
-      url,
-      headers: {
-        'Accept' : 'application/json',
-        'Authorization' : 'Bearer $token'
-      }
-    );
-
-    switch(response.statusCode){
-      case 200:
-        apiResponse.data = jsonDecode(response.body)['message'];
         break;
       case 401:
         apiResponse.error = unauthorized;

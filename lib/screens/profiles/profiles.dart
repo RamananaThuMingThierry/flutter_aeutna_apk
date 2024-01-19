@@ -1,6 +1,8 @@
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/screens/avis/nous_contactez.dart';
+import 'package:aeutna/screens/axes/axes.dart';
+import 'package:aeutna/screens/fonctions/fonctions.dart';
 import 'package:aeutna/screens/messages/messages.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/WidgetListTitle.dart';
@@ -82,7 +84,7 @@ class _ProfilesState extends State<Profiles> {
               WidgetListTitle(title: "Apropos", leading: Icons.info_outlined, trailing: Icons.chevron_right, onTap: () => () => _apropos(context)),
               WidgetListTitle(title: "Avis", leading: Icons.chat_outlined, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => NousContactez()))),
               FiltreAll(),
-              WidgetListTitle(title: "Messages", leading: Icons.message, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => Messages ()))),
+              WidgetListTitle(title: "Messages", leading: Icons.message, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => Messages (user: widget.user,)))),
               WidgetListTitle(title: "Paramètres", leading: Icons.settings_outlined, trailing: Icons.chevron_right, onTap: () => () => Parametre(context, data)),
               WidgetListTitle(title: "Déconnections", leading: Icons.logout_outlined, trailing: Icons.chevron_right, onTap: () => () => deconnectionAlertDialog(context)),
             ],
@@ -102,7 +104,7 @@ class _ProfilesState extends State<Profiles> {
           child: ExpansionTile(
               iconColor: Colors.blueGrey,
               backgroundColor: Colors.white,
-              title:  Text("Filtres", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold),),
+              title:  Text("Menu", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold),),
               leading: Icon(Icons.pageview_outlined, color: Colors.grey,),
               expandedCrossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -111,13 +113,30 @@ class _ProfilesState extends State<Profiles> {
                   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   child: InkWell(
                     onTap: (){
-
+                        Navigator.push(context, MaterialPageRoute(builder: (ctx) => AxesScreen()));
                     },
                     child: Row(
                       children: [
                         RichText(text: TextSpan(children: [
                           WidgetSpan(child: Icon(Icons.local_library, color: Colors.grey,)),
                           TextSpan(text: "         Axes", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold, fontSize: 15)),
+                        ]))
+                      ],
+                    ),
+                  ),
+                ),
+                Ligne(color: Colors.blueGrey,),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                  child: InkWell(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (ctx) => FonctionsScreen()));
+                    },
+                    child: Row(
+                      children: [
+                        RichText(text: TextSpan(children: [
+                          WidgetSpan(child: Icon(Icons.account_tree, color: Colors.grey,)),
+                          TextSpan(text: "         Fonctions", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold, fontSize: 15)),
                         ]))
                       ],
                     ),
@@ -135,6 +154,23 @@ class _ProfilesState extends State<Profiles> {
                         RichText(text: TextSpan(children: [
                           WidgetSpan(child: Icon(Icons.card_travel, color: Colors.grey,)),
                           TextSpan(text: "         Filières", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold, fontSize: 15)),
+                        ]))
+                      ],
+                    ),
+                  ),
+                ),
+                Ligne(color: Colors.blueGrey,),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+                  child: InkWell(
+                    onTap: (){
+
+                    },
+                    child: Row(
+                      children: [
+                        RichText(text: TextSpan(children: [
+                          WidgetSpan(child: Icon(Icons.stacked_bar_chart_sharp, color: Colors.grey,)),
+                          TextSpan(text: "         Niveau", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold, fontSize: 15)),
                         ]))
                       ],
                     ),

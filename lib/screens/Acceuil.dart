@@ -83,7 +83,7 @@ class _AcceuilState extends State<Acceuil> {
               currentIndex = index;
             });
             if(index == 1){
-              Navigator.push(context, MaterialPageRoute(builder: (ctx) => Messages()));
+              Navigator.push(context, MaterialPageRoute(builder: (ctx) => Messages(user: users,)));
               setState(() {
                 currentIndex = 0;
               });
@@ -98,7 +98,10 @@ class _AcceuilState extends State<Acceuil> {
           currentIndex: currentIndex,
           selectedItemColor: Colors.blueGrey,
           backgroundColor: Colors.white,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
           unselectedItemColor: Colors.grey,
+          type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(
                 icon: Icon(Icons.home_outlined),
