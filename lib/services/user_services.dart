@@ -24,6 +24,42 @@ Future<bool> logout() async{
   return pref.remove('token');
 }
 
+/** ---------------- Get alL Users ---------------- **/
+Future<ApiResponse> getAllUsers() async{
+  ApiResponse apiResponse = ApiResponse();
+
+  try{
+    String token = await getToken();
+    var url = Uri.parse(userURL);
+    final response = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+
+    print("******************************** ${response.body}");
+
+    switch(response.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['user'].map((p) => User.fromJson(p));
+        apiResponse.data as List<dynamic>;
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+
 Future<ApiResponse> getUserDetail() async{
   ApiResponse apiResponse = ApiResponse();
 

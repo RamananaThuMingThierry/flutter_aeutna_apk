@@ -29,8 +29,6 @@ class _AxesState extends State<AxesScreen> {
     userId = await getUserId();
     ApiResponse apiResponse = await getAllAxes();
 
-    print("Nous sommes iciiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii! ${apiResponse.data}");
-
     if(apiResponse.error == null){
       List<dynamic> axesList = apiResponse.data as List<dynamic>;
       List<Axes> axes = axesList.map((p) => Axes.fromJson(p)).toList();

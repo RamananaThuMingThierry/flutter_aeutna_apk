@@ -2,8 +2,10 @@ import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/screens/avis/nous_contactez.dart';
 import 'package:aeutna/screens/axes/axes.dart';
+import 'package:aeutna/screens/filieres/filieres.dart';
 import 'package:aeutna/screens/fonctions/fonctions.dart';
 import 'package:aeutna/screens/messages/messages.dart';
+import 'package:aeutna/screens/niveau/niveau.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/WidgetListTitle.dart';
 import 'package:aeutna/widgets/ligne_horizontale.dart';
@@ -147,7 +149,7 @@ class _ProfilesState extends State<Profiles> {
                   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
                   child: InkWell(
                     onTap: (){
-
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => FilieresScreen()));
                     },
                     child: Row(
                       children: [
@@ -164,7 +166,7 @@ class _ProfilesState extends State<Profiles> {
                   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
                   child: InkWell(
                     onTap: (){
-
+                       Navigator.push(context, MaterialPageRoute(builder: (ctx) => NiveauScreen()));
                     },
                     child: Row(
                       children: [

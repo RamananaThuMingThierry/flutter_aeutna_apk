@@ -2,17 +2,17 @@ import 'dart:convert';
 
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
-import 'package:aeutna/models/axes.dart';
+import 'package:aeutna/models/filieres.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:http/http.dart' as http;
 
-/** ---------------- Get alL Axes ---------------- **/
-Future<ApiResponse> getAllAxes() async{
+/** ---------------- Get alL Filieres ---------------- **/
+Future<ApiResponse> getAllFilieres() async{
   ApiResponse apiResponse = ApiResponse();
 
   try{
     String token = await getToken();
-    var url = Uri.parse(axesURL);
+    var url = Uri.parse(filieresURL);
     final response = await http.get(
         url,
         headers: {
@@ -23,7 +23,7 @@ Future<ApiResponse> getAllAxes() async{
 
     switch(response.statusCode){
       case 200:
-        apiResponse.data = jsonDecode(response.body)['axes'];
+        apiResponse.data = jsonDecode(response.body)['filieres'];
         apiResponse.data as List<dynamic>;
         break;
       case 401:
@@ -39,13 +39,13 @@ Future<ApiResponse> getAllAxes() async{
   return apiResponse;
 }
 
-/** --------------- Créer un Axes ----------------- **/
-Future<ApiResponse> createAxes({String? nom_axes}) async{
+/** --------------- Créer un filieres ----------------- **/
+Future<ApiResponse> createFilieres({String? nom_filieres}) async{
   ApiResponse apiResponse = ApiResponse();
 
   try{
     String token = await getToken();
-    var url = Uri.parse(axesURL);
+    var url = Uri.parse(filieresURL);
     final rep = await http.post(
         url,
         headers: {
@@ -53,7 +53,7 @@ Future<ApiResponse> createAxes({String? nom_axes}) async{
           'Authorization' : 'Bearer $token'
         },
         body: {
-          'nom_axes': nom_axes,
+          'nom_filieres': nom_filieres,
         }
     );
 
@@ -83,23 +83,23 @@ Future<ApiResponse> createAxes({String? nom_axes}) async{
   return apiResponse;
 }
 
-/** --------------- Show un axes ----------------- **/
-Future<ApiResponse> showAxes(int axesId) async{
+/** --------------- Show un filière ----------------- **/
+Future<ApiResponse> showFilieres(int filieresId) async{
+
   ApiResponse apiResponse = ApiResponse();
   try{
+
     String token = await getToken();
-    final rep = await http.get(Uri.parse('$axesURL/$axesId'),
+    final rep = await http.get(Uri.parse('$filieresURL/$filieresId'),
         headers: {
           'Accept': 'application/json',
           'Authorization' : 'Bearer $token'
         }
     );
 
-    print(rep.body);
-
     switch(rep.statusCode){
       case 200:
-        apiResponse.data = Axes.fromJson(jsonDecode(rep.body)['axes']);
+        apiResponse.data = Filieres.fromJson(jsonDecode(rep.body)['filieres']);
         break;
       case 403:
         apiResponse.data = jsonDecode(rep.body)['message'];
@@ -117,18 +117,18 @@ Future<ApiResponse> showAxes(int axesId) async{
   return apiResponse;
 }
 
-/** --------------- Modifier un axes ----------------- **/
-Future<ApiResponse> updateAxes(int axesId, String nom_axes) async{
+/** --------------- Modifier un filiere ----------------- **/
+Future<ApiResponse> updateFilieres(int filiereId, String nom_filieres) async{
   ApiResponse apiResponse = ApiResponse();
   try{
     String token = await getToken();
-    final rep = await http.put(Uri.parse('$axesURL/$axesId'),
+    final rep = await http.put(Uri.parse('$filieresURL/$filiereId'),
         headers: {
           'Accept': 'application/json',
           'Authorization' : 'Bearer $token'
         },
         body: {
-          'nom_axes': nom_axes
+          'nom_filieres': nom_filieres
         }
     );
 
@@ -152,12 +152,12 @@ Future<ApiResponse> updateAxes(int axesId, String nom_axes) async{
   return apiResponse;
 }
 
-/** --------------- Supprimer un axes ----------------- **/
-Future<ApiResponse> deleteAxes(int axesId) async{
+/** --------------- Supprimer un filiere ----------------- **/
+Future<ApiResponse> deleteFilieres(int filiereId) async{
   ApiResponse apiResponse = ApiResponse();
   try{
     String token = await getToken();
-    final rep = await http.delete(Uri.parse('$axesURL/$axesId'),
+    final rep = await http.delete(Uri.parse('$filieresURL/$filiereId'),
         headers: {
           'Accept': 'application/json',
           'Authorization' : 'Bearer $token'

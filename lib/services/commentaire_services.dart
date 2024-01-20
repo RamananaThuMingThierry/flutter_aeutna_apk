@@ -43,11 +43,11 @@ Future<ApiResponse> getCommentaires(int postId) async{
 }
 
 /** --------------- Créer Commentaire ----------------- **/
-Future<ApiResponse> createCommentaire({int? postId, String? comment}) async{
+Future<ApiResponse> createCommentaire({int? postId, String? commentaires}) async{
   ApiResponse apiResponse = ApiResponse();
   try{
     String token = await getToken();
-    var url = Uri.parse("$postsURL/$postId/comments");
+    var url = Uri.parse("$postsURL/$postId/commentaires");
 
     final rep = await http.post(
         url,
@@ -56,7 +56,7 @@ Future<ApiResponse> createCommentaire({int? postId, String? comment}) async{
           'Authorization' : 'Bearer $token'
         },
         body: {
-          'comment' : comment
+          'commentaires' : commentaires
         }
     );
 
@@ -125,7 +125,7 @@ Future<ApiResponse> updateComment(int commentaire_id, String commentaires) async
   return apiResponse;
 }
 
-/** --------------- Delete Comment ----------------- **/
+/** --------------- Delete Commentaires ----------------- **/
 Future<ApiResponse> deleteComment(int commentId) async{
   ApiResponse apiResponse = ApiResponse();
   try{

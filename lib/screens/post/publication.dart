@@ -42,7 +42,6 @@ class _PublicationState extends State<Publication> {
   void handlePostLikeDislike(int postId) async {
 
     ApiResponse apiResponse = await likeUnlikePost(postId);
-    print("Je suis là");
     if(apiResponse.error == null){
       retreivePosts();
     }else if(apiResponse.error == unauthorized){
@@ -75,8 +74,12 @@ class _PublicationState extends State<Publication> {
     return Scaffold(
       backgroundColor: Colors.grey,
       appBar: AppBar(
-        title: Text("A.E.U.T.N.A"),
-        backgroundColor: Colors.blueGrey,
+        elevation: 1,
+        shape: Border(
+          bottom: BorderSide(width: .5, color: Colors.grey)
+        ),
+        title: Text("A.E.U.T.N.A", style: TextStyle(color: Colors.blueGrey),),
+        backgroundColor: Colors.white,
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 7),
@@ -102,6 +105,7 @@ class _PublicationState extends State<Publication> {
             Post post = _postList![index];
             print(post.image);
             return Card(
+                margin: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -177,21 +181,18 @@ class _PublicationState extends State<Publication> {
                           SizedBox(
                             child: Row(
                               children: [
-                                Expanded(child: Text("${post.description}", textAlign: TextAlign.left,)),
+                                Expanded(child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                  child: Text("${post.description}", textAlign: TextAlign.left,),
+                                )),
                               ],
                             ),
                           ),
-                          Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 180,
-                              margin: EdgeInsets.only(top: 5),
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: NetworkImage('${post.image}'),
-                                    fit: BoxFit.cover
-                                ),
-                              )
-                          ),
+                          SizedBox(
+                            child: Expanded(
+                              child: Image.network("${post.image}", fit: BoxFit.cover,)
+                              ),
+                            ),
                         ],
                       )
                           : Container(

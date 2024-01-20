@@ -1,3 +1,4 @@
+import 'package:aeutna/widgets/ligne_horizontale.dart';
 import 'package:flutter/material.dart';
 
 AlertDialog MessageErreur(BuildContext context, String? message){
@@ -25,7 +26,7 @@ AlertDialog MessageErreur(BuildContext context, String? message){
           Stack(
             alignment: Alignment.center,
             children: [
-              Container(height: 120,color: Colors.red,),
+              Container(height: 100,color: Colors.red,),
               Column(
                 children: [
                   Icon(Icons.warning, color: Colors.white,size: 32,),
@@ -38,34 +39,18 @@ AlertDialog MessageErreur(BuildContext context, String? message){
           SizedBox(height: 30,),
           Padding(
               padding: EdgeInsets.only(left: 16, right: 16),
-              child: Text("$message", style: TextStyle(fontSize: 14),textAlign: TextAlign.center,),
+              child: Text("$message", style: TextStyle(fontSize: 14, color: Colors.grey),textAlign: TextAlign.center,),
           ),
           SizedBox(height: 16,),
+          Ligne(color: Colors.red),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TextButton(onPressed: (){}, child: Text("Ok"))
+              TextButton(onPressed: (){
+                Navigator.pop(context);
+              }, child: Text("O k"))
             ],
           ),
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: GestureDetector(
-          //     onTap: (){
-          //       Navigator.pop(context);
-          //     },
-          //     child: Container(
-          //       width: MediaQuery.of(context).size.width,
-          //       decoration: BoxDecoration(
-          //         color: Colors.blue,
-          //         borderRadius: BorderRadius.circular(2),
-          //       ),
-          //       padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
-          //       child: Center(
-          //         child: Text("Enregistre", style: TextStyle(color: Colors.white),),
-          //       ),
-          //     ),
-          //   ),
-          // )
         ],
       ),
 
