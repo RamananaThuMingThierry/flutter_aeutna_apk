@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/models/user.dart';
+import 'package:aeutna/models/users.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,7 +31,7 @@ Future<ApiResponse> getAllUsers() async{
 
   try{
     String token = await getToken();
-    var url = Uri.parse(userURL);
+    var url = Uri.parse(userURL+"_all");
     final response = await http.get(
         url,
         headers: {
@@ -39,11 +40,9 @@ Future<ApiResponse> getAllUsers() async{
         }
     );
 
-    print("******************************** ${response.body}");
-
     switch(response.statusCode){
       case 200:
-        apiResponse.data = jsonDecode(response.body)['user'].map((p) => User.fromJson(p));
+        apiResponse.data = jsonDecode(response.body)['user'].map((p) => Users.fromJson(p)).toList();
         apiResponse.data as List<dynamic>;
         break;
       case 401:

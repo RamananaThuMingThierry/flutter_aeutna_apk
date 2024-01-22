@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/models/messages.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:http/http.dart' as http;
 
@@ -11,7 +12,7 @@ Future<ApiResponse> getAllMessages() async{
 
   try{
     String token = await getToken();
-    var url = Uri.parse(membresURL);
+    var url = Uri.parse(messagesURL);
     final response = await http.get(
         url,
         headers: {
@@ -22,7 +23,7 @@ Future<ApiResponse> getAllMessages() async{
 
     switch(response.statusCode){
       case 200:
-        apiResponse.data = jsonDecode(response.body)['messages'];
+        apiResponse.data = jsonDecode(response.body)['messages'].map((m) => MessageModel.fromJson(m)).toList();
         apiResponse.data as List<dynamic>;
         break;
       case 401:
@@ -39,12 +40,16 @@ Future<ApiResponse> getAllMessages() async{
 }
 
 /** --------------- Créer un Message ----------------- **/
-Future<ApiResponse> createMessage({String? messages, String? idUserReceived}) async{
+Future<ApiResponse> createMessage({String? messages, int? idUserReceived}) async{
   ApiResponse apiResponse = ApiResponse();
 
   try{
     String token = await getToken();
-    var url = Uri.parse(membresURL);
+
+    var url = Uri.parse("${messagesURL}/${idUserReceived}");
+
+
+
     final rep = await http.post(
         url,
         headers: {
@@ -52,10 +57,11 @@ Future<ApiResponse> createMessage({String? messages, String? idUserReceived}) as
           'Authorization' : 'Bearer $token'
         },
         body: {
-          'users_receive': idUserReceived,
-          'messages': messages,
+          'message': messages,
         }
     );
+
+    print("ulr ------------------------------- ${url} ---------------------- \n status : ${rep.statusCode} -------------------------- \n data: ${rep.body}");
 
     switch(rep.statusCode){
       case 200:
@@ -99,6 +105,42 @@ Future<ApiResponse> updateAxes(int messageId, String messages) async{
     switch(rep.statusCode){
       case 200:
         apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 403:
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+/** --------------- Afficher un message ----------------- **/
+Future<ApiResponse> showMessage($userReceivedId) async{
+  ApiResponse apiResponse = ApiResponse();
+  try{
+    String token = await getToken();
+    var url = Uri.parse("${messagesURL}_show/${$userReceivedId}");
+    final rep = await http.get(
+          url
+        ,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+
+    switch(rep.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(rep.body)['messages'].map((m) => MessageModel.fromJson(m)).toList();
+        apiResponse.data as List<dynamic>;
         break;
       case 403:
         apiResponse.data = jsonDecode(rep.body)['message'];

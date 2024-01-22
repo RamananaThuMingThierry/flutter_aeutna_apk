@@ -1,7 +1,9 @@
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/models/user.dart';
+import 'package:aeutna/models/users.dart';
 import 'package:aeutna/screens/auth/login.dart';
+import 'package:aeutna/screens/messages/sendMessage.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
@@ -17,16 +19,19 @@ class _NouvelConversationState extends State<NouvelConversation> {
   // Déclarations des variables
   String? recherche;
   bool loading = true;
-  List<User> _usersList = [];
+  List<dynamic> _usersList = [];
 
   Future _getallUsers() async{
+
     ApiResponse apiResponse = await getAllUsers();
+    print("******************* ${apiResponse.error} ****************** ${apiResponse.data} **************************");
 
     if(apiResponse.error == null){
       setState(() {
-        _usersList = apiResponse.data as List<User>;
+        _usersList = apiResponse.data as List<dynamic>;
         loading = loading ? !loading : loading;
       });
+
     }else if(apiResponse.error == unauthorized){
       logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
     }else{
@@ -44,7 +49,6 @@ class _NouvelConversationState extends State<NouvelConversation> {
   }
   @override
   Widget build(BuildContext context) {
-    print(_usersList);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -115,19 +119,26 @@ class _NouvelConversationState extends State<NouvelConversation> {
               child: ListView.builder(
                   itemCount: _usersList.length,
                   itemBuilder: (BuildContext context, int index){
-                    User user = _usersList[index];
-                    return Card(
-                      elevation: 1,
-                      child: ListTile(
-                        leading: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 7),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(250), // Image border
-                            child: SizedBox.fromSize(
-                              size: Size.fromRadius(23), // Image radius
-                              child: Image.asset('assets/photo.png', fit: BoxFit.cover),
+                    Users users = _usersList[index];
+                    return GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (ctx) => SendMessage(users: users!,)));
+                      },
+                      child: Card(
+                        elevation: 1,
+                        child: ListTile(
+                          leading: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 7),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(250), // Image border
+                              child: SizedBox.fromSize(
+                                size: Size.fromRadius(23), // Image radius
+                                child: Image.asset('assets/photo.png', fit: BoxFit.cover),
+                              ),
                             ),
                           ),
+                          title: Expanded(child: Text("${users.pseudo}", style: TextStyle(color: Colors.blueGrey, fontSize: 15, fontWeight: FontWeight.bold),)),
+                          subtitle: Text("${users.email}"),
                         ),
                       ),
                     );

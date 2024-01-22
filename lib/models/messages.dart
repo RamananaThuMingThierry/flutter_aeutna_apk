@@ -4,14 +4,14 @@ class MessageModel{
 
   int? id;
   String? message;
-  User? user;
-  User? user_received;
+  int? userId;
+  int? receivedId;
 
   MessageModel({
     this.id,
     this.message,
-    this.user,
-    this.user_received
+    this.userId,
+    this.receivedId
   });
 
   // function to convert json data to message model
@@ -19,12 +19,8 @@ class MessageModel{
     return MessageModel(
       id: a['id'],
       message: a['message'],
-      user_received: a['users']['users_receive'],
-      user: User(
-        id: a['users']['id'],
-        pseudo: a['users']['pseudo'],
-        image: a['users']['image'],
-      ),
+      userId: a['users_id'],
+      receivedId: a['users_receive']
     );
   }
 }
