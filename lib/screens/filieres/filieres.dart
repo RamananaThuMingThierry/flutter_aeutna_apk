@@ -8,6 +8,7 @@ import 'package:aeutna/widgets/donnees_vide.dart';
 import 'package:aeutna/widgets/myTextFieldForm.dart';
 import 'package:aeutna/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../api/api_response.dart';
 
@@ -26,7 +27,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
   int userId = 0;
   bool loading = true;
   String? nom_filieres;
-  String? recherche;
+  TextEditingController recherche = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 
@@ -38,8 +39,28 @@ class _FilieresScreenState extends State<FilieresScreen> {
       List<dynamic> filieresList = apiResponse.data as List<dynamic>;
       List<Filieres> filieres = filieresList.map((p) => Filieres.fromJson(p)).toList();
       setState(() {
+        recherche.clear();
         _filieresList = filieres;
-        loading = loading ? !loading : loading;
+        loading = false;
+      });
+    }else if(apiResponse.error == unauthorized){
+      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+    }else{
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
+      );
+    }
+  }
+
+  Future _searchFilieres(String? search) async{
+    userId = await getUserId();
+    ApiResponse apiResponse = await searchFilieres(search);
+    if(apiResponse.error == null){
+      List<dynamic> filieresList = apiResponse.data as List<dynamic>;
+      List<Filieres> filieres = filieresList.map((p) => Filieres.fromJson(p)).toList();
+      setState(() {
+        _filieresList = filieres;
       });
     }else if(apiResponse.error == unauthorized){
       logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
@@ -98,41 +119,58 @@ class _FilieresScreenState extends State<FilieresScreen> {
                 shape: Border(
                     bottom: BorderSide(color: Colors.grey, width: .5)),
                 margin: EdgeInsets.all(0),
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal:3, vertical: 5),
-                  height: 50,
-                  child: TextFormField(
-                    style: TextStyle(color: Colors.blueGrey),
-                    onChanged: (value){
-                      setState(() {
-                        recherche = value;
-                      });
-                    },
-                    validator:(value){
-                      if(value == ""){
-                        return "Veuillez saisir le nom à recherche";
-                      }
-                    },
-                    decoration: InputDecoration(
-                      filled: true,
-                      hintText: "Recherche",
-                      hintStyle: TextStyle(color: Colors.blueGrey),
-                      fillColor: Colors.white,
-                      suffixIcon: Icon(Icons.search),
-                      suffixIconColor: Colors.grey,
-                      enabledBorder : UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Colors.grey
-                        ),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.blueGrey,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal:3, vertical: 5),
+                        height: 50,
+                        child: TextFormField(
+                          controller: recherche,
+                          style: TextStyle(color: Colors.blueGrey),
+                          onChanged: (value){
+                            setState(() {
+                              recherche.text = value;
+                            });
+                            if(recherche.text.isEmpty){
+                              _getallFilieres();
+                            }else{
+                              _searchFilieres(recherche.text);
+                            }
+                          },
+                          validator:(value){
+                            if(value == ""){
+                              return "Veuillez saisir le nom à recherche";
+                            }
+                          },
+                          decoration: InputDecoration(
+                            filled: true,
+                            hintText: "Recherche",
+                            hintStyle: TextStyle(color: Colors.blueGrey),
+                            fillColor: Colors.white,
+                            enabledBorder : UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Colors.grey
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.blueGrey,
+                              ),
+                            ),
+                          ),
+                          keyboardType: TextInputType.text,
                         ),
                       ),
                     ),
-                    keyboardType: TextInputType.text,
-                  ),
+                    recherche.text.isEmpty ?
+                    IconButton(
+                        onPressed: (){}, icon: Icon(Icons.search_outlined, color: Colors.grey,))
+                        :
+                    IconButton(onPressed: (){
+                      _getallFilieres();
+                    }, icon: Icon(Icons.close, color: Colors.grey,)),
+                  ],
                 ),
               ),
               Expanded(
@@ -144,7 +182,12 @@ class _FilieresScreenState extends State<FilieresScreen> {
                   onRefresh: (){
                     return _getallFilieres();
                   },
-                  child: ListView.builder(
+                  child: _filieresList.length == 0
+                      ?
+                      Center(
+                        child: Text("Aucun résultat", style: GoogleFonts.roboto(color: Colors.blueGrey, fontSize: 18),),
+                      )
+                      :ListView.builder(
                       itemCount: _filieresList.length,
                       itemBuilder: (BuildContext context, int index){
                         Filieres filieres = _filieresList![index];

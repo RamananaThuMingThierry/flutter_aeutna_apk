@@ -6,7 +6,9 @@ import 'package:aeutna/screens/post/commentaires/commentaires.dart';
 import 'package:aeutna/services/post_services.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/btnLikeOrDisLike.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Publication extends StatefulWidget {
   const Publication({Key? key}) : super(key: key);
@@ -79,7 +81,7 @@ class _PublicationState extends State<Publication> {
         shape: Border(
           bottom: BorderSide(width: .5, color: Colors.grey)
         ),
-        title: Text("A.E.U.T.N.A", style: TextStyle(color: Colors.blueGrey),),
+        title: Text("A.E.U.T.N.A", style: GoogleFonts.breeSerif(color: Colors.blueGrey)),
         backgroundColor: Colors.white,
         actions: [
           Padding(
@@ -136,10 +138,7 @@ class _PublicationState extends State<Publication> {
                                 SizedBox(width: 10,),
                                 Text(
                                   "${post.user!.pseudo}",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14
-                                  ),
+                                  style: GoogleFonts.daysOne(fontSize: 14),
                                 )
                               ],
                             ),
@@ -184,14 +183,20 @@ class _PublicationState extends State<Publication> {
                               children: [
                                 Expanded(child: Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                  child: Text("${post.description}", textAlign: TextAlign.left,),
+                                  child: Text("${post.description}",style: GoogleFonts.roboto() ,textAlign: TextAlign.left,),
                                 )),
                               ],
                             ),
                           ),
                           SizedBox(
                             child: Expanded(
-                              child: Image.network("${post.image}", fit: BoxFit.cover,)
+                              child: CachedNetworkImage(
+                                fit: BoxFit.cover,
+                                imageUrl: "${post!.image}",
+                                placeholder: (context, url) => CircularProgressIndicator(color: Colors.blueGrey,), // Widget de chargement affiché pendant le chargement de l'image
+                                errorWidget: (context, url, error) => Icon(Icons.error), // Widget d'erreur affiché si l'image ne peut pas être chargée
+                              ),
+                              //child: Image.network("${post.image}", fit: BoxFit.cover,)
                               ),
                             ),
                         ],
@@ -204,7 +209,7 @@ class _PublicationState extends State<Publication> {
                         child: Center(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text("${post.description}", style: TextStyle(color: Colors.white),textAlign: TextAlign.justify,),
+                            child: Text("${post.description}", style: GoogleFonts.roboto(color: Colors.white),textAlign: TextAlign.justify,),
                           ),
                         ),
                       ),

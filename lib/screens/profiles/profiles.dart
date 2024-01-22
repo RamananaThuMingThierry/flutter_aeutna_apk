@@ -1,3 +1,10 @@
+import 'package:aeutna/api/api_response.dart';
+import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/models/axes.dart';
+import 'package:aeutna/models/filieres.dart';
+import 'package:aeutna/models/fonctions.dart';
+import 'package:aeutna/models/membres.dart';
+import 'package:aeutna/models/niveau.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/screens/avis/nous_contactez.dart';
@@ -5,12 +12,17 @@ import 'package:aeutna/screens/axes/axes.dart';
 import 'package:aeutna/screens/filieres/filieres.dart';
 import 'package:aeutna/screens/fonctions/fonctions.dart';
 import 'package:aeutna/screens/message%20groupe/message_groupe.dart';
-import 'package:aeutna/screens/messages/messages.dart';
 import 'package:aeutna/screens/niveau/niveau.dart';
 import 'package:aeutna/screens/profiles/apropos.dart';
+import 'package:aeutna/services/axes_services.dart';
+import 'package:aeutna/services/filieres_services.dart';
+import 'package:aeutna/services/fonctions_services.dart';
+import 'package:aeutna/services/membres_services.dart';
+import 'package:aeutna/services/niveau_services.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/WidgetListTitle.dart';
 import 'package:aeutna/widgets/ligne_horizontale.dart';
+import 'package:aeutna/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -28,12 +40,114 @@ class _ProfilesState extends State<Profiles> {
   // Déclarations des variables
   User? data;
   bool edit = false;
+  Membres? membres;
+  Axes? axes;
+  Filieres? filieres;
+  Niveau? niveau;
+  FonctionModel? fonctionModel;
 
   RegExp regExp = RegExp(r'''
 (([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$''');
 
-  String? id,pseudo,nom,prenom,roles, email, genre, niveau, facebook, adresse, contact,lieu_naissance, image,numero_carte, filiere, cin, axes, sympathisant, date_naissance, contact_personnel, contact_parent;
+  String? id,pseudo,nom,prenom,roles, email, genre, facebook, adresse, contact,lieu_naissance, image,numero_carte, filiere, cin, sympathisant, date_naissance, contact_personnel, contact_parent;
   int? status;
+
+  void getAxes() async{
+    ApiResponse apiResponse = await showAxes(membres!.axes_id!);
+    if(apiResponse.error == null){
+      setState(() {
+        axes = apiResponse.data as Axes?;
+      });
+    }else if(apiResponse.error == unauthorized){
+      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+    }else{
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
+      );
+    }
+  }
+
+  void getFilieres() async{
+
+    ApiResponse apiResponse = await showFilieres(membres!.filieres_id!);
+
+    if(apiResponse.error == null){
+
+      setState(() {
+        filieres = apiResponse.data as Filieres?;
+      });
+
+    }else if(apiResponse.error == unauthorized){
+      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+    }else{
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
+      );
+    }
+  }
+
+  void getNiveau() async{
+
+    ApiResponse apiResponse = await showNiveau(membres!.levels_id!);
+
+    if(apiResponse.error == null){
+      setState(() {
+        niveau = apiResponse.data as Niveau?;
+      });
+
+    }else if(apiResponse.error == unauthorized){
+      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+    }else{
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
+      );
+    }
+  }
+
+  void getFonctions() async{
+    ApiResponse apiResponse = await showFonctions(membres!.fonctions_id!);
+    if(apiResponse.error == null){
+      setState(() {
+        fonctionModel = apiResponse.data as FonctionModel?;
+      });
+
+    }else if(apiResponse.error == unauthorized){
+      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+    }else{
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
+      );
+    }
+  }
+
+  Future getMembre() async{
+
+    ApiResponse apiResponse = await getMembres(widget.user!.id!);
+
+    if(apiResponse.error == null){
+
+      print(apiResponse.data);
+      if(apiResponse.data == null){
+        membres == null;
+      }else{
+        setState(() {
+          membres = apiResponse.data as Membres;
+        });
+        getAxes();
+        getFilieres();
+        getFonctions();
+        getNiveau();
+      }
+    }else if(apiResponse.error == unauthorized){
+      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${apiResponse.error}")));
+    }
+  }
 
   @override
   void initState() {
@@ -44,28 +158,31 @@ class _ProfilesState extends State<Profiles> {
     adresse = data!.adresse;
     roles = data!.roles;
     status = data!.status;
+    if(status == 1){
+      getMembre();
+    }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      backgroundColor: Colors.grey,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Colors.blueGrey,
-        title: Text("Profiles"),
+        actions: [
+          IconButton(onPressed: () => Parametre(context, data), icon: Icon(Icons.menu, color: Colors.black,))
+        ],
+        backgroundColor: Colors.white
       ),
       body: SingleChildScrollView(
-        child: Container(
+        child:Container(
           width: double.infinity,
           child: Column(
             children: [
               Card(
                 elevation: 0,
-                shape: Border(left: BorderSide(width: 5, color: Colors.blueGrey)),
                 child: Container(
                   width: double.infinity,
                   child: Column(
@@ -78,18 +195,43 @@ class _ProfilesState extends State<Profiles> {
                           backgroundImage: AssetImage("assets/photo.png"),
                         ),
                       ),
-                        showComptePersonnels(pseudo: pseudo, email: email, adresse: adresse, contact: contact_personnel, roles: roles, status: status),
-                        status == 1 ? showInformationPersonnels(pseudo: pseudo,nom: nom, prenom: prenom, genre: genre, cin: cin, date_naissance: date_naissance, lieu_naissance: lieu_naissance) : SizedBox(),
-                        status == 1 ? showInformationsAEUTNA(numero_carte_aeutna: numero_carte,email: email, facebook: facebook,contact: contact_personnel, filiere: filiere, axes: axes, adresse: adresse, sympathisant: sympathisant, niveau: niveau) : SizedBox()
+                        SizedBox(height: 20,),
+                        showComptePersonnels(
+                            pseudo: pseudo,
+                            email: email,
+                            adresse: adresse,
+                            contact: contact_personnel,
+                            roles: roles,
+                            status: status),
+                        status == 1 ? showInformationPersonnels(
+                            nom: membres == null ? "" : membres!.nom,
+                            prenom: membres == null ? "" : membres!.prenom,
+                            genre: membres == null ? "" : membres!.genre,
+                            cin: membres == null ? "" : membres!.cin,
+                            date_naissance: membres == null ? "" : membres!.date_de_naissance,
+                            lieu_naissance: membres == null ? "" : membres!.lieu_de_naissance
+                        ) : SizedBox(),
+                        status == 1 ? showInformationsAEUTNA(
+                            contact_tutaire: membres == null ? "" : membres!.contact_tutaire,
+                            numero_carte_aeutna: membres == null ? 0 : membres!.numero_carte ,
+                            email: email,
+                            filiere: filieres == null ? "" : filieres!.nom_filieres,
+                            facebook: membres == null ? "" : membres!.facebook,
+                            contact: contact_personnel,
+                            adresse: adresse,
+                            fonction: fonctionModel == null ? "" : fonctionModel!.fonctions,
+                            niveau: niveau == null ? "" : niveau!.niveau,
+                            axes: axes == null ? "" : axes!.nom_axes,
+                            sympathisant: membres == null ? 0 : membres!.symapthisant,
+                            date_inscription: membres == null ? "" : membres!.date_inscription,
+                        ) : SizedBox()
                     ],
                   ),
                 ),
               ),
-              WidgetListTitle(title: "Apropos", leading: Icons.info_outlined, trailing: Icons.chevron_right, onTap: () => () => Apropos(context)),
-              WidgetListTitle(title: "Avis", leading: Icons.chat_outlined, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => NousContactez()))),
+              WidgetListTitle(title: "Avis", leading: Icons.question_mark_outlined, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => NousContactez()))),
               FiltreAll(),
               WidgetListTitle(title: "Messages Groupe", leading: Icons.message_rounded, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => MessagesGroupes ()))),
-              WidgetListTitle(title: "Paramètres", leading: Icons.settings_outlined, trailing: Icons.chevron_right, onTap: () => () => Parametre(context, data)),
               WidgetListTitle(title: "Déconnections", leading: Icons.logout_outlined, trailing: Icons.chevron_right, onTap: () => () => deconnectionAlertDialog(context)),
             ],
           ),
@@ -102,7 +244,7 @@ class _ProfilesState extends State<Profiles> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 2),
       child: Card(
-        shape: Border(left: BorderSide(width: 5, color: Colors.blueGrey)),
+        elevation: 0,
         child: Theme(
           data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: ExpansionTile(
@@ -112,7 +254,7 @@ class _ProfilesState extends State<Profiles> {
               leading: Icon(Icons.pageview_outlined, color: Colors.grey,),
               expandedCrossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Ligne(color: Colors.blueGrey),
+                Ligne(color: Colors.transparent),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   child: InkWell(
@@ -129,7 +271,7 @@ class _ProfilesState extends State<Profiles> {
                     ),
                   ),
                 ),
-                Ligne(color: Colors.blueGrey,),
+                Ligne(color: Colors.transparent,),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
                   child: InkWell(
@@ -146,7 +288,7 @@ class _ProfilesState extends State<Profiles> {
                     ),
                   ),
                 ),
-                Ligne(color: Colors.blueGrey,),
+                Ligne(color: Colors.transparent,),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
                   child: InkWell(
@@ -163,7 +305,7 @@ class _ProfilesState extends State<Profiles> {
                     ),
                   ),
                 ),
-                Ligne(color: Colors.blueGrey,),
+                Ligne(color: Colors.transparent,),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
                   child: InkWell(
@@ -196,7 +338,7 @@ class _ProfilesState extends State<Profiles> {
             iconColor: Colors.blueGrey,
             backgroundColor: Colors.white,
             title:  Text("Compte", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold),),
-            leading: Icon(Icons.menu, color: Colors.blueGrey,),
+            leading: Icon(Icons.credit_card_outlined, color: Colors.grey,),
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
             childrenPadding: EdgeInsets.symmetric(horizontal: 10),
             children: [
@@ -216,7 +358,7 @@ class _ProfilesState extends State<Profiles> {
     );
   }
 
-  Widget showInformationPersonnels({String? pseudo,String? nom, String? prenom, String? genre, String? cin, String? date_naissance, String? lieu_naissance}){
+  Widget showInformationPersonnels({String? nom, String? prenom, String? genre, String? cin, String? date_naissance, String? lieu_naissance}){
     return Container(
       color: Colors.white,
       child: Theme(
@@ -225,12 +367,10 @@ class _ProfilesState extends State<Profiles> {
             iconColor: Colors.blueGrey,
             backgroundColor: Colors.white,
             title:  Text("Information Personnel", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold),),
-            leading: Icon(Icons.menu, color: Colors.blueGrey,),
+            leading: Icon(Icons.credit_card_outlined, color: Colors.grey,),
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
             childrenPadding: EdgeInsets.symmetric(horizontal: 10),
             children: [
-              _textTitre(titre: "Pseudo"),
-              _CardText(iconData: Icons.account_box_rounded, value: pseudo),
               _textTitre(titre: "Nom"),
               _CardText(iconData: Icons.account_box_rounded, value: nom),
               _textTitre(titre: "Prénom"),
@@ -249,7 +389,19 @@ class _ProfilesState extends State<Profiles> {
     );
   }
 
-  Widget showInformationsAEUTNA({String? numero_carte_aeutna,String? email,String? contact, String? facebook, String? axes, String? sympathisant, String? filiere, String? niveau, String? adresse}){
+  Widget showInformationsAEUTNA({
+    int? numero_carte_aeutna,
+    String? email,
+    String? contact,
+    String? facebook,
+    String? contact_tutaire,
+    String? axes,
+    int? sympathisant,
+    String? filiere,
+    String? niveau,
+    String? fonction,
+    String? adresse,
+    String? date_inscription}){
     return Container(
       color: Colors.white,
       child: Theme(
@@ -257,27 +409,31 @@ class _ProfilesState extends State<Profiles> {
         child: ExpansionTile(
             backgroundColor: Colors.white,
             title:  Text("Informations AEUTNA", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold),),
-            leading: Icon(Icons.menu, color: Colors.blueGrey,),
+            leading: Icon(Icons.credit_card_outlined, color: Colors.grey,),
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _textTitre(titre: "Numéro carte"),
-              _CardText(iconData: Icons.confirmation_num, value: numero_carte_aeutna),
-              _textTitre(titre: "Adresse e-mail"),
-              _CardText(iconData: Icons.mail, value: email),
-              _textTitre(titre: "Contact"),
+              _CardText(iconData: Icons.confirmation_num, value: "${numero_carte_aeutna}"),
+              _textTitre(titre: "Fonctions"),
+              _CardText(iconData: Icons.mail, value: fonction),
+              _textTitre(titre: "Contact Personnel"),
               _CardText(iconData: Icons.phone, value: contact),
+              _textTitre(titre: "Contact Tutaire"),
+              _CardText(iconData: Icons.phone_outlined, value: contact_tutaire),
               _textTitre(titre: "Adresse"),
               _CardText(iconData: Icons.location_on, value: adresse),
               _textTitre(titre: "Facebook"),
               _CardText(iconData: Icons.facebook, value: facebook),
               _textTitre(titre: "Axes"),
-              _CardText(iconData: Icons.local_library, value: axes),
+              _CardText(iconData: Icons.local_library, value: "${axes}"),
               _textTitre(titre: "Filières"),
-              _CardText(iconData: Icons.medical_information, value: filiere),
+              _CardText(iconData: Icons.medical_information, value: "${filiere}"),
               _textTitre(titre: "Niveau"),
-              _CardText(iconData: Icons.list_outlined, value: niveau),
+              _CardText(iconData: Icons.list_outlined, value: "${niveau}"),
               _textTitre(titre: "Sympathisant(e)"),
-              _CardText(iconData: Icons.confirmation_num_outlined, value: sympathisant),
+              _CardText(iconData: Icons.confirmation_num_outlined, value: sympathisant == 0 ? "false" : "true"),
+              _textTitre(titre: "Date d'inscription"),
+              _CardText(iconData: Icons.date_range_outlined, value: date_inscription),
             ]
         ),
       ),
@@ -307,31 +463,31 @@ class _ProfilesState extends State<Profiles> {
         barrierDismissible: true,
         builder: (BuildContext buildContext){
           return AlertDialog(
-            title: Text("Déconnection", textAlign:TextAlign.center,style: TextStyle(color: Colors.blueGrey),),
+            backgroundColor: Colors.grey,
+            title: Text("Comfirmation", textAlign: TextAlign.center,style: GoogleFonts.roboto(color: Colors.white, fontWeight: FontWeight.bold),),
             content: SizedBox(
-              height: 80,
+              height: 60,
               child: Column(
                 children: [
-                  Ligne(color: Colors.blueGrey,),
-                  SizedBox(height: 5,),
-                  Text("Voulez-vous vraiment vous déconnecter?", textAlign: TextAlign.center,style: GoogleFonts.roboto(color: Colors.blueGrey, fontSize: 17),),
+                  SizedBox(height: 8,),
+                  Text("Vous déconnecter de votre compte?", textAlign: TextAlign.center,style: GoogleFonts.roboto(color: Colors.white, fontSize: 17),),
                   SizedBox(height: 5,),
                 ],
               ),
             ),
-            contentPadding: EdgeInsets.only(top: 10.0, left: 5.0, right: 5.0),
+            contentPadding: EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0),
             actions: [
               TextButton(
                   onPressed: (){
                     Navigator.pop(context);
                     print("Annuler");
                   },
-                  child: Text("Annuler", style: TextStyle(color: Colors.redAccent),)),
+                  child: Text("Annuler", style: TextStyle(color: Colors.white),)),
               TextButton(
                   onPressed: (){
                     Navigator.pop(context);
                     onLoading(context);
-                  }, child: Text("Ok",style: TextStyle(color: Colors.blueGrey),)),
+                  }, child: Text("Se déconnecter",style: TextStyle(color: Colors.redAccent),)),
             ],
           );
         });
@@ -372,75 +528,90 @@ class _ProfilesState extends State<Profiles> {
           borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
         ),
         builder: (ctx){
-          return Container(
-            height: 260,
-            color: Colors.blueGrey,
-            child: Column(
-              children: [
-                SizedBox(height: 10,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.settings, color: Colors.white,),
-                    SizedBox(width: 10,),
-                    Text("Paramètres", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
-                  ],
-                ),
-                Ligne(color: Colors.white,),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+          return Expanded(
+            child: Container(
+              color: Colors.blueGrey,
+              child: Column(
+                children: [
+                  SizedBox(height: 10,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.language, color: Colors.white,),
+                      Icon(Icons.settings, color: Colors.white,),
                       SizedBox(width: 10,),
-                      TextButton(onPressed: (){
-                        print("Change la langue");
-                      }, child:  Text("Change la langue", style: TextStyle(color: Colors.white),),)
+                      Text("Paramètres", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
                     ],
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.collections, color: Colors.white,),
-                      SizedBox(width: 10,),
-                      TextButton(onPressed: (){
-                        Navigator.pop(context);
-                        print("Change le thème");
-                      }, child:  Text("Change le thème", style: TextStyle(color: Colors.white),),)
-                    ],
+                  Ligne(color: Colors.white,),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.info_outlined, color: Colors.white,),
+                        SizedBox(width: 10,),
+                        TextButton(onPressed: (){
+                          Navigator.pop(context);
+                          Apropos(context);
+                        }, child:  Text("Apropos", style: TextStyle(color: Colors.white),),)
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.password_sharp, color: Colors.white,),
-                      SizedBox(width: 10,),
-                      TextButton(onPressed: (){
-                        Navigator.pop(context);
-                      }, child:  Text("Changer le mot de passe", style: TextStyle(color: Colors.white),),)
-                    ],
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.language, color: Colors.white,),
+                        SizedBox(width: 10,),
+                        TextButton(onPressed: (){
+                          print("Change la langue");
+                        }, child:  Text("Change la langue", style: TextStyle(color: Colors.white),),)
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(Icons.account_circle_outlined, color: Colors.white,),
-                      SizedBox(width: 10,),
-                      TextButton(onPressed: (){
-                        Navigator.pop(context);
-                      }, child:  Text("Modifier le profil", style: TextStyle(color: Colors.white),),)
-                    ],
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.collections, color: Colors.white,),
+                        SizedBox(width: 10,),
+                        TextButton(onPressed: (){
+                          Navigator.pop(context);
+                          print("Change le thème");
+                        }, child:  Text("Change le thème", style: TextStyle(color: Colors.white),),)
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.password_sharp, color: Colors.white,),
+                        SizedBox(width: 10,),
+                        TextButton(onPressed: (){
+                          Navigator.pop(context);
+                        }, child:  Text("Changer le mot de passe", style: TextStyle(color: Colors.white),),)
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.account_circle_outlined, color: Colors.white,),
+                        SizedBox(width: 10,),
+                        TextButton(onPressed: (){
+                          Navigator.pop(context);
+                        }, child:  Text("Modifier le profil", style: TextStyle(color: Colors.white),),)
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         });

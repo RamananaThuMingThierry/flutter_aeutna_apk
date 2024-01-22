@@ -15,7 +15,6 @@ class WidgetListTitle extends StatelessWidget {
       elevation: 0,
       shape: Border(),
       child: ListTile(
-        shape: Border(left: BorderSide(width: 5, color: Colors.blueGrey)),
         onTap: onTap(),
         leading: Icon(leading, color: Colors.grey,),
         title: Text("${title}", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold),),

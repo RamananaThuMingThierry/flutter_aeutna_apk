@@ -95,9 +95,6 @@ Future<ApiResponse> showFonctions(int fonctionsId) async{
           'Authorization' : 'Bearer $token'
         }
     );
-
-    print("/******************************* ${rep.body} *******************************/");
-
     switch(rep.statusCode){
       case 200:
         apiResponse.data = FonctionModel.fromJson(jsonDecode(rep.body)['fonctions']);

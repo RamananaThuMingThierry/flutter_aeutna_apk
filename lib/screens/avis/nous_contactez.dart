@@ -36,12 +36,19 @@ class _NousContactezState extends State<NousContactez> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
-        title: Text("Contactez-nous", style: TextStyle(color: Colors.white),),
-        backgroundColor: Colors.blueGrey,
+        leading: IconButton(
+          onPressed: (){
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.keyboard_backspace, color: Colors.blueGrey,),
+        ),
+        title: Text("Contactez-nous", style: GoogleFonts.roboto(color: Colors.blueGrey),),
+        backgroundColor: Colors.white,
         actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.message_outlined))
+          IconButton(onPressed: (){}, icon: Icon(Icons.message_outlined, color: Colors.blueGrey,))
         ],
       ),
       resizeToAvoidBottomInset: false,
@@ -52,7 +59,7 @@ class _NousContactezState extends State<NousContactez> {
               child: Column(
                 children: [
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20),
+                    margin: EdgeInsets.symmetric(horizontal: 5),
                     width: double.infinity,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -75,14 +82,14 @@ class _NousContactezState extends State<NousContactez> {
                             suffixIcon: Icon(Icons.message_outlined),
                             hintStyle: TextStyle(color: Colors.blueGrey),
                             suffixIconColor: Colors.grey,
-                            enabledBorder : UnderlineInputBorder(
+                            enabledBorder : OutlineInputBorder(
                               borderSide: BorderSide(
                                   color: Colors.grey
                               ),
                             ),
-                            focusedBorder: UnderlineInputBorder(
+                            focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                color: Colors.green,
+                                color: Colors.blueGrey,
                               ),
                             ),
                           ),
@@ -94,7 +101,8 @@ class _NousContactezState extends State<NousContactez> {
                   SizedBox(height: 5,),
                   //Button
                   Container(
-                    width: 325,
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    width: MediaQuery.of(context).size.width,
                     child: Button(
                         color: Colors.lightBlue,
                         onPressed: () => validation,
@@ -102,25 +110,29 @@ class _NousContactezState extends State<NousContactez> {
                   ),
                   SizedBox(height: 10,),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 5),
                     child: Row(
                       children: [
-                        Expanded(child: Divider(color: Colors.blueGrey,thickness: 1,)),
-                        Text(" Or ", style: GoogleFonts.roboto(color: Colors.brown, fontSize: 15),),
-                        Expanded(child: Divider(color: Colors.blueGrey,thickness: 1,)),
+                        Expanded(child: Divider(color: Colors.grey,thickness: 1,)),
+                        Text(" Or ", style: GoogleFonts.roboto(color: Colors.blueGrey, fontSize: 15),),
+                        Expanded(child: Divider(color: Colors.grey,thickness: 1,)),
                       ],
                     ),
                   ),
                   SizedBox(height: 5,),
                   //Button
                   Container(
-                    width: 325,
-                    child: Button(
-                        color: Colors.blueGrey,
-                        onPressed: () => () => _AppellezNous(numero: "+261 32 75 637 70", action: "tel")
-                        ,
-                        name: "Contactez-nous"),
-                  ),
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                        child: TextButton.icon(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(Colors.cyanAccent)
+                            ),
+                            onPressed: (){
+                          _ContactezNous(numero: "+261 32 75 637 70", action: "tel");
+                        }, icon: Icon(Icons.phone_outlined), label: Text("Contactez-nous"),
+                    )
+                  )
                 ],
               ),
             ),
@@ -138,7 +150,7 @@ class _NousContactezState extends State<NousContactez> {
     }
   }
 
-  void _AppellezNous({String? numero, String? action}) async {
+  void _ContactezNous({String? numero, String? action}) async {
     final Uri url = Uri(
         scheme: action,
         path: numero

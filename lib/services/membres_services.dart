@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/models/membres.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:http/http.dart' as http;
 
@@ -113,6 +114,46 @@ Future<ApiResponse> createAxes({
   }
   return apiResponse;
 }
+
+/** --------------- getMembres ----------------------- **/
+Future<ApiResponse> getMembres(int membreId) async{
+  ApiResponse apiResponse = ApiResponse();
+  try{
+    String token = await getToken();
+    var url = Uri.parse("$baseURL/getmembres/$membreId");
+    final rep = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+
+    switch(rep.statusCode){
+      case 200:
+        if(jsonDecode(rep.body) == null){
+          apiResponse.error = null;
+          apiResponse.data = null;
+        }else{
+          apiResponse.data = Membres.fromJson(jsonDecode(rep.body)['membres']);
+        }
+        break;
+      case 403:
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
 
 /** --------------- Modifier un axes ----------------- **/
 // Future<ApiResponse> updateAxes(int axesId, String nom_axes) async{

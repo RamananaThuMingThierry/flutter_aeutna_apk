@@ -82,7 +82,6 @@ Future<ApiResponse> createFilieres({String? nom_filieres}) async{
   }
   return apiResponse;
 }
-
 /** --------------- Show un filière ----------------- **/
 Future<ApiResponse> showFilieres(int filieresId) async{
 
@@ -100,6 +99,44 @@ Future<ApiResponse> showFilieres(int filieresId) async{
     switch(rep.statusCode){
       case 200:
         apiResponse.data = Filieres.fromJson(jsonDecode(rep.body)['filieres']);
+        break;
+      case 403:
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+
+/** --------------- Recherche un filière ----------------- **/
+Future<ApiResponse> searchFilieres(String? nom_filieres) async{
+
+  ApiResponse apiResponse = ApiResponse();
+  try{
+
+    String token = await getToken();
+    final rep = await http.get(Uri.parse("${filieresURL}_search/${nom_filieres}"),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+
+    print(rep.body);
+
+    switch(rep.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(rep.body)['filieres'];
+        apiResponse.data as List<dynamic>;
         break;
       case 403:
         apiResponse.data = jsonDecode(rep.body)['message'];
