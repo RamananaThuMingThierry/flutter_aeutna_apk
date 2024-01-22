@@ -2,20 +2,20 @@ import 'user.dart';
 
 class Commentaires{
   int? id;
-  String? commentaire;
+  String? commentaires;
   User? user;
 
-  Commentaires({this.id, this.commentaire, this.user});
+  Commentaires({this.id, this.commentaires, this.user});
 
   // Map json to comment Model
   factory Commentaires.fromJson(Map<String, dynamic> c){
     return Commentaires(
       id: c['id'],
-      commentaire: c['commentaire'],
+      commentaires: c['commentaires'],
       user: User(
-        id: c['user']['id'],
-        pseudo: c['user']['pseudo'],
-        image: c['user']['image']
+        id: c['users']['id'],
+        pseudo: c['users']['pseudo'],
+        image: c['users']['image']
       )
     );
   }

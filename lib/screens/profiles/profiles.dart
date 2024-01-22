@@ -4,8 +4,10 @@ import 'package:aeutna/screens/avis/nous_contactez.dart';
 import 'package:aeutna/screens/axes/axes.dart';
 import 'package:aeutna/screens/filieres/filieres.dart';
 import 'package:aeutna/screens/fonctions/fonctions.dart';
+import 'package:aeutna/screens/message%20groupe/message_groupe.dart';
 import 'package:aeutna/screens/messages/messages.dart';
 import 'package:aeutna/screens/niveau/niveau.dart';
+import 'package:aeutna/screens/profiles/apropos.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/WidgetListTitle.dart';
 import 'package:aeutna/widgets/ligne_horizontale.dart';
@@ -83,10 +85,10 @@ class _ProfilesState extends State<Profiles> {
                   ),
                 ),
               ),
-              WidgetListTitle(title: "Apropos", leading: Icons.info_outlined, trailing: Icons.chevron_right, onTap: () => () => _apropos(context)),
+              WidgetListTitle(title: "Apropos", leading: Icons.info_outlined, trailing: Icons.chevron_right, onTap: () => () => Apropos(context)),
               WidgetListTitle(title: "Avis", leading: Icons.chat_outlined, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => NousContactez()))),
               FiltreAll(),
-              WidgetListTitle(title: "Messages", leading: Icons.message, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => Messages (user: widget.user,)))),
+              WidgetListTitle(title: "Messages Groupe", leading: Icons.message_rounded, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => MessagesGroupes ()))),
               WidgetListTitle(title: "Paramètres", leading: Icons.settings_outlined, trailing: Icons.chevron_right, onTap: () => () => Parametre(context, data)),
               WidgetListTitle(title: "Déconnections", leading: Icons.logout_outlined, trailing: Icons.chevron_right, onTap: () => () => deconnectionAlertDialog(context)),
             ],
@@ -444,49 +446,6 @@ class _ProfilesState extends State<Profiles> {
         });
   }
 
-  Future _apropos(BuildContext context){
-    return showModalBottomSheet(context: context,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-        ),
-        backgroundColor: Colors.blueGrey,
-        builder: (ctx){
-          return Container(
-            height: 175,
-            child: Column(
-              children: [
-                SizedBox(height: 10,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.info_outlined, color: Colors.white,),
-                    SizedBox(width: 10,),
-                    Text("Apropos", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold, fontSize: 15),),
-                  ],
-                ),
-                Ligne(color: Colors.white,),
-                Spacer(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: RichText(text: TextSpan(children: [
-                    WidgetSpan(child: Text("A.E.U.T.N.A", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),)),
-                    TextSpan(text: " est une Association des Etudiants à l'Université de Tananarivo Natifs d'Antalaha.", style: TextStyle(color: Colors.white,)),
-                  ])),
-                ),
-                Spacer(),
-                Ligne(color: Colors.white),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Version : 1.25.1", style: TextStyle(color: Colors.white, fontSize: 15),),
-                  ],
-                ),
-                SizedBox(height: 10,),
-              ],
-            ),
-          );
-        });
-  }
 
   Padding _textTitre({String? titre}){
     return Padding(

@@ -1,20 +1,17 @@
 import 'package:aeutna/widgets/button.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class NousContactez extends StatefulWidget {
-  const NousContactez({Key? key}) : super(key: key);
+class Telma extends StatefulWidget {
 
+  const Telma({Key? key}) : super(key: key);
   @override
-  State<NousContactez> createState() => _NousContactezState();
+  State<Telma> createState() => _TelmaState();
+
 }
 
-class _NousContactezState extends State<NousContactez> {
-  // Déclarations des variables;
-  String? nom;
-  String? email;
-  String? contact;
+class _TelmaState extends State<Telma> {
+  // Déclarations des variables
   String? message;
   List<String> phoneNumbers = ["0327563770", "0329790536","0325965197", "0382921685","0324060777","0327339964","0322274385","0328111011"];
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
@@ -37,11 +34,10 @@ class _NousContactezState extends State<NousContactez> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
-        title: Text("Contactez-nous", style: TextStyle(color: Colors.white),),
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Colors.green,
+        title: Text("Telma"),
         actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.message_outlined))
+          IconButton(onPressed: (){}, icon: Icon(Icons.sim_card_outlined))
         ],
       ),
       resizeToAvoidBottomInset: false,
@@ -100,27 +96,6 @@ class _NousContactezState extends State<NousContactez> {
                         onPressed: () => validation,
                         name: "Envoyer"),
                   ),
-                  SizedBox(height: 10,),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      children: [
-                        Expanded(child: Divider(color: Colors.blueGrey,thickness: 1,)),
-                        Text(" Or ", style: GoogleFonts.roboto(color: Colors.brown, fontSize: 15),),
-                        Expanded(child: Divider(color: Colors.blueGrey,thickness: 1,)),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 5,),
-                  //Button
-                  Container(
-                    width: 325,
-                    child: Button(
-                        color: Colors.blueGrey,
-                        onPressed: () => () => _AppellezNous(numero: "+261 32 75 637 70", action: "tel")
-                        ,
-                        name: "Contactez-nous"),
-                  ),
                 ],
               ),
             ),
@@ -135,18 +110,6 @@ class _NousContactezState extends State<NousContactez> {
       sendBulkSMS(phoneNumbers, message!);
     }else{
       print("Non");
-    }
-  }
-
-  void _AppellezNous({String? numero, String? action}) async {
-    final Uri url = Uri(
-        scheme: action,
-        path: numero
-    );
-    if(await canLaunchUrl(url)){
-      await launchUrl(url);
-    }else{
-      print("${url}");
     }
   }
 }

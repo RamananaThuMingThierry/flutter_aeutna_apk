@@ -2,6 +2,7 @@ import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/models/post.dart';
 import 'package:aeutna/screens/auth/login.dart';
+import 'package:aeutna/screens/post/commentaires/commentaires.dart';
 import 'package:aeutna/services/post_services.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/btnLikeOrDisLike.dart';
@@ -220,8 +221,9 @@ class _PublicationState extends State<Publication> {
                             height: 40,
                             width: .5,
                           ),
-                          KBtnLikesOrComment(value: post.commentairesCount, onTap: (){
-                            //  Navigator.push(context, MaterialPageRoute(builder: (ctx) => Commentaires(postId: post.id,)));
+                          KBtnLikesOrComment(
+                              value: post.commentairesCount ?? 0, onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (ctx) => CommentairesScreen(postId: post.id,)));
                           }, iconData: Icons.comment, color: Colors.grey),
                         ],
                       ),

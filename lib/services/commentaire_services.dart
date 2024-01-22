@@ -21,6 +21,8 @@ Future<ApiResponse> getCommentaires(int postId) async{
         }
     );
 
+    print("${response.body}");
+
     switch(response.statusCode){
       case 200:
         apiResponse.data = jsonDecode(response.body)['commentaires'].map((c) => Commentaires.fromJson(c)).toList();

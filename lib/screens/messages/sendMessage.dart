@@ -19,6 +19,7 @@ class SendMessage extends StatefulWidget {
 }
 
 class _SendMessageState extends State<SendMessage> {
+
   List<dynamic> _messageList = [];
   Users? data;
   bool loading = true;
@@ -29,7 +30,6 @@ class _SendMessageState extends State<SendMessage> {
 
     ApiResponse apiResponse = await createMessage(messages: message, idUserReceived: userReceivedId);
 
-    print("/***************************** ${apiResponse.error}");
     if(apiResponse.error == null){
       sms.clear();
       _getMessage();
