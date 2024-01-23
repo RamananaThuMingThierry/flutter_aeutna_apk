@@ -21,6 +21,7 @@ class Membres{
   int? levels_id;
   int? axes_id;
   int? symapthisant;
+  int? lien_membre_id;
   User? user;
 
   Membres({
@@ -43,7 +44,8 @@ class Membres{
     this.contact_personnel,
     this.contact_tutaire,
     this.symapthisant,
-    this.date_inscription
+    this.date_inscription,
+    this.lien_membre_id
   });
 
   // function to convert json data to avis model
@@ -68,6 +70,7 @@ class Membres{
       image: m['image'],
       symapthisant: m['sympathisant'],
       date_inscription: m['date_inscription'],
+      lien_membre_id: m['lien_membre_id'],
       user: User(
         id: m['users']['id'],
         pseudo: m['users']['pseudo'],

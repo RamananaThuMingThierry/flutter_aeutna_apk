@@ -25,6 +25,7 @@ import 'package:aeutna/widgets/ligne_horizontale.dart';
 import 'package:aeutna/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class Profiles extends StatefulWidget {
   User? user;
@@ -380,7 +381,7 @@ class _ProfilesState extends State<Profiles> {
               _textTitre(titre: "C.I.N"),
               _CardText(iconData: Icons.credit_card_outlined, value: cin),
               _textTitre(titre: "Date de naissance"),
-              _CardText(iconData: Icons.calendar_month, value: genre),
+             _CardText(iconData: Icons.calendar_month, value: "${ date_naissance == "" ? "" : DateFormat.yMMMd('fr').format(DateTime.parse(date_naissance!)) }"),
               _textTitre(titre: "Lieu de naissance"),
               _CardText(iconData: Icons.location_city, value: lieu_naissance),
             ]
@@ -433,7 +434,7 @@ class _ProfilesState extends State<Profiles> {
               _textTitre(titre: "Sympathisant(e)"),
               _CardText(iconData: Icons.confirmation_num_outlined, value: sympathisant == 0 ? "false" : "true"),
               _textTitre(titre: "Date d'inscription"),
-              _CardText(iconData: Icons.date_range_outlined, value: date_inscription),
+              _CardText(iconData: Icons.date_range_outlined, value: "${ date_inscription == "" ? "" :  DateFormat.yMMMMEEEEd('fr').format(DateTime.parse(date_inscription!)) }"),
             ]
         ),
       ),

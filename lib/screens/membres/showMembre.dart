@@ -13,6 +13,8 @@ import 'package:aeutna/services/niveau_services.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class ShowMembres extends StatefulWidget {
   Membres? membres;
@@ -134,7 +136,7 @@ class _ShowMembresState extends State<ShowMembres> {
         actions: [
           IconButton(onPressed: (){}, icon: Icon(Icons.call, color: Colors.blueGrey,)),
           IconButton(onPressed: (){}, icon: Icon(Icons.sms, color: Colors.blueGrey,)),
-          IconButton(onPressed: (){}, icon: Icon(Icons.email, color: Colors.blueGrey,)),
+          membre!.lien_membre_id == 0 ? SizedBox() : IconButton(onPressed: (){}, icon: Icon(Icons.email, color: Colors.blueGrey,)),
         ],
       ),
       body:
@@ -184,7 +186,7 @@ class _ShowMembresState extends State<ShowMembres> {
               ),
             ),
             SizedBox(height: 10,),
-            Padding(
+            membre!.lien_membre_id == 0 ? SizedBox() : Padding(
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 child: Row(
                   children: [
@@ -213,7 +215,7 @@ class _ShowMembresState extends State<ShowMembres> {
             CardText(context, iconData: Icons.account_box_rounded, value: "${membre!.prenom}"),
             SizedBox(height: 10,),
             TextTitre(name: "Date de naissance"),
-            CardText(context, iconData: Icons.date_range, value: "${membre!.date_de_naissance}"),
+            CardText(context, iconData: Icons.date_range, value: "${DateFormat.yMMMd('fr').format(DateTime.parse(membre!.date_de_naissance!)) }"),
             SizedBox(height: 10,),TextTitre(name: "Lieu de naissance"),
             CardText(context, iconData: Icons.local_library_sharp, value: "${membre!.lieu_de_naissance}"),
             SizedBox(height: 10,),
@@ -251,8 +253,30 @@ class _ShowMembresState extends State<ShowMembres> {
             CardText(context, iconData: Icons.account_tree, value: "${axes!.nom_axes!}"),
             SizedBox(height: 10,),
             TextTitre(name: "Date d'inscription"),
-            CardText(context, iconData: Icons.date_range_outlined, value: "${membre!.date_inscription}"),
+            CardText(context, iconData: Icons.date_range_outlined, value: "${DateFormat.yMMMMEEEEd('fr').format(DateTime.parse(membre!.date_inscription!)) }"),
             SizedBox(height: 10,),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: Row(
+                children: [
+                  Expanded(child: TextButton.icon(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Colors.lightBlue)
+                      ),
+                      onPressed: (){
+                        print("Modifier");
+                      }, icon: Icon(Icons.edit, color: Colors.white,), label: Text("Modifier", style: GoogleFonts.roboto(color: Colors.white),))),
+                  SizedBox(width: 5,),
+                  Expanded(child: TextButton.icon(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(Colors.red)
+                      ),
+                      onPressed: (){
+                        print("Supprimer");
+                      }, icon: Icon(Icons.delete, color: Colors.white,), label: Text("Supprimer", style: GoogleFonts.roboto(color: Colors.white),))),
+                ],
+              ),
+            )
           ],
         ),
       ),

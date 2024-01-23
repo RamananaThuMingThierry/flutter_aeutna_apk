@@ -95,8 +95,6 @@ Future<ApiResponse> showAxes(int axesId) async{
         }
     );
 
-    print(rep.body);
-
     switch(rep.statusCode){
       case 200:
         apiResponse.data = Axes.fromJson(jsonDecode(rep.body)['axes']);
