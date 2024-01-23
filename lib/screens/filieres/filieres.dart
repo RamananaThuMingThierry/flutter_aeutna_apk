@@ -27,7 +27,8 @@ class _FilieresScreenState extends State<FilieresScreen> {
   int userId = 0;
   bool loading = true;
   String? nom_filieres;
-  TextEditingController recherche = TextEditingController();
+  String? recherche;
+  TextEditingController search = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 
@@ -39,7 +40,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
       List<dynamic> filieresList = apiResponse.data as List<dynamic>;
       List<Filieres> filieres = filieresList.map((p) => Filieres.fromJson(p)).toList();
       setState(() {
-        recherche.clear();
+        search.clear();
         _filieresList = filieres;
         loading = false;
       });
@@ -96,6 +97,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(recherche);
     return Scaffold(
       backgroundColor: Colors.grey,
       appBar: AppBar(
@@ -126,21 +128,16 @@ class _FilieresScreenState extends State<FilieresScreen> {
                         padding: EdgeInsets.symmetric(horizontal:3, vertical: 5),
                         height: 50,
                         child: TextFormField(
-                          controller: recherche,
+                          controller: search,
                           style: TextStyle(color: Colors.blueGrey),
                           onChanged: (value){
                             setState(() {
-                              recherche.text = value;
+                              recherche = value;
                             });
-                            if(recherche.text.isEmpty){
+                            if(recherche!.isEmpty){
                               _getallFilieres();
                             }else{
-                              _searchFilieres(recherche.text);
-                            }
-                          },
-                          validator:(value){
-                            if(value == ""){
-                              return "Veuillez saisir le nom à recherche";
+                              _searchFilieres(recherche);
                             }
                           },
                           decoration: InputDecoration(
@@ -163,7 +160,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
                         ),
                       ),
                     ),
-                    recherche.text.isEmpty ?
+                    recherche == null ?
                     IconButton(
                         onPressed: (){}, icon: Icon(Icons.search_outlined, color: Colors.grey,))
                         :
@@ -195,8 +192,15 @@ class _FilieresScreenState extends State<FilieresScreen> {
                           margin: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                           color: Colors.white,
                           child: ListTile(
-                            leading: Icon(Icons.card_travel),
-                            title: Text("${filieres.nom_filieres}", style: TextStyle(color: Colors.blueGrey),),
+                            leading: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              decoration: BoxDecoration(
+                                color: Colors.blueGrey,
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              child: Text("${filieres.nom_filieres!.substring(0, 1).toUpperCase()}", style: TextStyle(color: Colors.white),),
+                            ),
+                            title: Text("${filieres.nom_filieres!}", style: TextStyle(color: Colors.blueGrey),),
                             trailing: Icon(Icons.more_vert),
                           ),
                         );

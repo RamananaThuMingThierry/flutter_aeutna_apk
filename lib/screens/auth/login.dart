@@ -151,7 +151,7 @@ class _LoginState extends State<Login> {
                     ],
                   ),
                 ),
-                Padding(padding: EdgeInsets.symmetric(horizontal: 20),
+                Padding(padding: EdgeInsets.symmetric(horizontal: 10),
                   child:  Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
