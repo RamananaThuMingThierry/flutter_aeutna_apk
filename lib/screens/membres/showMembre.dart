@@ -237,7 +237,7 @@ class _ShowMembresState extends State<ShowMembres> {
             TextTitre(name: "Contact Personnel"),
             CardText(context, iconData: Icons.phone_outlined, value: "${membre!.contact_personnel}"),
             SizedBox(height: 10,),
-            TextTitre(name: "Contact Tutaire"),
+            TextTitre(name: "Contact Tuteur"),
             CardText(context, iconData: Icons.phone, value: "${membre!.contact_tutaire}"),
             SizedBox(height: 10,),
             TextTitre(name: "Adresse"),

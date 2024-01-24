@@ -1,4 +1,5 @@
 import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/filieres.dart';
 import 'package:aeutna/screens/Acceuil.dart';
 import 'package:aeutna/screens/auth/login.dart';
@@ -26,7 +27,8 @@ class _FilieresScreenState extends State<FilieresScreen> {
   List<Filieres> _filieresList = [];
   int userId = 0;
   bool loading = true;
-  String? nom_filieres;
+  int? editFiliere = 0;
+  TextEditingController nom_filieres = TextEditingController();
   String? recherche;
   TextEditingController search = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -45,12 +47,9 @@ class _FilieresScreenState extends State<FilieresScreen> {
         loading = false;
       });
     }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+      ErreurLogin(context);
     }else{
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
-      );
+      MessageErreurs(context, apiResponse.error);
     }
   }
 
@@ -64,28 +63,50 @@ class _FilieresScreenState extends State<FilieresScreen> {
         _filieresList = filieres;
       });
     }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+      ErreurLogin(context);
     }else{
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
-      );
+      MessageErreurs(context, apiResponse.error);
     }
   }
 
   void _createFiliere() async {
-    ApiResponse apiResponse = await createFilieres(nom_filieres: nom_filieres);
+    ApiResponse apiResponse = await createFilieres(nom_filieres: nom_filieres.text);
     if(apiResponse.error == null){
       Navigator.pop(context);
       _getallFilieres();
     }else if(apiResponse.error == unauthorized){
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false);
+      ErreurLogin(context);
+    }else{
+      MessageErreurs(context, apiResponse.error);
+    }
+  }
+
+  void _updateFilieres() async{
+    ApiResponse apiResponse = await updateFilieres(filiereId: editFiliere, nom_filieres: nom_filieres.text);
+
+    if(apiResponse.error == null){
+      editFiliere = 0;
+      nom_filieres.clear();
+      Navigator.pop(context);
+      _getallFilieres();
+    }else if(apiResponse.error == unauthorized){
+      ErreurLogin(context);
+    }else {
+      Navigator.pop(context);
+      MessageErreurs(context, apiResponse.error);
+    }
+  }
+
+  void _deleteFilieres(int filiereId) async{
+    ApiResponse apiResponse = await deleteFilieres(filiereId);
+    if(apiResponse.error == null){
+      Navigator.pop(context);
+      _getallFilieres();
+    }else if(apiResponse.error == unauthorized){
+      ErreurLogin(context);
     }else{
       Navigator.pop(context);
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
-      );
+      MessageErreurs(context, apiResponse.error);
     }
   }
 
@@ -201,7 +222,53 @@ class _FilieresScreenState extends State<FilieresScreen> {
                               child: Text("${filieres.nom_filieres!.substring(0, 1).toUpperCase()}", style: TextStyle(color: Colors.white),),
                             ),
                             title: Text("${filieres.nom_filieres!}", style: TextStyle(color: Colors.blueGrey),),
-                            trailing: Icon(Icons.more_vert),
+                            trailing: PopupMenuButton(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(right: 10),
+                                      child: Icon(Icons.more_vert, color: Colors.black,),
+                                    ),
+                                    onSelected: (valeur){
+                                      if(valeur == "Modifier"){
+                                        // Modifier
+                                        print("Modifier");
+                                        setState(() {
+                                          editFiliere = filieres.id;
+                                          nom_filieres.text = filieres.nom_filieres! ?? "";
+                                        });
+                                        showDialog(context: context, builder: (BuildContext context) => filiereForm(context, editFiliere));
+                                      }else{
+                                        // Supprimer
+                                        print("Supprimer");
+                                        showDialog(context: context, builder: (BuildContext context){
+                                          return confirmationSuppresion(filieres.id!);
+                                        });
+                                      }
+                                    },
+                                    itemBuilder: (ctx) => [
+                                      PopupMenuItem(
+                                        value: "Modifier",
+                                        child: Row(
+                                          children: [
+                                              Icon(Icons.edit, color: Colors.lightBlue,),
+                                              SizedBox(width: 10,),
+                                              Text("Modifier", style: GoogleFonts.roboto(color: Colors.lightBlue)),
+                                            ]
+                                         ,
+                                      ),
+                                      ),
+                                      PopupMenuItem(
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.delete, color: Colors.red,),
+                                            SizedBox(width: 10,),
+                                            Text("Supprimer", style: GoogleFonts.roboto(color: Colors.red)),
+                                          ]
+                                          ,
+                                        ),
+                                        value: "Supprimer",
+                                      )
+                                    ],
+                                  )
                           ),
                         );
                       }),
@@ -212,7 +279,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          showDialog(context: context, builder: (BuildContext context) => filiereForm(context));
+          showDialog(context: context, builder: (BuildContext context) => filiereForm(context, editFiliere));
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.blueGrey,
@@ -220,7 +287,22 @@ class _FilieresScreenState extends State<FilieresScreen> {
     );
   }
 
-  Dialog filiereForm(BuildContext context){
+  AlertDialog confirmationSuppresion(int? filiereId){
+    return AlertDialog(
+      backgroundColor: Colors.white,
+      content: Text("Voulez-vous vraiment le supprimer?", style: GoogleFonts.roboto(color: Colors.grey),),
+      actions: [
+        TextButton(onPressed: (){
+          Navigator.pop(context);
+        }, child: Text("Annuler")),
+        TextButton(onPressed: (){
+          _deleteFilieres(filiereId!);
+        }, child: Text("Supprimer", style: TextStyle(color: Colors.red),)),
+      ],
+    );
+  }
+
+  Dialog filiereForm(BuildContext context, int? editFiliere){
     return Dialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16)
@@ -248,7 +330,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Ajouter un niveau", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold, fontSize: 15),),
+                Text("${editFiliere == 0 ? "Ajouter" : "Modifier"} un niveau", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold, fontSize: 15),),
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: Container(
@@ -262,26 +344,39 @@ class _FilieresScreenState extends State<FilieresScreen> {
             SizedBox(height: 15,),
             Form(
                 key: _formKey,
-                child: MyTextFieldForm(
-                    name: "Nom filière",
-                    onChanged: () => (value){
-                      setState(() {
-                        nom_filieres = value;
-                      });
-                    }, validator: () => (value){
-                  if(value == ""){
-                    return "Veuillez remplir ce champ!";
-                  }
-                }, iconData: Icons.stacked_bar_chart_sharp,
-                    textInputType: TextInputType.text,
-                    edit: false,
-                    value: "")
+                child: TextFormField(
+                  controller: nom_filieres,
+                  validator: (value){
+                    if(value!.isEmpty){
+                      return "Veuillez remplir ce champ!";
+                    }
+                  },
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    hintText: "Nom filière",
+                    suffixIcon: Icon(Icons.card_travel),
+                    hintStyle: TextStyle(color: Colors.blueGrey),
+                    suffixIconColor: Colors.grey,
+                    enabledBorder : UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.grey
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.blueGrey,
+                      ),
+                    ),
+                  ),
+                ),
             ),
             SizedBox(height: 15,),
             GestureDetector(
               onTap: (){
                 if(_formKey.currentState!.validate()){
-                  _createFiliere();
+                  editFiliere == 0
+                  ? _createFiliere()
+                  : _updateFilieres();
                 }
               },
               child: Container(
@@ -292,7 +387,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
                 ),
                 padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
                 child: Center(
-                  child: Text("Enregistre", style: TextStyle(color: Colors.white),),
+                  child: Text(editFiliere == 0 ? "Enregistre" : "Modifier", style: TextStyle(color: Colors.white),),
                 ),
               ),
             )

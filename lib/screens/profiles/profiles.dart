@@ -1,5 +1,6 @@
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/axes.dart';
 import 'package:aeutna/models/filieres.dart';
 import 'package:aeutna/models/fonctions.dart';
@@ -230,9 +231,9 @@ class _ProfilesState extends State<Profiles> {
                   ),
                 ),
               ),
+              WidgetListTitle(title: "Messages Groupe", leading: Icons.message_rounded, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => MessagesGroupes ()))),
               WidgetListTitle(title: "Avis", leading: Icons.question_mark_outlined, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => NousContactez()))),
               FiltreAll(),
-              WidgetListTitle(title: "Messages Groupe", leading: Icons.message_rounded, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => MessagesGroupes ()))),
               WidgetListTitle(title: "Déconnections", leading: Icons.logout_outlined, trailing: Icons.chevron_right, onTap: () => () => deconnectionAlertDialog(context)),
             ],
           ),
@@ -252,7 +253,7 @@ class _ProfilesState extends State<Profiles> {
               iconColor: Colors.blueGrey,
               backgroundColor: Colors.white,
               title:  Text("Menu", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold),),
-              leading: Icon(Icons.pageview_outlined, color: Colors.grey,),
+              leading: Icon(Icons.menu, color: Colors.grey,),
               expandedCrossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Ligne(color: Colors.transparent),
@@ -338,7 +339,7 @@ class _ProfilesState extends State<Profiles> {
         child: ExpansionTile(
             iconColor: Colors.blueGrey,
             backgroundColor: Colors.white,
-            title:  Text("Compte", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold),),
+            title:  Text("Mon compte", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold),),
             leading: Icon(Icons.credit_card_outlined, color: Colors.grey,),
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
             childrenPadding: EdgeInsets.symmetric(horizontal: 10),
@@ -349,10 +350,10 @@ class _ProfilesState extends State<Profiles> {
               _CardText(iconData: Icons.account_box_rounded, value: email),
               _textTitre(titre: "Contact"),
               _CardText(iconData: Icons.phone, value: contact),
-              _textTitre(titre: "Roles"),
+              _textTitre(titre: "Rôles"),
               _CardText(iconData: Icons.person, value: roles),
               _textTitre(titre: "Status"),
-              _CardText(iconData: status == 1 ? Icons.credit_card_outlined : Icons.credit_card_off_outlined, value: status == 1 ? "Membres" : "En attente"),
+              _CardText(iconData: status == 1 ? Icons.fact_check : Icons.query_builder, value: status == 1 ? "Membres" : "En attente"),
             ]
         ),
       ),
@@ -419,7 +420,7 @@ class _ProfilesState extends State<Profiles> {
               _CardText(iconData: Icons.mail, value: fonction),
               _textTitre(titre: "Contact Personnel"),
               _CardText(iconData: Icons.phone, value: contact),
-              _textTitre(titre: "Contact Tutaire"),
+              _textTitre(titre: "Contact Tuteur"),
               _CardText(iconData: Icons.phone_outlined, value: contact_tutaire),
               _textTitre(titre: "Adresse"),
               _CardText(iconData: Icons.location_on, value: adresse),
@@ -464,15 +465,13 @@ class _ProfilesState extends State<Profiles> {
         barrierDismissible: true,
         builder: (BuildContext buildContext){
           return AlertDialog(
-            backgroundColor: Colors.grey,
-            title: Text("Comfirmation", textAlign: TextAlign.center,style: GoogleFonts.roboto(color: Colors.white, fontWeight: FontWeight.bold),),
+            backgroundColor: Colors.white,
             content: SizedBox(
-              height: 60,
+              height: 65,
               child: Column(
                 children: [
-                  SizedBox(height: 8,),
-                  Text("Vous déconnecter de votre compte?", textAlign: TextAlign.center,style: GoogleFonts.roboto(color: Colors.white, fontSize: 17),),
-                  SizedBox(height: 5,),
+                  SizedBox(height: 20,),
+                  Text("Vous déconnecter de votre compte?", textAlign: TextAlign.center,style: GoogleFonts.roboto(color: Colors.blueGrey, fontSize: 17),),
                 ],
               ),
             ),
@@ -483,42 +482,13 @@ class _ProfilesState extends State<Profiles> {
                     Navigator.pop(context);
                     print("Annuler");
                   },
-                  child: Text("Annuler", style: TextStyle(color: Colors.white),)),
+                  child: Text("Annuler", style: TextStyle(color: Colors.lightBlue),)),
               TextButton(
                   onPressed: (){
                     Navigator.pop(context);
-                    onLoading(context);
+                    onLoadingDeconnection(context);
                   }, child: Text("Se déconnecter",style: TextStyle(color: Colors.redAccent),)),
             ],
-          );
-        });
-  }
-
-  void onLoading(BuildContext context){
-    showDialog(
-        context: context,
-        builder: (BuildContext context){
-          Future.delayed(Duration(seconds: 3), () async {
-            logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
-          });
-          return AlertDialog(
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            contentPadding: EdgeInsets.all(0.0),
-            insetPadding: EdgeInsets.symmetric(horizontal: 100),
-            content: Padding(
-              padding: EdgeInsets.only(top: 20, bottom: 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircularProgressIndicator(color: Colors.green,),
-                  SizedBox(height: 16,),
-                  Text("Déconnection...", style: TextStyle(color: Colors.grey),)
-                ],
-              ),
-            ),
           );
         });
   }

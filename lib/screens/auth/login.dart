@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:aeutna/api/api_response.dart';
+import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/Acceuil.dart';
 import 'package:aeutna/screens/auth/register.dart';
@@ -35,7 +36,7 @@ class _LoginState extends State<Login> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences.setString('token', user.token ?? '');
     await sharedPreferences.setInt('userId', user.id ?? 0);
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Acceuil()), (route) => false);
+    onLoadingLogin(context);
   }
 
   void loginUser() async{
@@ -51,7 +52,7 @@ class _LoginState extends State<Login> {
         setState(() {
           loading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${apiResponse.error}')));
+        MessageErreurs(context, apiResponse.error);
       }
     }
   }

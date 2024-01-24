@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 
 AlertDialog MessageErreur(BuildContext context, String? message){
   return AlertDialog(
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16)
+    ),
     contentPadding: EdgeInsets.all(0),
-    backgroundColor: Colors.white,
+    elevation: 0,
+    backgroundColor: Colors.transparent,
     content: Container(
       decoration: BoxDecoration(
           color: Colors.white,
           shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
                 color: Colors.black26,
@@ -26,7 +30,14 @@ AlertDialog MessageErreur(BuildContext context, String? message){
           Stack(
             alignment: Alignment.center,
             children: [
-              Container(height: 100,color: Colors.red,),
+              Container(height: 100,decoration: BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16)
+                  ),
+              ),),
               Column(
                 children: [
                   Icon(Icons.warning, color: Colors.white,size: 32,),

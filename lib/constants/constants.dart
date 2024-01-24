@@ -19,6 +19,6 @@ const messagesURL = baseURL + '/messages';
 const membresURL = baseURL + '/membres';
 
 /** -------------- Erreurs -------------- **/
-const serverError = 'Erreur du serveur';
+const serverError = 'Erreur du serveur \n Veuillez activez les données mobiles ou connectez-vous au Wi-Fi.';
 const unauthorized = 'Accès interdit! Veuillez vous authentifier!';
 const somethingWentWrong = 'Quelque chose s\'est mal passé! essaie encore';

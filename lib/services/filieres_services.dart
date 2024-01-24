@@ -155,7 +155,7 @@ Future<ApiResponse> searchFilieres(String? nom_filieres) async{
 }
 
 /** --------------- Modifier un filiere ----------------- **/
-Future<ApiResponse> updateFilieres(int filiereId, String nom_filieres) async{
+Future<ApiResponse> updateFilieres({int? filiereId, String? nom_filieres}) async{
   ApiResponse apiResponse = ApiResponse();
   try{
     String token = await getToken();
@@ -200,6 +200,8 @@ Future<ApiResponse> deleteFilieres(int filiereId) async{
           'Authorization' : 'Bearer $token'
         }
     );
+
+    print(rep.body);
 
     switch(rep.statusCode){
       case 200:
