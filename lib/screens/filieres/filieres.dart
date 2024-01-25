@@ -117,7 +117,6 @@ class _FilieresScreenState extends State<FilieresScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(recherche);
     return Scaffold(
       backgroundColor: Colors.grey,
       appBar: AppBar(
@@ -132,7 +131,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
         ],
         elevation: 0,
         backgroundColor: Colors.white,
-        title: Text("Filières", style: TextStyle(color: Colors.blueGrey),),
+        title: Text("Filières", style: style_google),
       ),
       body: Column(
             children: [
@@ -329,7 +328,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("${editFiliere == 0 ? "Ajouter" : "Modifier"} un niveau", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold, fontSize: 15),),
+                Text("${editFiliere == 0 ? "Ajouter" : "Modifier"} un niveau", style: style_google.copyWith(fontWeight: FontWeight.bold, fontSize: 17),),
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: Container(
@@ -386,7 +385,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
                 ),
                 padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
                 child: Center(
-                  child: Text(editFiliere == 0 ? "Enregistre" : "Modifier", style: TextStyle(color: Colors.white),),
+                  child: Text(editFiliere == 0 ? "Enregistre" : "Modifier", style: style_google.copyWith(color: Colors.white),),
                 ),
               ),
             )

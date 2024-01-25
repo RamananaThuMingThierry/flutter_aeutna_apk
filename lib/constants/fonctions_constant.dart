@@ -1,8 +1,12 @@
+import 'dart:ui';
 import 'package:aeutna/screens/Acceuil.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+TextStyle style_google = GoogleFonts.k2d(color: Colors.blueGrey);
 
 void ErreurLogin(BuildContext context){
   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false);

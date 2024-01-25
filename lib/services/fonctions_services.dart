@@ -115,9 +115,47 @@ Future<ApiResponse> showFonctions(int fonctionsId) async{
   return apiResponse;
 }
 
+/** --------------- Recherche un fonctions ----------------- **/
+Future<ApiResponse> searchFonctions(String? fonctions) async{
+
+  ApiResponse apiResponse = ApiResponse();
+  try{
+
+    String token = await getToken();
+    var url = Uri.parse("${fonctionsURL}_search/${fonctions}");
+
+    print(url);
+
+    final rep = await http.get(url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+
+    switch(rep.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(rep.body)['fonctions'];
+        apiResponse.data as List<dynamic>;
+        break;
+      case 403:
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
 
 /** --------------- Modifier un fonctions ----------------- **/
-Future<ApiResponse> updateFonctions(int fonctionId, String fonctions) async{
+Future<ApiResponse> updateFonctions({int? fonctionId, String? fonctions}) async{
   ApiResponse apiResponse = ApiResponse();
   try{
     String token = await getToken();
@@ -131,15 +169,21 @@ Future<ApiResponse> updateFonctions(int fonctionId, String fonctions) async{
         }
     );
 
+    print("******************* ${rep.statusCode}");
+
     switch(rep.statusCode){
       case 200:
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 403:
-        apiResponse.data = jsonDecode(rep.body)['message'];
+        apiResponse.error = jsonDecode(rep.body)['message'];
         break;
       case 401:
         apiResponse.error = unauthorized;
+        break;
+      case 422:
+        final errors = jsonDecode(rep.body)['errors'];
+        apiResponse.error = errors[errors.keys.elementAt(0)][0];
         break;
       default:
         apiResponse.error = somethingWentWrong;
