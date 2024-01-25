@@ -28,6 +28,7 @@ Future<ApiResponse> getAllAxes() async{
         break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(response.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -57,21 +58,21 @@ Future<ApiResponse> createAxes({String? nom_axes}) async{
         }
     );
 
-    print(jsonDecode(rep.body)['message']);
-
     switch(rep.statusCode){
       case 200:
-        apiResponse.data = jsonDecode(rep.body);
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 422:
         final errors = jsonDecode(rep.body)['errors'];
         apiResponse.error = errors[errors.keys.elementAt(0)][0];
-        break;
-      case 401:
-        apiResponse.error = unauthorized;
-        break;
-      case 403:
-        apiResponse.error = jsonDecode(rep.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -99,11 +100,13 @@ Future<ApiResponse> showAxes(int axesId) async{
       case 200:
         apiResponse.data = Axes.fromJson(jsonDecode(rep.body)['axes']);
         break;
-      case 403:
+      case 404:
+        apiResponse.error = avertissement;
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -115,8 +118,48 @@ Future<ApiResponse> showAxes(int axesId) async{
   return apiResponse;
 }
 
+/** --------------- Recherche un axes ----------------- **/
+Future<ApiResponse> searchAxes(String? nom_axes) async{
+
+  ApiResponse apiResponse = ApiResponse();
+  try{
+
+    String token = await getToken();
+    var url = Uri.parse("${axesURL}_search/${nom_axes}");
+
+    final rep = await http.get(url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+
+    switch(rep.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(rep.body)['axes'];
+        apiResponse.data as List<dynamic>;
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+
 /** --------------- Modifier un axes ----------------- **/
-Future<ApiResponse> updateAxes(int axesId, String nom_axes) async{
+Future<ApiResponse> updateAxes({int? axesId, String? nom_axes}) async{
   ApiResponse apiResponse = ApiResponse();
   try{
     String token = await getToken();
@@ -134,11 +177,25 @@ Future<ApiResponse> updateAxes(int axesId, String nom_axes) async{
       case 200:
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
-      case 403:
-        apiResponse.data = jsonDecode(rep.body)['message'];
+      case 304:
+        apiResponse.error = info;
+        apiResponse.data = pasDeChangement;
         break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 404:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 422:
+        final errors = jsonDecode(rep.body)['errors'];
+        apiResponse.error = errors[errors.keys.elementAt(0)][0];
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -166,11 +223,17 @@ Future<ApiResponse> deleteAxes(int axesId) async{
       case 200:
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
-      case 403:
-        apiResponse.data = jsonDecode(rep.body)['message'];
-        break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 404:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;

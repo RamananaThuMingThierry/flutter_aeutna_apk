@@ -115,6 +115,10 @@ Future<ApiResponse> updateComment(int commentaire_id, String commentaires) async
       case 401:
         apiResponse.error = unauthorized;
         break;
+      case 422:
+        final errors = jsonDecode(rep.body)['errors'];
+        apiResponse.error = errors[errors.keys.elementAt(0)][0];
+        break;
       default:
         apiResponse.error = somethingWentWrong;
         break;

@@ -124,8 +124,6 @@ Future<ApiResponse> searchFonctions(String? fonctions) async{
     String token = await getToken();
     var url = Uri.parse("${fonctionsURL}_search/${fonctions}");
 
-    print(url);
-
     final rep = await http.get(url,
         headers: {
           'Accept': 'application/json',
@@ -168,8 +166,6 @@ Future<ApiResponse> updateFonctions({int? fonctionId, String? fonctions}) async{
           'fonctions': fonctions
         }
     );
-
-    print("******************* ${rep.statusCode}");
 
     switch(rep.statusCode){
       case 200:

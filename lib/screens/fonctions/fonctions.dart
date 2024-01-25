@@ -1,18 +1,10 @@
 import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
-import 'package:aeutna/models/filieres.dart';
 import 'package:aeutna/models/fonctions.dart';
-import 'package:aeutna/screens/Acceuil.dart';
-import 'package:aeutna/screens/auth/login.dart';
-import 'package:aeutna/services/filieres_services.dart';
 import 'package:aeutna/services/fonctions_services.dart';
 import 'package:aeutna/services/user_services.dart';
-import 'package:aeutna/widgets/donnees_vide.dart';
-import 'package:aeutna/widgets/myTextFieldForm.dart';
-import 'package:aeutna/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../../api/api_response.dart';
 
 class FonctionsScreen extends StatefulWidget {
@@ -44,6 +36,7 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
       List<dynamic> fonctionsList = apiResponse.data as List<dynamic>;
       List<FonctionModel> fonctions = fonctionsList.map((p) => FonctionModel.fromJson(p)).toList();
       setState(() {
+        search.clear();
         _fonctionsList = fonctions;
         loading = false;
       });
@@ -74,7 +67,9 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
     ApiResponse apiResponse = await createFonctions(fonctions: nom_fonctions.text);
     if(apiResponse.error == null){
       Navigator.pop(context);
-      nom_fonctions.clear();
+      setState(() {
+        nom_fonctions.clear();
+      });
       _getallFonctions();
     }else if(apiResponse.error == unauthorized){
       ErreurLogin(context);
@@ -86,12 +81,11 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
 
   void _updateFonctions() async{
     ApiResponse apiResponse = await updateFonctions(fonctionId: editFonctions, fonctions: nom_fonctions.text);
-
-    print("/*************** ${apiResponse.error}");
-
-    if(apiResponse.error == null){
+    setState(() {
       editFonctions = 0;
       nom_fonctions.clear();
+    });
+    if(apiResponse.error == null){
       Navigator.pop(context);
       _getallFonctions();
     }else if(apiResponse.error == unauthorized){
@@ -228,7 +222,7 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
                           child: Text("${fonctions.fonctions!.substring(0, 1).toUpperCase()}", style: TextStyle(color: Colors.white),),
                         ),
                         title: Text("${fonctions.fonctions}", style: style_google.copyWith(color: Colors.black87,)),
-                        trailing:  PopupMenuButton(
+                        trailing: PopupMenuButton(
                           child: Padding(
                             padding: EdgeInsets.only(right: 10),
                             child: Icon(Icons.more_vert, color: Colors.black,),

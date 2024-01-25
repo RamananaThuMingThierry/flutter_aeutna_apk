@@ -116,6 +116,10 @@ Future<ApiResponse> updateUser(String name, String? image) async{
       case 401:
         apiResponse.error = unauthorized;
         break;
+      case 422:
+        final errors = jsonDecode(response.body)['errors'];
+        apiResponse.error = errors[errors.keys.elementAt(0)][0];
+        break;
       default:
         apiResponse.error = somethingWentWrong;
         break;

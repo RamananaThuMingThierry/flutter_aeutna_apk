@@ -167,17 +167,19 @@ Future<ApiResponse> updateFilieres({int? filiereId, String? nom_filieres}) async
         }
     );
 
-    print("***************************** ${rep.statusCode}");
-
     switch(rep.statusCode){
       case 200:
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 403:
-        apiResponse.data = jsonDecode(rep.body)['message'];
+        apiResponse.error = jsonDecode(rep.body)['message'];
         break;
       case 401:
         apiResponse.error = unauthorized;
+        break;
+      case 422:
+        final errors = jsonDecode(rep.body)['errors'];
+        apiResponse.error = errors[errors.keys.elementAt(0)][0];
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -200,8 +202,6 @@ Future<ApiResponse> deleteFilieres(int filiereId) async{
           'Authorization' : 'Bearer $token'
         }
     );
-
-    print(rep.body);
 
     switch(rep.statusCode){
       case 200:

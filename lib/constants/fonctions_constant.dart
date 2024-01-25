@@ -19,6 +19,27 @@ void MessageErreurs(BuildContext context, String? message){
   );
 }
 
+void MessageInformation(BuildContext context, String? message){
+  showDialog(
+      context: context,
+      builder: (BuildContext context) => MessageInfo(context, message)
+  );
+}
+
+void MessageAvertissement(BuildContext context, String? message){
+  showDialog(
+      context: context,
+      builder: (BuildContext context) => MessageWarning(context, message)
+  );
+}
+
+void MessageReussi(BuildContext context, String? message){
+  showDialog(
+      context: context,
+      builder: (BuildContext context) => MessageSuccess(context, message)
+  );
+}
+
 void onLoadingLogin(BuildContext context){
   showDialog(
       context: context,

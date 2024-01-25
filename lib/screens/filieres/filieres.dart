@@ -73,6 +73,9 @@ class _FilieresScreenState extends State<FilieresScreen> {
     ApiResponse apiResponse = await createFilieres(nom_filieres: nom_filieres.text);
     if(apiResponse.error == null){
       Navigator.pop(context);
+      setState(() {
+        nom_filieres.clear();
+      });
       _getallFilieres();
     }else if(apiResponse.error == unauthorized){
       ErreurLogin(context);
@@ -83,15 +86,17 @@ class _FilieresScreenState extends State<FilieresScreen> {
 
   void _updateFilieres() async{
     ApiResponse apiResponse = await updateFilieres(filiereId: editFiliere, nom_filieres: nom_filieres.text);
-
-    if(apiResponse.error == null){
+    setState(() {
       editFiliere = 0;
       nom_filieres.clear();
+    });
+    if(apiResponse.error == null){
       Navigator.pop(context);
       _getallFilieres();
     }else if(apiResponse.error == unauthorized){
       ErreurLogin(context);
     }else {
+      Navigator.pop(context);
       MessageErreurs(context, apiResponse.error);
     }
   }
@@ -328,7 +333,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("${editFiliere == 0 ? "Ajouter" : "Modifier"} un niveau", style: style_google.copyWith(fontWeight: FontWeight.bold, fontSize: 17),),
+                Text("${editFiliere == 0 ? "Ajouter" : "Modifier"} un filière", style: style_google.copyWith(fontWeight: FontWeight.bold, fontSize: 17),),
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: Container(

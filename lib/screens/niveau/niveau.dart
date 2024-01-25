@@ -1,11 +1,10 @@
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/niveau.dart';
-import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/services/niveau_services.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/myTextFieldForm.dart';
-import 'package:aeutna/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
 
 class NiveauScreen extends StatefulWidget {
@@ -20,8 +19,10 @@ class _NiveauScreenState extends State<NiveauScreen> {
   List<Niveau> _niveauList = [];
   int userId = 0;
   bool loading = true;
-  String? niveau;
   String? recherche;
+  int? editNiveau = 0;
+  TextEditingController nom_niveau = TextEditingController();
+  TextEditingController search = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 
@@ -33,32 +34,78 @@ class _NiveauScreenState extends State<NiveauScreen> {
       List<dynamic> niveauList = apiResponse.data as List<dynamic>;
       List<Niveau> niveaux = niveauList.map((p) => Niveau.fromJson(p)).toList();
       setState(() {
+        search.clear();
         _niveauList = niveaux;
-        loading = loading ? !loading : loading;
+        loading = false;
       });
     }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+        ErreurLogin(context);
     }else{
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
-      );
+     MessageErreurs(context, apiResponse.error);
+    }
+  }
+
+
+  Future _searchNiveaux(String? search) async{
+    userId = await getUserId();
+    ApiResponse apiResponse = await searchNiveau(search);
+    if(apiResponse.error == null){
+      List<dynamic> niveauList = apiResponse.data as List<dynamic>;
+      List<Niveau> niveaux = niveauList.map((p) => Niveau.fromJson(p)).toList();
+      setState(() {
+        _niveauList = niveaux;
+      });
+    }else if(apiResponse.error == unauthorized){
+      ErreurLogin(context);
+    }else{
+      MessageErreurs(context, apiResponse.error);
     }
   }
 
   void _createNiveau() async {
-    ApiResponse apiResponse = await createNiveau(niveau: niveau);
+    ApiResponse apiResponse = await createNiveau(niveau: nom_niveau.text);
+    if(apiResponse.error == null){
+      Navigator.pop(context);
+      setState(() {
+        nom_niveau.clear();
+      });
+      _getallNiveau();
+    }else if(apiResponse.error == unauthorized){
+      ErreurLogin(context);
+    }else{
+      Navigator.pop(context);
+      MessageErreurs(context, apiResponse.error);
+    }
+  }
+
+  void _updateNiveau() async{
+    ApiResponse apiResponse = await updateNiveau(niveauId: editNiveau, niveau: nom_niveau.text);
+
+    setState(() {
+      editNiveau = 0;
+      nom_niveau.clear();
+    });
     if(apiResponse.error == null){
       Navigator.pop(context);
       _getallNiveau();
     }else if(apiResponse.error == unauthorized){
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false);
+      ErreurLogin(context);
+    }else {
+      Navigator.pop(context);
+      MessageErreurs(context, apiResponse.error);
+    }
+  }
+
+  void _deleteNiveau(int niveauId) async{
+    ApiResponse apiResponse = await deleteNiveau(niveauId);
+    if(apiResponse.error == null){
+      Navigator.pop(context);
+      _getallNiveau();
+    }else if(apiResponse.error == unauthorized){
+      ErreurLogin(context);
     }else{
       Navigator.pop(context);
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
-      );
+      MessageErreurs(context, apiResponse.error);
     }
   }
 
@@ -84,34 +131,61 @@ class _NiveauScreenState extends State<NiveauScreen> {
         ],
         elevation: 0,
         backgroundColor: Colors.white,
-        title: Text("Niveau", style: TextStyle(color: Colors.blueGrey),),
+        title: Text("Niveau", style: style_google,),
       ),
       body: Column(
         children: [
           Card(
             shape: Border(bottom: BorderSide(color: Colors.grey, width: .5)),
-            elevation: 2,
+            elevation: 1,
             margin: EdgeInsets.all(0),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-              height: 50,
-              child: MyTextFieldForm(
-                name: "Recherche...",
-                onChanged: () => (value){
-                  setState(() {
-                    recherche = value;
-                  });
-                },
-                validator: () => (value){
-                  if(value == ""){
-                    return "Veuillez saisir le nom à recherche";
-                  }
-                },
-                edit: false,
-                textInputType: TextInputType.text,
-                value: "", iconData: Icons.search,
-              ),
-              color: Colors.white,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                    height: 50,
+                    child: TextFormField(
+                      controller: search,
+                      style: TextStyle(color: Colors.blueGrey),
+                      onChanged: (value){
+                        setState(() {
+                          recherche = value;
+                        });
+                        if(recherche!.isEmpty){
+                          _getallNiveau();
+                        }else{
+                          _searchNiveaux(recherche);
+                        }
+                      },
+                      decoration: InputDecoration(
+                        filled: true,
+                        hintText: "Recherche",
+                        hintStyle: TextStyle(color: Colors.blueGrey),
+                        fillColor: Colors.white,
+                        enabledBorder : UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.grey
+                          ),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.blueGrey,
+                          ),
+                        ),
+                      ),
+                      keyboardType: TextInputType.text,
+                    ),
+                  ),
+                ),
+                recherche == null ?
+                IconButton(
+                    onPressed: (){}, icon: Icon(Icons.search_outlined, color: Colors.grey,))
+                    :
+                IconButton(onPressed: (){
+                  _getallNiveau();
+                }, icon: Icon(Icons.close, color: Colors.grey,)),
+              ],
             ),
           ),
           Expanded(
@@ -123,7 +197,13 @@ class _NiveauScreenState extends State<NiveauScreen> {
               onRefresh: (){
                 return _getallNiveau();
               },
-              child: ListView.builder(
+              child: _niveauList.length == 0
+                  ?
+              Center(
+                child: Text("Aucun résultat", style: style_google.copyWith(fontSize: 18),),
+              )
+                  :
+              ListView.builder(
                   itemCount: _niveauList.length,
                   itemBuilder: (BuildContext context, int index){
                     Niveau niveau = _niveauList![index];
@@ -131,9 +211,62 @@ class _NiveauScreenState extends State<NiveauScreen> {
                       margin: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                       color: Colors.white,
                       child: ListTile(
-                        leading: Icon(Icons.card_travel),
-                        title: Text("${niveau.niveau}"),
-                        trailing: Icon(Icons.more_vert),
+                        leading:  Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: Colors.blueGrey,
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          child: Text("${niveau.niveau!.substring(0, 1).toUpperCase()}", style: TextStyle(color: Colors.white),),
+                        ),
+                        title: Text("${niveau.niveau}", style: style_google.copyWith(color: Colors.black87),),
+                        trailing: PopupMenuButton(
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 10),
+                            child: Icon(Icons.more_vert, color: Colors.black,),
+                          ),
+                          onSelected: (valeur){
+                            if(valeur == "Modifier"){
+                              // Modifier
+                              print("Modifier");
+                              setState(() {
+                                editNiveau = niveau.id;
+                                nom_niveau.text = niveau.niveau! ?? "";
+                              });
+                              showDialog(context: context, builder: (BuildContext context) => niveauForm(context, editNiveau));
+                            }else{
+                              // Supprimer
+                              print("Supprimer");
+                              showDialog(context: context, builder: (BuildContext context){
+                                return confirmationSuppresion(niveau.id!);
+                              });
+                            }
+                          },
+                          itemBuilder: (ctx) => [
+                            PopupMenuItem(
+                              value: "Modifier",
+                              child: Row(
+                                children: [
+                                  Icon(Icons.edit, color: Colors.lightBlue,),
+                                  SizedBox(width: 10,),
+                                  Text("Modifier", style: style_google.copyWith(color: Colors.lightBlue)),
+                                ]
+                                ,
+                              ),
+                            ),
+                            PopupMenuItem(
+                              child: Row(
+                                children: [
+                                  Icon(Icons.delete, color: Colors.red,),
+                                  SizedBox(width: 10,),
+                                  Text("Supprimer", style: style_google.copyWith(color: Colors.red)),
+                                ]
+                                ,
+                              ),
+                              value: "Supprimer",
+                            )
+                          ],
+                        ),
                       ),
                     );
                   }),
@@ -144,7 +277,7 @@ class _NiveauScreenState extends State<NiveauScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          showDialog(context: context, builder: (BuildContext context) => niveauForm(context));
+          showDialog(context: context, builder: (BuildContext context) => niveauForm(context, editNiveau));
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.blueGrey,
@@ -152,7 +285,22 @@ class _NiveauScreenState extends State<NiveauScreen> {
     );
   }
 
-  Dialog niveauForm(BuildContext context){
+  AlertDialog confirmationSuppresion(int? niveauId){
+    return AlertDialog(
+      backgroundColor: Colors.white,
+      content: Text("Voulez-vous vraiment le supprimer?",textAlign: TextAlign.center, style: style_google.copyWith(fontSize: 20),),
+      actions: [
+        TextButton(onPressed: (){
+          Navigator.pop(context);
+        }, child: Text("Annuler", style: style_google,)),
+        TextButton(onPressed: (){
+          _deleteNiveau(niveauId!);
+        }, child: Text("Supprimer", style: style_google.copyWith(color: Colors.red),)),
+      ],
+    );
+  }
+
+  Dialog niveauForm(BuildContext context, int? editNiveau){
     return Dialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16)
@@ -180,7 +328,7 @@ class _NiveauScreenState extends State<NiveauScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Ajouter un filière", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold, fontSize: 15),),
+                Text("${editNiveau == 0 ? "Ajouter" : "Modifier"} un filière", style: style_google.copyWith(color: Colors.blueGrey, fontSize: 17, fontWeight: FontWeight.bold),),
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: Container(
@@ -194,26 +342,39 @@ class _NiveauScreenState extends State<NiveauScreen> {
             SizedBox(height: 15,),
             Form(
                 key: _formKey,
-                child: MyTextFieldForm(
-                    name: "Niveau",
-                    onChanged: () => (value){
-                      setState(() {
-                        niveau = value;
-                      });
-                    }, validator: () => (value){
-                  if(value == ""){
-                    return "Veuillez remplir ce champ!";
-                  }
-                }, iconData: Icons.card_travel,
-                    textInputType: TextInputType.text,
-                    edit: false,
-                    value: "")
+                child: TextFormField(
+                  controller: nom_niveau,
+                  validator: (value){
+                    if(value!.isEmpty){
+                      return "Veuillez remplir ce champ!";
+                    }
+                  },
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    hintText: "Niveau",
+                    suffixIcon: Icon(Icons.card_travel),
+                    hintStyle: TextStyle(color: Colors.blueGrey),
+                    suffixIconColor: Colors.grey,
+                    enabledBorder : UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Colors.grey
+                      ),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.blueGrey,
+                      ),
+                    ),
+                  ),
+                ),
             ),
             SizedBox(height: 15,),
             GestureDetector(
               onTap: (){
                 if(_formKey.currentState!.validate()){
-                  _createNiveau();
+                  editNiveau == 0
+                  ?_createNiveau()
+                  :_updateNiveau();
                 }
               },
               child: Container(
@@ -224,7 +385,7 @@ class _NiveauScreenState extends State<NiveauScreen> {
                 ),
                 padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
                 child: Center(
-                  child: Text("Enregistre", style: TextStyle(color: Colors.white),),
+                  child: Text(editNiveau == 0 ? "Enregistre" : "Modifier", style:style_google.copyWith(color: Colors.white),),
                 ),
               ),
             )

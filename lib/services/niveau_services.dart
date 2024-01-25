@@ -117,8 +117,47 @@ Future<ApiResponse> showNiveau(int niveauId) async{
   return apiResponse;
 }
 
+/** --------------- Recherche un niveau ----------------- **/
+Future<ApiResponse> searchNiveau(String? niveau) async{
+
+  ApiResponse apiResponse = ApiResponse();
+  try{
+
+    String token = await getToken();
+    var url = Uri.parse("${niveauURL}_search/${niveau}");
+
+
+
+    final rep = await http.get(url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+
+    switch(rep.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(rep.body)['niveau'];
+        apiResponse.data as List<dynamic>;
+        break;
+      case 403:
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
 /** --------------- Modifier un niveau ----------------- **/
-Future<ApiResponse> updateNiveau(int niveauId, String niveau) async{
+Future<ApiResponse> updateNiveau({int? niveauId, String? niveau}) async{
   ApiResponse apiResponse = ApiResponse();
   try{
     String token = await getToken();
@@ -137,10 +176,14 @@ Future<ApiResponse> updateNiveau(int niveauId, String niveau) async{
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 403:
-        apiResponse.data = jsonDecode(rep.body)['message'];
+        apiResponse.error = jsonDecode(rep.body)['message'];
         break;
       case 401:
         apiResponse.error = unauthorized;
+        break;
+      case 422:
+        final errors = jsonDecode(rep.body)['errors'];
+        apiResponse.error = errors[errors.keys.elementAt(0)][0];
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -169,7 +212,7 @@ Future<ApiResponse> deleteNiveau(int niveauId) async{
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 403:
-        apiResponse.data = jsonDecode(rep.body)['message'];
+        apiResponse.error = jsonDecode(rep.body)['message'];
         break;
       case 401:
         apiResponse.error = unauthorized;
