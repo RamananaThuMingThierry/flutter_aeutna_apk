@@ -1,5 +1,6 @@
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/Acceuil.dart';
 import 'package:aeutna/screens/auth/login.dart';
@@ -30,9 +31,9 @@ class SplashScreenState extends State<SplashScreen>{
       if(apiResponse.error == null){
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (ctx) => Acceuil()), (route) => false);
       }else if(apiResponse.error == unauthorized){
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (ctx) => Login()), (route) => false);
+        ErreurLogin(context);
       }else{
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${apiResponse.error}')));
+        MessageErreurs(context, apiResponse.error);
       }
     }
   }

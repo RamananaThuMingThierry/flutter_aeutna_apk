@@ -57,8 +57,6 @@ Future<ApiResponse> createFilieres({String? nom_filieres}) async{
         }
     );
 
-    print(jsonDecode(rep.body)['message']);
-
     switch(rep.statusCode){
       case 200:
         apiResponse.data = jsonDecode(rep.body);
@@ -168,6 +166,8 @@ Future<ApiResponse> updateFilieres({int? filiereId, String? nom_filieres}) async
           'nom_filieres': nom_filieres
         }
     );
+
+    print("***************************** ${rep.statusCode}");
 
     switch(rep.statusCode){
       case 200:

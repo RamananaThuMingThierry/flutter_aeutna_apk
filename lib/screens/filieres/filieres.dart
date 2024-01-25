@@ -92,7 +92,6 @@ class _FilieresScreenState extends State<FilieresScreen> {
     }else if(apiResponse.error == unauthorized){
       ErreurLogin(context);
     }else {
-      Navigator.pop(context);
       MessageErreurs(context, apiResponse.error);
     }
   }
