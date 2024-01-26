@@ -27,6 +27,7 @@ Future<ApiResponse> getAllAvis() async{
         break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(response.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -58,17 +59,19 @@ Future<ApiResponse> createAvis({String? message}) async{
 
     switch(rep.statusCode){
       case 200:
-        apiResponse.data = jsonDecode(rep.body);
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.error = jsonDecode(rep.body)['message'];
         break;
       case 422:
         final errors = jsonDecode(rep.body)['errors'];
         apiResponse.error = errors[errors.keys.elementAt(0)][0];
-        break;
-      case 401:
-        apiResponse.error = unauthorized;
-        break;
-      case 403:
-        apiResponse.error = jsonDecode(rep.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -100,11 +103,13 @@ Future<ApiResponse> updateAvis(int avisId, String message) async{
       case 200:
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
-      case 403:
-        apiResponse.data = jsonDecode(rep.body)['message'];
-        break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 422:
         final errors = jsonDecode(rep.body)['errors'];
@@ -136,11 +141,13 @@ Future<ApiResponse> deleteAvis(int avisId) async{
       case 200:
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
-      case 403:
-        apiResponse.data = jsonDecode(rep.body)['message'];
-        break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;

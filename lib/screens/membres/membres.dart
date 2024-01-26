@@ -1,5 +1,7 @@
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/constants/fonctions_constant.dart';
+import 'package:aeutna/constants/onLoadingMembreShimmer.dart';
 import 'package:aeutna/models/membres.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/screens/membres/showMembre.dart';
@@ -67,7 +69,7 @@ class _MembresState extends State<MembresScreen> {
             ),
           )
         ],
-        title: Text("MEMBRES A.E.U.T.N.A", style: TextStyle(color: Colors.blueGrey),),
+        title: Text("MEMBRES A.E.U.T.N.A", style: style_google.copyWith(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
         leading: Icon(Icons.people, color: Colors.blueGrey,),
       ),
@@ -117,11 +119,9 @@ class _MembresState extends State<MembresScreen> {
           ),
           Expanded(child: loading
             ?
-              Center(
-                child: CircularProgressIndicator(color: Colors.blueGrey,),
-              )
+            OnLoadingMembreShimmer()
             :
-              RefreshIndicator(
+            RefreshIndicator(
                 onRefresh: (){
                   return _getallMembres();
                 },

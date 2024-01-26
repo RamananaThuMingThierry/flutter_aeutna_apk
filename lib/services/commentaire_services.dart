@@ -21,8 +21,6 @@ Future<ApiResponse> getCommentaires(int postId) async{
         }
     );
 
-    print("${response.body}");
-
     switch(response.statusCode){
       case 200:
         apiResponse.data = jsonDecode(response.body)['commentaires'].map((c) => Commentaires.fromJson(c)).toList();
@@ -30,9 +28,11 @@ Future<ApiResponse> getCommentaires(int postId) async{
         break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(response.body)['message'];
         break;
-      case 403:
-        apiResponse.error = jsonDecode(response.body)['message'];
+      case 404:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(response.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -64,17 +64,23 @@ Future<ApiResponse> createCommentaire({int? postId, String? commentaires}) async
 
     switch(rep.statusCode){
       case 200:
-        apiResponse.data = jsonDecode(rep.body);
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 404:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 422:
         final errors = jsonDecode(rep.body)['errors'];
         apiResponse.error = errors[errors.keys.elementAt(0)][0];
-        break;
-      case 401:
-        apiResponse.error = unauthorized;
-        break;
-      case 403:
-        apiResponse.error = jsonDecode(rep.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -109,11 +115,17 @@ Future<ApiResponse> updateComment(int commentaire_id, String commentaires) async
       case 200:
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
+      case 401:
+        apiResponse.error = avertissement;
+        apiResponse.data = unauthorized;
+        break;
       case 403:
+        apiResponse.error = avertissement;
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
-      case 401:
-        apiResponse.error = unauthorized;
+      case 404:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 422:
         final errors = jsonDecode(rep.body)['errors'];
@@ -147,11 +159,17 @@ Future<ApiResponse> deleteComment(int commentId) async{
       case 200:
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
+      case 401:
+        apiResponse.error = avertissement;
+        apiResponse.error = unauthorized;
+        break;
       case 403:
+        apiResponse.error = avertissement;
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
-      case 401:
-        apiResponse.error = unauthorized;
+      case 404:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;

@@ -1,5 +1,6 @@
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/messages.dart';
 import 'package:aeutna/models/users.dart';
 import 'package:aeutna/services/message_services.dart';
@@ -72,7 +73,7 @@ class _SendMessageState extends State<SendMessage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey,
+      backgroundColor: Colors.white,
       appBar: AppBar(
             backgroundColor: Colors.white,
             leading: IconButton(onPressed: (){
@@ -107,21 +108,67 @@ class _SendMessageState extends State<SendMessage> {
               child: loading
                   ? Center(child: CircularProgressIndicator(color: Colors.yellow,))
                   : RefreshIndicator(
-                      child: ListView.builder(
+                      child: ListView.separated(
+                          physics: BouncingScrollPhysics(),
+                          separatorBuilder: (context, index){
+                            return SizedBox(height: 10,);
+                          },
+                          reverse: true,
                           itemCount: _messageList.length,
                           itemBuilder: (BuildContext context, int index){
                               MessageModel m = _messageList[index];
-                              return Row(
-                                mainAxisAlignment: m.receivedId == widget.users!.id ? MainAxisAlignment.end : MainAxisAlignment.start,
-                                children: [
-                                  Card(
-                                    elevation: 1,
-                                    child: Container(
-                                        color: m.receivedId == widget.users!.id ? Colors.blue : Colors.blueGrey,
-                                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-                                        child: Expanded(child: Text("${m.message}", style: TextStyle(color: Colors.white),))),
-                                  )
-                                ],
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 4),
+                                child: Column(
+                                  crossAxisAlignment: m.receivedId == widget.users!.id ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                        constraints: BoxConstraints(
+                                          maxWidth: MediaQuery.of(context).size.width * .7,
+                                          minWidth: MediaQuery.of(context).size.height * .01,
+                                          minHeight: 40,
+                                          maxHeight: MediaQuery.of(context).size.height
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: m.receivedId == widget.users!.id ? Colors.blue : Colors.blueGrey,
+                                          borderRadius: m.receivedId == widget.users!.id
+                                              ? BorderRadius.only(
+                                            topLeft: Radius.circular(20),
+                                            bottomLeft: Radius.circular(20),
+                                            topRight: Radius.circular(20)
+                                          )  : BorderRadius.only(
+                                              topLeft: Radius.circular(20),
+                                              bottomRight: Radius.circular(20),
+                                              topRight: Radius.circular(20)
+                                          )
+                                        ),
+                                        //child: Expanded(child: Text("${m.message}", style: TextStyle(color: Colors.white),)))
+                                        child : Padding(
+                                          padding: EdgeInsets.only(left: 15, top: 10, bottom: 5, right: 5),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment:  m.receivedId == widget.users!.id
+                                            ? CrossAxisAlignment.end
+                                            : CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                  padding: EdgeInsets.only(right: 10),
+                                                  child: Text(
+                                                    "${m.message}",
+                                                    style: style_google.copyWith(color : m.receivedId == widget.users!.id ? Colors.white : Colors.black),
+                                                  ),
+                                              ),
+                                              Icon(
+                                                Icons.done_all,color: Colors.white,size: 14,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                    ),
+                                    SizedBox(height: 2,),
+                                    Text("2:02", style: style_google.copyWith(fontSize: 12, color: Colors.black.withOpacity(.5)),)
+                                  ],
+                                ),
                               );
                           }), 
                       onRefresh: () => _getMessage())
@@ -154,6 +201,21 @@ class _SendMessageState extends State<SendMessage> {
                           });
                         }
                       },
+                      decoration: InputDecoration(
+                        label: Text("Envoyer un message..."),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blueGrey),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
                     ),
                   ),
                   IconButton(onPressed: (){

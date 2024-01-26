@@ -1,5 +1,6 @@
 import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
+import 'package:aeutna/constants/loadingShimmer.dart';
 import 'package:aeutna/models/filieres.dart';
 import 'package:aeutna/screens/Acceuil.dart';
 import 'package:aeutna/screens/auth/login.dart';
@@ -76,10 +77,16 @@ class _FilieresScreenState extends State<FilieresScreen> {
       setState(() {
         nom_filieres.clear();
       });
+      MessageReussi(context, "${apiResponse.data}");
       _getallFilieres();
+    }else if(apiResponse.error == avertissement){
+      Navigator.pop(context);
+      MessageAvertissement(context, "${apiResponse.data}");
     }else if(apiResponse.error == unauthorized){
+      MessageErreurs(context, apiResponse.error);
       ErreurLogin(context);
     }else{
+      Navigator.pop(context);
       MessageErreurs(context, apiResponse.error);
     }
   }
@@ -92,7 +99,14 @@ class _FilieresScreenState extends State<FilieresScreen> {
     });
     if(apiResponse.error == null){
       Navigator.pop(context);
+      MessageReussi(context,"${apiResponse.data}");
       _getallFilieres();
+    }else if(apiResponse.error == avertissement){
+      Navigator.pop(context);
+      MessageAvertissement(context, "${apiResponse.data}");
+    }else if(apiResponse.error == info){
+      Navigator.pop(context);
+      MessageInformation(context, "${apiResponse.data}");
     }else if(apiResponse.error == unauthorized){
       ErreurLogin(context);
     }else {
@@ -105,7 +119,11 @@ class _FilieresScreenState extends State<FilieresScreen> {
     ApiResponse apiResponse = await deleteFilieres(filiereId);
     if(apiResponse.error == null){
       Navigator.pop(context);
+      MessageReussi(context, "${apiResponse.data}");
       _getallFilieres();
+    }else if(apiResponse.error == avertissement){
+      Navigator.pop(context);
+      MessageAvertissement(context, "${apiResponse.data}");
     }else if(apiResponse.error == unauthorized){
       ErreurLogin(context);
     }else{
@@ -196,10 +214,10 @@ class _FilieresScreenState extends State<FilieresScreen> {
               ),
               Expanded(
                 child: loading
-                    ? Center(
-                  child: CircularProgressIndicator(color: Colors.blueGrey,),
-                )
-                    : RefreshIndicator(
+                    ?
+                LoadingShimmer()
+                    :
+                RefreshIndicator(
                   onRefresh: (){
                     return _getallFilieres();
                   },

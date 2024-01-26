@@ -3,7 +3,6 @@ import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/Acceuil.dart';
-import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -23,10 +22,11 @@ class SplashScreenState extends State<SplashScreen>{
     String token = await getToken();
     print("Token $token");
     if(token == ''){
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (ctx) => Login()), (route) => false);
+      ErreurLogin(context);
     }else{
-
       ApiResponse apiResponse = await getUserDetail();
+
+      print("${apiResponse.error}");
 
       if(apiResponse.error == null){
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (ctx) => Acceuil()), (route) => false);

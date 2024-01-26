@@ -174,9 +174,9 @@ class _ProfilesState extends State<Profiles> {
         centerTitle: true,
         elevation: 0,
         actions: [
-          IconButton(onPressed: () => Parametre(context, data), icon: Icon(Icons.menu, color: Colors.black,))
+          IconButton(onPressed: () => Parametre(context, data), icon: Icon(Icons.menu, color: Colors.black45,))
         ],
-        backgroundColor: Colors.white
+        backgroundColor: Colors.transparent
       ),
       body: SingleChildScrollView(
         child:Container(
@@ -340,7 +340,7 @@ class _ProfilesState extends State<Profiles> {
             iconColor: Colors.blueGrey,
             backgroundColor: Colors.white,
             title:  Text("Mon compte", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold),),
-            leading: Icon(Icons.credit_card_outlined, color: Colors.grey,),
+            leading: Icon(Icons.newspaper, color: Colors.grey,),
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
             childrenPadding: EdgeInsets.symmetric(horizontal: 10),
             children: [

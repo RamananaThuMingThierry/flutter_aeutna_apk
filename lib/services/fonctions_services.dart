@@ -28,6 +28,7 @@ Future<ApiResponse> getAllFonctions() async{
         break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(response.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -57,21 +58,21 @@ Future<ApiResponse> createFonctions({String? fonctions}) async{
         }
     );
 
-    print(jsonDecode(rep.body)['message']);
-
     switch(rep.statusCode){
       case 200:
-        apiResponse.data = jsonDecode(rep.body);
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.error = jsonDecode(rep.body)['message'];
         break;
       case 422:
         final errors = jsonDecode(rep.body)['errors'];
         apiResponse.error = errors[errors.keys.elementAt(0)][0];
-        break;
-      case 401:
-        apiResponse.error = unauthorized;
-        break;
-      case 403:
-        apiResponse.error = jsonDecode(rep.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -99,11 +100,13 @@ Future<ApiResponse> showFonctions(int fonctionsId) async{
       case 200:
         apiResponse.data = FonctionModel.fromJson(jsonDecode(rep.body)['fonctions']);
         break;
-      case 403:
-        apiResponse.data = jsonDecode(rep.body)['message'];
-        break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -136,11 +139,9 @@ Future<ApiResponse> searchFonctions(String? fonctions) async{
         apiResponse.data = jsonDecode(rep.body)['fonctions'];
         apiResponse.data as List<dynamic>;
         break;
-      case 403:
-        apiResponse.data = jsonDecode(rep.body)['message'];
-        break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -156,6 +157,7 @@ Future<ApiResponse> searchFonctions(String? fonctions) async{
 Future<ApiResponse> updateFonctions({int? fonctionId, String? fonctions}) async{
   ApiResponse apiResponse = ApiResponse();
   try{
+
     String token = await getToken();
     final rep = await http.put(Uri.parse('$fonctionsURL/$fonctionId'),
         headers: {
@@ -171,11 +173,21 @@ Future<ApiResponse> updateFonctions({int? fonctionId, String? fonctions}) async{
       case 200:
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
-      case 403:
-        apiResponse.error = jsonDecode(rep.body)['message'];
+      case 304:
+        apiResponse.error = info;
+        apiResponse.data = pasDeChangement;
         break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.error = jsonDecode(rep.body)['message'];
+        break;
+      case 404:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 422:
         final errors = jsonDecode(rep.body)['errors'];
@@ -205,13 +217,19 @@ Future<ApiResponse> deleteFonctions(int fonctionId) async{
 
     switch(rep.statusCode){
       case 200:
-        apiResponse.data = FonctionModel.fromJson(jsonDecode(rep.body)['fonctions']);
-        break;
-      case 403:
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 404:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;

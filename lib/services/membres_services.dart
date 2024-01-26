@@ -130,18 +130,11 @@ Future<ApiResponse> getMembres(int membreId) async{
 
     switch(rep.statusCode){
       case 200:
-        if(jsonDecode(rep.body) == null){
-          apiResponse.error = null;
-          apiResponse.data = null;
-        }else{
           apiResponse.data = Membres.fromJson(jsonDecode(rep.body)['membres']);
-        }
-        break;
-      case 403:
-        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -152,46 +145,6 @@ Future<ApiResponse> getMembres(int membreId) async{
   }
   return apiResponse;
 }
-
-
-/** --------------- Modifier un axes ----------------- **/
-// Future<ApiResponse> updateAxes(int axesId, String nom_axes) async{
-//   ApiResponse apiResponse = ApiResponse();
-//   try{
-//     String token = await getToken();
-//     final rep = await http.put(Uri.parse('$axesURL/$axesId'),
-//         headers: {
-//           'Accept': 'application/json',
-//           'Authorization' : 'Bearer $token'
-//         },
-//         body: {
-//           'nom_axes': nom_axes
-//         }
-//     );
-//
-//     switch(rep.statusCode){
-//       case 200:
-//         apiResponse.data = jsonDecode(rep.body)['message'];
-//         break;
-//       case 403:
-//         apiResponse.data = jsonDecode(rep.body)['message'];
-//         break;
-//       case 401:
-//         apiResponse.error = unauthorized;
-//         break;
-//       case 422:
-//       final errors = jsonDecode(rep.body)['errors'];
-//       apiResponse.error = errors[errors.keys.elementAt(0)][0];
-//       break;
-//       default:
-//         apiResponse.error = somethingWentWrong;
-//         break;
-//     }
-//   }catch(e){
-//     apiResponse.error = serverError;
-//   }
-//   return apiResponse;
-// }
 
 /** --------------- Supprimer un membre ----------------- **/
 Future<ApiResponse> deleteMembres(int membreId) async{
@@ -209,11 +162,17 @@ Future<ApiResponse> deleteMembres(int membreId) async{
       case 200:
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
-      case 403:
-        apiResponse.data = jsonDecode(rep.body)['message'];
-        break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 404:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;

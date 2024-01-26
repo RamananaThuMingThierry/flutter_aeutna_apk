@@ -2,6 +2,7 @@ import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/niveau.dart';
+import 'package:aeutna/constants/loadingShimmer.dart';
 import 'package:aeutna/services/niveau_services.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/myTextFieldForm.dart';
@@ -29,7 +30,11 @@ class _NiveauScreenState extends State<NiveauScreen> {
   Future _getallNiveau() async{
     userId = await getUserId();
     ApiResponse apiResponse = await getAllNiveau();
-
+    setState(() {
+      nom_niveau.clear();
+      search.clear();
+      editNiveau = 0;
+    });
     if(apiResponse.error == null){
       List<dynamic> niveauList = apiResponse.data as List<dynamic>;
       List<Niveau> niveaux = niveauList.map((p) => Niveau.fromJson(p)).toList();
@@ -39,9 +44,10 @@ class _NiveauScreenState extends State<NiveauScreen> {
         loading = false;
       });
     }else if(apiResponse.error == unauthorized){
-        ErreurLogin(context);
+      MessageErreurs(context, "${apiResponse.data}");
+      ErreurLogin(context);
     }else{
-     MessageErreurs(context, apiResponse.error);
+        MessageErreurs(context, apiResponse.error);
     }
   }
 
@@ -56,6 +62,7 @@ class _NiveauScreenState extends State<NiveauScreen> {
         _niveauList = niveaux;
       });
     }else if(apiResponse.error == unauthorized){
+      MessageErreurs(context, apiResponse.error);
       ErreurLogin(context);
     }else{
       MessageErreurs(context, apiResponse.error);
@@ -70,7 +77,11 @@ class _NiveauScreenState extends State<NiveauScreen> {
         nom_niveau.clear();
       });
       _getallNiveau();
+    }else if(apiResponse.error == avertissement){
+      Navigator.pop(context);
+      MessageAvertissement(context, "${apiResponse.data}");
     }else if(apiResponse.error == unauthorized){
+      MessageErreurs(context, apiResponse.error);
       ErreurLogin(context);
     }else{
       Navigator.pop(context);
@@ -87,7 +98,14 @@ class _NiveauScreenState extends State<NiveauScreen> {
     });
     if(apiResponse.error == null){
       Navigator.pop(context);
+      MessageReussi(context,"${apiResponse.data}");
       _getallNiveau();
+    }else if(apiResponse.error == avertissement){
+      Navigator.pop(context);
+      MessageAvertissement(context, "${apiResponse.data}");
+    }else if(apiResponse.error == info){
+      Navigator.pop(context);
+      MessageInformation(context, "${apiResponse.data}");
     }else if(apiResponse.error == unauthorized){
       ErreurLogin(context);
     }else {
@@ -100,7 +118,11 @@ class _NiveauScreenState extends State<NiveauScreen> {
     ApiResponse apiResponse = await deleteNiveau(niveauId);
     if(apiResponse.error == null){
       Navigator.pop(context);
+      MessageReussi(context, "${apiResponse.data}");
       _getallNiveau();
+    }else if(apiResponse.error == avertissement){
+      Navigator.pop(context);
+      MessageAvertissement(context, "${apiResponse.data}");
     }else if(apiResponse.error == unauthorized){
       ErreurLogin(context);
     }else{
@@ -190,10 +212,10 @@ class _NiveauScreenState extends State<NiveauScreen> {
           ),
           Expanded(
             child: loading
-                ? Center(
-              child: CircularProgressIndicator(color: Colors.blueGrey,),
-            )
-                : RefreshIndicator(
+                ?
+                LoadingShimmer()
+                :
+            RefreshIndicator(
               onRefresh: (){
                 return _getallNiveau();
               },
@@ -277,6 +299,7 @@ class _NiveauScreenState extends State<NiveauScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: (){
+          _getallNiveau();
           showDialog(context: context, builder: (BuildContext context) => niveauForm(context, editNiveau));
         },
         child: Icon(Icons.add),
@@ -328,7 +351,7 @@ class _NiveauScreenState extends State<NiveauScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("${editNiveau == 0 ? "Ajouter" : "Modifier"} un filière", style: style_google.copyWith(color: Colors.blueGrey, fontSize: 17, fontWeight: FontWeight.bold),),
+                Text("${editNiveau == 0 ? "Ajouter" : "Modifier"} un niveau", style: style_google.copyWith(color: Colors.blueGrey, fontSize: 17, fontWeight: FontWeight.bold),),
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: Container(

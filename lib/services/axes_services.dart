@@ -100,12 +100,12 @@ Future<ApiResponse> showAxes(int axesId) async{
       case 200:
         apiResponse.data = Axes.fromJson(jsonDecode(rep.body)['axes']);
         break;
-      case 404:
-        apiResponse.error = avertissement;
-        apiResponse.data = jsonDecode(rep.body)['message'];
-        break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 404:
+        apiResponse.error = avertissement;
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       default:
@@ -141,10 +141,6 @@ Future<ApiResponse> searchAxes(String? nom_axes) async{
         break;
       case 401:
         apiResponse.error = unauthorized;
-        apiResponse.data = jsonDecode(rep.body)['message'];
-        break;
-      case 403:
-        apiResponse.error = avertissement;
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       default:

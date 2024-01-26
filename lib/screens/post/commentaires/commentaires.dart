@@ -1,5 +1,7 @@
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/constants/fonctions_constant.dart';
+import 'package:aeutna/constants/loadingShimmer.dart';
 import 'package:aeutna/models/commentaires.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/services/commentaire_services.dart';
@@ -24,7 +26,6 @@ class _CommentairesState extends State<CommentairesScreen> {
   bool loading = true;
   int userId = 0;
   int _editCommentId = 0;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController commentaire = TextEditingController();
   Color? color;
 
@@ -39,9 +40,9 @@ class _CommentairesState extends State<CommentairesScreen> {
         loading = loading ? !loading : loading;
       });
     }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+      ErreurLogin(context);
     }else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${apiResponse.error}")));
+      MessageErreurs(context, "${apiResponse.error}");
     }
   }
 
@@ -52,12 +53,12 @@ class _CommentairesState extends State<CommentairesScreen> {
       commentaire.clear();
       _getComments();
     }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+      ErreurLogin(context);
     }else{
       setState(() {
         loading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${apiResponse.error}")));
+      MessageErreurs(context, "${apiResponse.error}");
     }
   }
 
@@ -69,12 +70,12 @@ class _CommentairesState extends State<CommentairesScreen> {
       commentaire.clear();
       _getComments();
     }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+      ErreurLogin(context);
     }else{
       setState(() {
         loading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${apiResponse.error}")));
+      MessageErreurs(context, "${apiResponse.error}");
     }
   }
 
@@ -83,12 +84,12 @@ class _CommentairesState extends State<CommentairesScreen> {
     if(apiResponse.error == null){
       _getComments();
     }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+      ErreurLogin(context);
     }else{
       setState(() {
         loading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${apiResponse.error}")));
+      MessageErreurs(context, "${apiResponse.error}");
     }
   }
 
@@ -114,7 +115,8 @@ class _CommentairesState extends State<CommentairesScreen> {
           ],
         ),
         body: loading
-            ? Center(child: CircularProgressIndicator(),)
+            ?
+            LoadingShimmer()
             : Column(
           children: [
             Expanded(child: RefreshIndicator(
@@ -220,6 +222,21 @@ class _CommentairesState extends State<CommentairesScreen> {
                           });
                         }
                       },
+                      decoration: InputDecoration(
+                        label: Text("Rédigez un commentaire..."),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blueGrey),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
                     ),
                   ),
                   IconButton(onPressed: () {

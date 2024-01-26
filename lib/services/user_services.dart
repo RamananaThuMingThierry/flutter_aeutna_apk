@@ -47,6 +47,7 @@ Future<ApiResponse> getAllUsers() async{
         break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(response.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -71,6 +72,8 @@ Future<ApiResponse> getUserDetail() async{
           'Authorization': 'Bearer $token'
         },
     );
+
+    print("********** status : ${response.statusCode}");
 
     switch(response.statusCode){
       case 200:
@@ -115,6 +118,7 @@ Future<ApiResponse> updateUser(String name, String? image) async{
         break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(response.body)['message'];
         break;
       case 422:
         final errors = jsonDecode(response.body)['errors'];
@@ -151,12 +155,13 @@ Future<ApiResponse> login({String? email, String? mot_de_passe}) async{
       case 200:
         apiResponse.data = User.fromJson(jsonDecode(response.body));
         break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
       case 422:
         final errors = jsonDecode(response.body)['errors'];
         apiResponse.error = errors[errors.key.elementAt(0)][0];
-        break;
-      case 403:
-        apiResponse.error = jsonDecode(response.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;

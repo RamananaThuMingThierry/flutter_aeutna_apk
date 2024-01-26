@@ -1,5 +1,6 @@
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/axes.dart';
 import 'package:aeutna/models/filieres.dart';
 import 'package:aeutna/models/fonctions.dart';
@@ -13,6 +14,7 @@ import 'package:aeutna/services/niveau_services.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -52,12 +54,9 @@ class _ShowMembresState extends State<ShowMembres> {
         axes = apiResponse.data as Axes?;
       });
     }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+      ErreurLogin(context);
     }else{
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
-      );
+      MessageErreurs(context, "${apiResponse.error}");
     }
   }
 
@@ -73,12 +72,9 @@ class _ShowMembresState extends State<ShowMembres> {
       });
 
     }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+      ErreurLogin(context);
     }else{
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
-      );
+      MessageErreurs(context, "${apiResponse.error}");
     }
   }
 
@@ -93,18 +89,14 @@ class _ShowMembresState extends State<ShowMembres> {
       });
 
     }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+      ErreurLogin(context);
     }else{
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
-      );
+      MessageErreurs(context, "${apiResponse.error}");
     }
   }
 
   void getFonctions() async{
     ApiResponse apiResponse = await showFonctions(membre!.fonctions_id!);
-    print("/////////////////////**********************${apiResponse.data}");
     if(apiResponse.error == null){
       setState(() {
         compte = compte! + 1;
@@ -112,12 +104,9 @@ class _ShowMembresState extends State<ShowMembres> {
       });
 
     }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+      ErreurLogin(context);
     }else{
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
-      );
+      MessageErreurs(context, "${apiResponse.error}");
     }
   }
 
@@ -134,30 +123,36 @@ class _ShowMembresState extends State<ShowMembres> {
           icon: Icon(Icons.arrow_back, color: Colors.blueGrey,),
         ),
         actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.call, color: Colors.blueGrey,)),
-          IconButton(onPressed: (){}, icon: Icon(Icons.sms, color: Colors.blueGrey,)),
-          membre!.lien_membre_id == 0 ? SizedBox() : IconButton(onPressed: (){}, icon: Icon(Icons.email, color: Colors.blueGrey,)),
+          compte != 4 ? SizedBox() : IconButton(onPressed: (){}, icon: Icon(Icons.call, color: Colors.blueGrey,)),
+          compte != 4 ? SizedBox() :IconButton(onPressed: (){}, icon: Icon(Icons.sms, color: Colors.blueGrey,)),
+          compte != 4 ? SizedBox() : membre!.lien_membre_id == 0 ? SizedBox() : IconButton(onPressed: (){}, icon: Icon(Icons.email, color: Colors.blueGrey,)),
         ],
       ),
       body:
       compte == 0
-          ? Center(
-              child: CircularProgressIndicator(color: Colors.blueGrey,),
+          ? SpinKitCircle(
+              color: Colors.blueGrey,
+              size: 50,
             )
           :
       compte == 1
-          ? Center(
-        child: CircularProgressIndicator(color: Colors.blueGrey,),
-      )
+          ? SpinKitCircle(
+              color: Colors.blueGrey,
+              size: 50,
+            )
           :
       compte == 2
-          ? Center(
-        child: CircularProgressIndicator(color: Colors.blueGrey,),
-      )
+          ?
+          SpinKitCircle(
+            color: Colors.blueGrey,
+            size: 50,
+          )
           :
       compte == 3
-          ? Center(
-        child: CircularProgressIndicator(color: Colors.blueGrey,),
+          ?
+      SpinKitCircle(
+        color: Colors.blueGrey,
+        size: 50,
       )
           :
       SingleChildScrollView(

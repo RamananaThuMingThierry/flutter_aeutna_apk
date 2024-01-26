@@ -1,5 +1,6 @@
 import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
+import 'package:aeutna/constants/loadingShimmer.dart';
 import 'package:aeutna/models/fonctions.dart';
 import 'package:aeutna/services/fonctions_services.dart';
 import 'package:aeutna/services/user_services.dart';
@@ -65,11 +66,13 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
 
   void _createFonctions() async {
     ApiResponse apiResponse = await createFonctions(fonctions: nom_fonctions.text);
+    setState(() {
+      editFonctions = 0;
+      nom_fonctions.clear();
+    });
     if(apiResponse.error == null){
       Navigator.pop(context);
-      setState(() {
-        nom_fonctions.clear();
-      });
+      MessageReussi(context, "${apiResponse.data}");
       _getallFonctions();
     }else if(apiResponse.error == unauthorized){
       ErreurLogin(context);
@@ -87,7 +90,14 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
     });
     if(apiResponse.error == null){
       Navigator.pop(context);
+      MessageReussi(context, "${apiResponse.data}");
       _getallFonctions();
+    }else if(apiResponse.error == avertissement){
+      Navigator.pop(context);
+      MessageAvertissement(context, "${apiResponse.data}");
+    }else if(apiResponse.error == info) {
+      Navigator.pop(context);
+      MessageInformation(context, "${apiResponse.data}");
     }else if(apiResponse.error == unauthorized){
       ErreurLogin(context);
     }else {
@@ -100,6 +110,7 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
     ApiResponse apiResponse = await deleteFonctions(fonctionId);
     if(apiResponse.error == null){
       Navigator.pop(context);
+      MessageReussi(context, "${apiResponse.data}");
       _getallFonctions();
     }else if(apiResponse.error == unauthorized){
       ErreurLogin(context);
@@ -191,9 +202,7 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
           Expanded(
             child:  loading
                 ?
-            Center(
-              child: CircularProgressIndicator(color: Colors.blueGrey,),
-            )
+            LoadingShimmer()
                 :
             RefreshIndicator(
               onRefresh: (){
@@ -279,6 +288,10 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: (){
+          setState(() {
+            editFonctions = 0;
+            nom_fonctions.clear();
+          });
           showDialog(context: context, builder: (BuildContext context) => fonctionsForm(context, editFonctions));
         },
         child: Icon(Icons.add),
@@ -332,7 +345,13 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
               children: [
                 Text("${editFonctions == 0 ? "Ajouter" : "Modifier"} une fonction", style: style_google.copyWith(fontSize: 17, fontWeight: FontWeight.bold)),
                 GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                  onTap: (){
+                    setState(() {
+                      editFonctions = 0;
+                      nom_fonctions.clear();
+                    });
+                    Navigator.pop(context);
+                  },
                   child: Container(
                     padding: EdgeInsets.all(4),
                     alignment: Alignment.centerRight,

@@ -48,8 +48,6 @@ Future<ApiResponse> createMessage({String? messages, int? idUserReceived}) async
 
     var url = Uri.parse("${messagesURL}/${idUserReceived}");
 
-
-
     final rep = await http.post(
         url,
         headers: {
@@ -61,21 +59,25 @@ Future<ApiResponse> createMessage({String? messages, int? idUserReceived}) async
         }
     );
 
-    print("ulr ------------------------------- ${url} ---------------------- \n status : ${rep.statusCode} -------------------------- \n data: ${rep.body}");
-
     switch(rep.statusCode){
       case 200:
         apiResponse.data = jsonDecode(rep.body);
         break;
-      case 422:
-        final errors = jsonDecode(rep.body)['errors'];
-        apiResponse.error = errors[errors.keys.elementAt(0)][0];
+      case 304:
+        apiResponse.error = info;
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 401:
+        apiResponse.error = avertissement;
         apiResponse.error = unauthorized;
         break;
       case 403:
-        apiResponse.error = jsonDecode(rep.body)['message'];
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 422:
+        final errors = jsonDecode(rep.body)['errors'];
+        apiResponse.error = errors[errors.keys.elementAt(0)][0];
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -88,7 +90,7 @@ Future<ApiResponse> createMessage({String? messages, int? idUserReceived}) async
 }
 
 /** --------------- Modifier un message ----------------- **/
-Future<ApiResponse> updateAxes(int messageId, String messages) async{
+Future<ApiResponse> updateMessage(int messageId, String messages) async{
   ApiResponse apiResponse = ApiResponse();
   try{
     String token = await getToken();
@@ -146,11 +148,9 @@ Future<ApiResponse> showMessage($userReceivedId) async{
         apiResponse.data = jsonDecode(rep.body)['messages'].map((m) => MessageModel.fromJson(m)).toList();
         apiResponse.data as List<dynamic>;
         break;
-      case 403:
-        apiResponse.data = jsonDecode(rep.body)['message'];
-        break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;

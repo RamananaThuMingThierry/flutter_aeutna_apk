@@ -1,6 +1,7 @@
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
+import 'package:aeutna/constants/loadingShimmer.dart';
 import 'package:aeutna/screens/Acceuil.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/services/axes_services.dart';
@@ -32,13 +33,15 @@ class _AxesState extends State<AxesScreen> {
   Future _getallAxes() async{
     userId = await getUserId();
     ApiResponse apiResponse = await getAllAxes();
-
+    setState(() {
+      nom_axes.clear();
+      search.clear();
+      editAxes = 0;
+    });
     if(apiResponse.error == null){
       List<dynamic> axesList = apiResponse.data as List<dynamic>;
       List<Axes> axes = axesList.map((p) => Axes.fromJson(p)).toList();
       setState(() {
-        search.clear();
-        editAxes = 0;
         _axesList = axes;
         loading = false;
       });
@@ -70,6 +73,10 @@ class _AxesState extends State<AxesScreen> {
 
   void _createAxes() async {
     ApiResponse apiResponse = await createAxes(nom_axes: nom_axes.text);
+    setState(() {
+      nom_axes.clear();
+      editAxes = 0;
+    });
     if(apiResponse.error == null){
       Navigator.pop(context);
       MessageReussi(context, "${apiResponse.data}");
@@ -115,7 +122,7 @@ class _AxesState extends State<AxesScreen> {
     ApiResponse apiResponse = await deleteAxes(axesId);
     if(apiResponse.error == null){
       Navigator.pop(context);
-      MessageReussi(context, apiResponse.data as String?);
+      MessageReussi(context, "${apiResponse.data}");
       _getallAxes();
     }else if(apiResponse.error == avertissement){
       Navigator.pop(context);
@@ -211,9 +218,7 @@ class _AxesState extends State<AxesScreen> {
           Expanded(
             child: loading
                 ?
-                Center(
-                  child: CircularProgressIndicator(color: Colors.blueGrey,),
-                )
+            LoadingShimmer()
                 :
             RefreshIndicator(
               onRefresh: (){
@@ -255,7 +260,7 @@ class _AxesState extends State<AxesScreen> {
                                 editAxes = axes.id;
                                 nom_axes.text = axes.nom_axes! ?? "";
                               });
-                              showDialog(context: context, builder: (BuildContext context) => axesForm(context, editAxes));
+                              showDialog(context: context, builder: (BuildContext context) => axesForm(context, editAxe: editAxes));
                             }else{
                               // Supprimer
                               print("Supprimer");
@@ -299,7 +304,8 @@ class _AxesState extends State<AxesScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          showDialog(context: context, builder: (BuildContext context) => axesForm(context, editAxes));
+          _getallAxes();
+          showDialog(context: context, builder: (BuildContext context) => axesForm(context, editAxe: editAxes));
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.blueGrey,
@@ -322,7 +328,7 @@ class _AxesState extends State<AxesScreen> {
     );
   }
 
-  Dialog axesForm(BuildContext context, int? editAxes){
+  Dialog axesForm(BuildContext context, {int? editAxe}){
     return Dialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16)
@@ -352,7 +358,13 @@ class _AxesState extends State<AxesScreen> {
               children: [
                 Text("${editAxes == 0 ? "Ajouter" : "Modifier"} un axe", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold, fontSize: 15),),
                 GestureDetector(
-                  onTap: () => Navigator.pop(context),
+                  onTap: (){
+                    setState(() {
+                      nom_axes.clear();
+                      editAxes = 0;
+                    });
+                    Navigator.pop(context);
+                  },
                   child: Container(
                     padding: EdgeInsets.all(4),
                     alignment: Alignment.centerRight,

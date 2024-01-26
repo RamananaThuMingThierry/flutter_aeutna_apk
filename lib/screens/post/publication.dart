@@ -1,5 +1,7 @@
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/constants/fonctions_constant.dart';
+import 'package:aeutna/constants/onLoadingPostShimmer.dart';
 import 'package:aeutna/models/post.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/screens/post/commentaires/commentaires.dart';
@@ -35,9 +37,9 @@ class _PublicationState extends State<Publication> {
         loading = loading ? !loading : loading;
       });
     }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+      ErreurLogin(context);
     }else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${apiResponse.error}")));
+     MessageErreurs(context, "${apiResponse.error}");
     }
   }
 
@@ -81,7 +83,7 @@ class _PublicationState extends State<Publication> {
         shape: Border(
           bottom: BorderSide(width: .5, color: Colors.grey)
         ),
-        title: Text("A.E.U.T.N.A", style: GoogleFonts.breeSerif(color: Colors.blueGrey)),
+        title: Text("A.E.U.T.N.A", style: style_google.copyWith(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
         actions: [
           Padding(
@@ -97,8 +99,9 @@ class _PublicationState extends State<Publication> {
         ],
       ),
       body: loading
-          ? Center(child: CircularProgressIndicator(),)
-          : RefreshIndicator(
+          ? OnLoadingPostShimmer()
+          :
+      RefreshIndicator(
         onRefresh: () {
           return retreivePosts();
         },
@@ -106,8 +109,8 @@ class _PublicationState extends State<Publication> {
           itemCount: _postList!.length,
           itemBuilder: (BuildContext context, int index){
             Post post = _postList![index];
-            print(post.image);
             return Card(
+                shape: Border(),
                 margin: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +141,7 @@ class _PublicationState extends State<Publication> {
                                 SizedBox(width: 10,),
                                 Text(
                                   "${post.user!.pseudo}",
-                                  style: GoogleFonts.daysOne(fontSize: 14),
+                                  style: style_google.copyWith(fontWeight: FontWeight.bold, color: Colors.black87, fontSize: 16),
                                 )
                               ],
                             ),
@@ -193,7 +196,7 @@ class _PublicationState extends State<Publication> {
                               child: CachedNetworkImage(
                                 fit: BoxFit.cover,
                                 imageUrl: "${post!.image}",
-                                placeholder: (context, url) => CircularProgressIndicator(color: Colors.blueGrey,), // Widget de chargement affiché pendant le chargement de l'image
+                                placeholder: (context, url) => Icon(Icons.image, size: 200,color: Colors.black54,), // Widget de chargement affiché pendant le chargement de l'image
                                 errorWidget: (context, url, error) => Icon(Icons.error), // Widget d'erreur affiché si l'image ne peut pas être chargée
                               ),
                               //child: Image.network("${post.image}", fit: BoxFit.cover,)

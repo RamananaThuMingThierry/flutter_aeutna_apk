@@ -50,6 +50,7 @@ dependencies:
   get: ^4.6.5
   shared_preferences: ^2.2.2
   http: ^0.13.6
+  shimmer: ^3.0.0
 
 
 dev_dependencies:
