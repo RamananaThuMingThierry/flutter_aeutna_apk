@@ -192,15 +192,16 @@ Future<ApiResponse> register({String? pseudo, String? email, String? mot_de_pass
         }
     );
 
-    print(response.statusCode);
+    print("${response.body}");
 
     switch(response.statusCode){
       case 200:
         apiResponse.data = User.fromJson(jsonDecode(response.body));
         break;
       case 422:
+        apiResponse.error = avertissement;
         final errors = jsonDecode(response.body)['errors'];
-        apiResponse.error = errors[errors.key.elementAt(0)][0];
+        apiResponse.data = errors[errors.key.elementAt(0)][0];
         break;
       default:
         apiResponse.error = somethingWentWrong;

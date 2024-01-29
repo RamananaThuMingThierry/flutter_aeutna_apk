@@ -44,6 +44,11 @@ void AutorisationAlertDialog({BuildContext? context, String? message, required F
       });
 }
 
+bool verifierPrefixNumeroTelephone(String numeroTelephone){
+  RegExp regex = RegExp(r'^(032|033|034|038)');
+  return regex.hasMatch(numeroTelephone);
+}
+
 void MessageErreurs(BuildContext context, String? message){
   showDialog(
    context: context,

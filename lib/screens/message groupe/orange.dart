@@ -1,3 +1,4 @@
+import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,6 +12,7 @@ class Orange extends StatefulWidget {
 }
 
 class _OrangeState extends State<Orange> {
+
   // Déclarations des variables
   String? message;
   List<String> phoneNumbers = ["0327563770", "0329790536","0325965197", "0382921685","0324060777","0327339964","0322274385","0328111011"];
@@ -18,6 +20,10 @@ class _OrangeState extends State<Orange> {
 
   RegExp regExp = RegExp(r'''
 (([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$''');
+
+  // Future _getAllListPuceOrange(){
+  //   ApiResponse apiResponse =
+  // }
 
   void sendBulkSMS(List<String> phoneNumbers, String message) async {
     String numbers = phoneNumbers.join(",");

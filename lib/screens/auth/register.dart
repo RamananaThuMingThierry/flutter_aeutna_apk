@@ -1,4 +1,6 @@
 import 'package:aeutna/api/api_response.dart';
+import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/Acceuil.dart';
 import 'package:aeutna/screens/auth/login.dart';
@@ -37,7 +39,10 @@ class _RegisterState extends State<Register> {
       ApiResponse apiResponse = await register(pseudo: pseudo, email: email, adresse: adresse, contact: contact, mot_de_passe: mot_de_passe);
       if(apiResponse.error == null){
         _saveAndRedirectToHome(apiResponse.data as User);
+      }else if(apiResponse.error == avertissement){
+        MessageAvertissement(context, "${apiResponse.data}");
       }else{
+        MessageErreurs(context, "${apiResponse.error}");
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${apiResponse.error}')));
       }
     }
@@ -156,6 +161,8 @@ void _saveAndRedirectToHome(User user) async{
                                 return "Veuillez saisir votre contact!";
                               }else if(value!.length != 10){
                                 return "Votre numéro doit-être composé de 10 chiffres!";
+                              }else if(!verifierPrefixNumeroTelephone(value)){
+                                return "Votre numéro n'est pas valide!";
                               }
                             },
                             iconData: Icons.phone,
