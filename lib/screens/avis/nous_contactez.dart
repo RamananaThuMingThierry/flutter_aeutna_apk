@@ -1,3 +1,8 @@
+import 'package:aeutna/api/api_response.dart';
+import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/constants/fonctions_constant.dart';
+import 'package:aeutna/screens/Acceuil.dart';
+import 'package:aeutna/services/avis_services.dart';
 import 'package:aeutna/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,26 +17,11 @@ class NousContactez extends StatefulWidget {
 
 class _NousContactezState extends State<NousContactez> {
   // Déclarations des variables;
-  String? nom;
-  String? email;
-  String? contact;
-  String? message;
-  List<String> phoneNumbers = ["0327563770", "0329790536","0325965197", "0382921685","0324060777","0327339964","0322274385","0328111011"];
+  TextEditingController message = TextEditingController();
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
 
   RegExp regExp = RegExp(r'''
 (([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$''');
-
-  void sendBulkSMS(List<String> phoneNumbers, String message) async {
-    String numbers = phoneNumbers.join(",");
-    String smsUri = 'sms:$numbers?body=$message';
-
-    if (await canLaunch(smsUri)) {
-      await launch(smsUri);
-    } else {
-      print('Could not open SMS application.');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,11 +56,7 @@ class _NousContactezState extends State<NousContactez> {
                       children: [
                         // Mot de passe
                         TextFormField(
-                          onChanged: (value){
-                            setState(() {
-                              message = value;
-                            });
-                          },
+                          controller: message,
                           validator: (value){
                             if(value!.isEmpty){
                               return "Veuillez saisir votre message!";
@@ -78,7 +64,7 @@ class _NousContactezState extends State<NousContactez> {
                           },
                           style: TextStyle(color: Colors.blueGrey),
                           decoration: InputDecoration(
-                            hintText: "Message",
+                            hintText: "Rédiger votre message...",
                             suffixIcon: Icon(Icons.message_outlined),
                             hintStyle: TextStyle(color: Colors.blueGrey),
                             suffixIconColor: Colors.grey,
@@ -90,6 +76,11 @@ class _NousContactezState extends State<NousContactez> {
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(
                                 color: Colors.blueGrey,
+                              ),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.red,
                               ),
                             ),
                           ),
@@ -126,11 +117,11 @@ class _NousContactezState extends State<NousContactez> {
                     padding: EdgeInsets.symmetric(horizontal: 5),
                         child: TextButton.icon(
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(Colors.cyanAccent)
+                              backgroundColor: MaterialStateProperty.all(Colors.blueGrey)
                             ),
                             onPressed: (){
-                          _ContactezNous(numero: "+261 32 75 637 70", action: "tel");
-                        }, icon: Icon(Icons.phone_outlined), label: Text("Contactez-nous"),
+                          ContactezNous(numero: "+261 32 75 637 70", action: "tel");
+                        }, icon: Icon(Icons.phone_outlined, color: Colors.white,), label: Text("Contactez-nous", style: style_google.copyWith(color: Colors.white),),
                     )
                   )
                 ],
@@ -141,24 +132,33 @@ class _NousContactezState extends State<NousContactez> {
     );
   }
 
-  void validation() async{
-    final FormState _formkey = _key!.currentState!;
-    if(_formkey.validate()){
-      sendBulkSMS(phoneNumbers, message!);
+  void _createAvis() async {
+    print("Nous somme là");
+    ApiResponse apiResponse = await createAvis(message: message.text);
+    setState(() {
+      message.clear();
+    });
+    if(apiResponse.error == null){
+      Navigator.pop(context);
+      MessageReussi(context, "${apiResponse.data}");
+    }else if(apiResponse.error == avertissement){
+      Navigator.pop(context);
+      MessageAvertissement(context, "${apiResponse.data}");
+    }else if(apiResponse.error == unauthorized){
+      MessageErreurs(context, apiResponse.error);
+      ErreurLogin(context);
     }else{
-      print("Non");
+      Navigator.pop(context);
+      MessageErreurs(context, apiResponse.error);
     }
   }
 
-  void _ContactezNous({String? numero, String? action}) async {
-    final Uri url = Uri(
-        scheme: action,
-        path: numero
-    );
-    if(await canLaunchUrl(url)){
-      await launchUrl(url);
+  void validation() async{
+    final FormState _formkey = _key!.currentState!;
+    if(_formkey.validate()){
+      AutorisationAlertDialog(context: context, message: "Vous êtes sûr?", onLoading: () => _createAvis);
     }else{
-      print("${url}");
+      print("Non");
     }
   }
 }

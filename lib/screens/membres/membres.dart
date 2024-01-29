@@ -138,16 +138,12 @@ class _MembresState extends State<MembresScreen> {
                             child: ListTile(
                               leading: Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 7),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(250), // Image border
-                                  child: SizedBox.fromSize(
-                                    size: Size.fromRadius(23), // Image radius
-                                    child: Image.asset('assets/photo.png', fit: BoxFit.cover),
-                                  ),
+                                child: CircleAvatar(
+                                  backgroundImage: AssetImage("assets/photo.png"),
                                 ),
                               ),
                               title: Text("${membres.numero_carte}", style: TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.bold),),
-                              subtitle: Text("${membres.nom} ${membres.prenom}", style: TextStyle(fontSize: 13),),
+                              subtitle: Text("${membres.nom} ${membres.prenom ?? ''}", style: TextStyle(fontSize: 13),),
                             ),
                           ),
                         );

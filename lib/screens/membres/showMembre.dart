@@ -123,9 +123,15 @@ class _ShowMembresState extends State<ShowMembres> {
           icon: Icon(Icons.arrow_back, color: Colors.blueGrey,),
         ),
         actions: [
-          compte != 4 ? SizedBox() : IconButton(onPressed: (){}, icon: Icon(Icons.call, color: Colors.blueGrey,)),
-          compte != 4 ? SizedBox() :IconButton(onPressed: (){}, icon: Icon(Icons.sms, color: Colors.blueGrey,)),
-          compte != 4 ? SizedBox() : membre!.lien_membre_id == 0 ? SizedBox() : IconButton(onPressed: (){}, icon: Icon(Icons.email, color: Colors.blueGrey,)),
+          compte != 4 ? SizedBox() : IconButton(onPressed: (){
+            ContactezNous(numero: "${membre!.contact_personnel}", action: "tel");
+          }, icon: Icon(Icons.call, color: Colors.blueGrey,)),
+          compte != 4 ? SizedBox() :IconButton(onPressed: (){
+            ContactezNous(numero: "${membre!.contact_personnel}", action: "sms");
+          }, icon: Icon(Icons.sms, color: Colors.blueGrey,)),
+          compte != 4 ? SizedBox() : membre!.lien_membre_id == 0 ? SizedBox() : IconButton(onPressed: (){
+
+          }, icon: Icon(Icons.email, color: Colors.blueGrey,)),
         ],
       ),
       body:
@@ -230,10 +236,14 @@ class _ShowMembresState extends State<ShowMembres> {
             CardText(context, iconData: Icons.stacked_bar_chart_sharp, value: "${niveau!.niveau}"),
             SizedBox(height: 10,),
             TextTitre(name: "Contact Personnel"),
-            CardText(context, iconData: Icons.phone_outlined, value: "${membre!.contact_personnel}"),
+            GestureDetector(child: CardText(context, iconData: Icons.phone_outlined, value: "${membre!.contact_personnel}"), onTap: (){
+              ContactezNous(numero: "${membre!.contact_personnel}", action: "tel");
+            },),
             SizedBox(height: 10,),
             TextTitre(name: "Contact Tuteur"),
-            CardText(context, iconData: Icons.phone, value: "${membre!.contact_tutaire}"),
+            GestureDetector(child: CardText(context, iconData: Icons.phone, value: "${membre!.contact_tutaire}"), onTap: (){
+              ContactezNous(numero: "${membre!.contact_tutaire}", action: "tel");
+            },),
             SizedBox(height: 10,),
             TextTitre(name: "Adresse"),
             CardText(context, iconData: Icons.location_city, value: "${membre!.adresse}"),

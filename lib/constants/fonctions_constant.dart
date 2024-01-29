@@ -5,11 +5,43 @@ import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 TextStyle style_google = GoogleFonts.k2d(color: Colors.blueGrey);
 
 void ErreurLogin(BuildContext context){
   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false);
+}
+
+void AutorisationAlertDialog({BuildContext? context, String? message, required Function onLoading}){
+  showDialog(
+      context: context!,
+      barrierDismissible: true,
+      builder: (BuildContext buildContext){
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          content: SizedBox(
+            height: 65,
+            child: Column(
+              children: [
+                SizedBox(height: 20,),
+                Text(message!, textAlign: TextAlign.center,style: GoogleFonts.roboto(color: Colors.blueGrey, fontSize: 17),),
+              ],
+            ),
+          ),
+          contentPadding: EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0),
+          actions: [
+            TextButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                },
+                child: Text("Non", style: TextStyle(color: Colors.redAccent),)),
+            TextButton(
+                onPressed: onLoading()
+                , child: Text("Oui",style: TextStyle(color: Colors.lightBlue),)),
+          ],
+        );
+      });
 }
 
 void MessageErreurs(BuildContext context, String? message){
@@ -38,6 +70,18 @@ void MessageReussi(BuildContext context, String? message){
       context: context,
       builder: (BuildContext context) => MessageSuccess(context, message)
   );
+}
+
+void ContactezNous({String? numero, String? action}) async {
+  final Uri url = Uri(
+      scheme: action,
+      path: numero
+  );
+  if(await canLaunchUrl(url)){
+    await launchUrl(url);
+  }else{
+    print("${url}");
+  }
 }
 
 void onLoadingLogin(BuildContext context){

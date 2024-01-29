@@ -1,5 +1,6 @@
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/models/users.dart';
 import 'package:aeutna/screens/auth/login.dart';
@@ -24,8 +25,6 @@ class _NouvelConversationState extends State<NouvelConversation> {
   Future _getallUsers() async{
 
     ApiResponse apiResponse = await getAllUsers();
-    print("******************* ${apiResponse.error} ****************** ${apiResponse.data} **************************");
-
     if(apiResponse.error == null){
       setState(() {
         _usersList = apiResponse.data as List<dynamic>;
@@ -120,30 +119,28 @@ class _NouvelConversationState extends State<NouvelConversation> {
                   itemCount: _usersList.length,
                   itemBuilder: (BuildContext context, int index){
                     Users users = _usersList[index];
-                    return GestureDetector(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (ctx) => SendMessage(users: users!,)));
-                      },
-                      child: Card(
-                        elevation: 1,
-                        child: ListTile(
-                          leading: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 7),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(250), // Image border
-                              child: SizedBox.fromSize(
-                                size: Size.fromRadius(23), // Image radius
-                                child: Image.asset('assets/photo.png', fit: BoxFit.cover),
-                              ),
-                            ),
+                    return Card(
+                      margin: EdgeInsets.symmetric(horizontal: 2,vertical: 2),
+                      shape: Border(
+                          left: BorderSide(
+                              color: Colors.blueGrey,
+                              width: 2
+                          )
+                      ),
+                      elevation: 1,
+                      child: ListTile(
+                        leading: Padding(
+                          padding: EdgeInsets.all(10),
+                          child: CircleAvatar(
+                            backgroundImage: AssetImage("assets/photo.png"),
                           ),
-                          title: Expanded(child: Text("${users.pseudo}", style: TextStyle(color: Colors.blueGrey, fontSize: 15, fontWeight: FontWeight.bold),)),
-                          subtitle: Text("${users.email}"),
                         ),
+                        title: Text("${users.pseudo}", style: style_google.copyWith(fontWeight: FontWeight.bold),),
+                        subtitle: Text("${users.email}",style: style_google.copyWith(fontSize: 14),),
+                        trailing: Icon(Icons.chevron_right, color: Colors.blueGrey,),
                       ),
                     );
-                  }),
-              onRefresh: (){
+                  }), onRefresh: (){
             return _getallUsers();
           })
           ),

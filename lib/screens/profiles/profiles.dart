@@ -8,6 +8,7 @@ import 'package:aeutna/models/membres.dart';
 import 'package:aeutna/models/niveau.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/auth/login.dart';
+import 'package:aeutna/screens/avis/avis.dart';
 import 'package:aeutna/screens/avis/nous_contactez.dart';
 import 'package:aeutna/screens/axes/axes.dart';
 import 'package:aeutna/screens/filieres/filieres.dart';
@@ -15,6 +16,7 @@ import 'package:aeutna/screens/fonctions/fonctions.dart';
 import 'package:aeutna/screens/message%20groupe/message_groupe.dart';
 import 'package:aeutna/screens/niveau/niveau.dart';
 import 'package:aeutna/screens/profiles/apropos.dart';
+import 'package:aeutna/screens/utilisateurs/users.dart';
 import 'package:aeutna/services/axes_services.dart';
 import 'package:aeutna/services/filieres_services.dart';
 import 'package:aeutna/services/fonctions_services.dart';
@@ -232,6 +234,7 @@ class _ProfilesState extends State<Profiles> {
                 ),
               ),
               WidgetListTitle(title: "Messages Groupe", leading: Icons.message_rounded, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => MessagesGroupes ()))),
+              WidgetListTitle(title: "Message Membres", leading: Icons.mail_rounded, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => AvisScreen()))),
               WidgetListTitle(title: "Avis", leading: Icons.question_mark_outlined, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => NousContactez()))),
               FiltreAll(),
               WidgetListTitle(title: "Déconnections", leading: Icons.logout_outlined, trailing: Icons.chevron_right, onTap: () => () => deconnectionAlertDialog(context)),
@@ -578,6 +581,19 @@ class _ProfilesState extends State<Profiles> {
                         TextButton(onPressed: (){
                           Navigator.pop(context);
                         }, child:  Text("Modifier le profil", style: TextStyle(color: Colors.white),),)
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.people, color: Colors.white,),
+                        SizedBox(width: 10,),
+                        TextButton(onPressed: (){
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => UsersScreen()), (route) => false);
+                        }, child:  Text("Listes des utilisateurs", style: TextStyle(color: Colors.white),),)
                       ],
                     ),
                   ),

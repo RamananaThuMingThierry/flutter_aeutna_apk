@@ -75,6 +75,7 @@ class _SendMessageState extends State<SendMessage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+            elevation: 1,
             backgroundColor: Colors.white,
             leading: IconButton(onPressed: (){
               Navigator.pop(context);
@@ -201,6 +202,7 @@ class _SendMessageState extends State<SendMessage> {
                           });
                         }
                       },
+                      onEditingComplete: (){},
                       decoration: InputDecoration(
                         label: Text("Envoyer un message..."),
                         enabledBorder: OutlineInputBorder(
