@@ -48,12 +48,12 @@ class _RegisterState extends State<Register> {
     }
   }
 
-void _saveAndRedirectToHome(User user) async{
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  sharedPreferences.setString('token', user.token ?? '');
-  sharedPreferences.setInt('userId', user.id ?? 0);
-  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Acceuil()), (route) => false);
-}
+  void _saveAndRedirectToHome(User user) async{
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setString('token', user.token ?? '');
+    sharedPreferences.setInt('userId', user.id ?? 0);
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Acceuil()), (route) => false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +121,7 @@ void _saveAndRedirectToHome(User user) async{
                               })
                             },
                             validator:() => (value){
-                              if(value == ""){
+                              if(value == "") {
                                 return "Veuillez saisir votre nom!";
                               }
                             },
