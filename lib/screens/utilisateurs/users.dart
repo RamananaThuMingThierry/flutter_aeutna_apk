@@ -4,6 +4,7 @@ import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/constants/onLoadingMembreShimmer.dart';
 import 'package:aeutna/models/users.dart';
 import 'package:aeutna/screens/Acceuil.dart';
+import 'package:aeutna/screens/utilisateurs/showUsers.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:flutter/material.dart';
 
@@ -22,8 +23,8 @@ class _UsersScreenState extends State<UsersScreen> {
   TextEditingController pseudo = TextEditingController();
   TextEditingController search = TextEditingController();
 
-  Future _getallUsers() async{
-    ApiResponse apiResponse = await getAllUsers();
+  Future _getallUsersValide() async{
+    ApiResponse apiResponse = await getAllUsersValide();
     setState(() {
       pseudo.clear();
       search.clear();
@@ -45,7 +46,7 @@ class _UsersScreenState extends State<UsersScreen> {
 
   @override
   void initState() {
-    _getallUsers();
+    _getallUsersValide();
     super.initState();
   }
 
@@ -56,7 +57,7 @@ class _UsersScreenState extends State<UsersScreen> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: (){
-            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Acceuil()), (route) => false);
+            Navigator.pop(context);
           },
           icon: Icon(Icons.keyboard_backspace, color: Colors.blueGrey,),
         ),
@@ -65,7 +66,7 @@ class _UsersScreenState extends State<UsersScreen> {
         actions: [
           IconButton(onPressed: (){}, icon: Icon(Icons.people, color: Colors.blueGrey,))
         ],
-        title: Text("Liste des utilisateurs", style: style_google.copyWith(fontWeight: FontWeight.bold),),
+        title: Text("Utilisateurs", style: style_google.copyWith(fontWeight: FontWeight.bold),),
       ),
       body: loading
           ? OnLoadingMembreShimmer()
@@ -84,6 +85,7 @@ class _UsersScreenState extends State<UsersScreen> {
                       ),
                       elevation: 1,
                       child: ListTile(
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => ShowUsers(user: users!))),
                         leading: Padding(
                           padding: EdgeInsets.all(10),
                           child: CircleAvatar(
@@ -96,7 +98,7 @@ class _UsersScreenState extends State<UsersScreen> {
                       ),
                     );
                   }), onRefresh: (){
-                return _getallUsers();
+                return _getallUsersValide();
           })
     );
   }

@@ -3,6 +3,7 @@ import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/constants/onLoadingPostShimmer.dart';
 import 'package:aeutna/models/post.dart';
+import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/screens/post/commentaires/commentaires.dart';
 import 'package:aeutna/services/post_services.dart';
@@ -13,7 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Publication extends StatefulWidget {
-  const Publication({Key? key}) : super(key: key);
+  User user;
+  Publication({required this.user});
 
   @override
   State<Publication> createState() => _PublicationState();
@@ -82,7 +84,11 @@ class _PublicationState extends State<Publication> {
         shape: Border(
             bottom: BorderSide(width: .5, color: Colors.grey)
         ),
-        leading: Padding(
+        leading: widget.user.roles == "Administrateurs"
+            ? IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: Icon(Icons.keyboard_backspace, color: Colors.blueGrey,))
+            :Padding(
           padding: const EdgeInsets.all(8.0),
           child: CircleAvatar(
               backgroundImage: AssetImage("assets/logo.jpeg"),
@@ -92,12 +98,21 @@ class _PublicationState extends State<Publication> {
         title: Text("A.E.U.T.N.A", style: style_google.copyWith(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
         actions: [
+          widget.user.roles == "Administrateurs"
+              ?
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 7),
             child: CircleAvatar(
               radius: 20,
-              backgroundImage: AssetImage("assets/photo.png"),
+              backgroundImage: AssetImage("assets/logo.jpeg"),
             )
+          ):
+          Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 7),
+              child: CircleAvatar(
+                radius: 20,
+                backgroundImage: AssetImage("assets/photo.png"),
+              )
           ),
         ],
       ),

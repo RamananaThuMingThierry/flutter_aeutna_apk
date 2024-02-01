@@ -59,6 +59,73 @@ Future<ApiResponse> getAllUsers() async{
   return apiResponse;
 }
 
+/** ---------------- Get alL Users En attente---------------- **/
+Future<ApiResponse> getAllUsersEnAttente() async{
+  ApiResponse apiResponse = ApiResponse();
+
+  try{
+    String token = await getToken();
+    var url = Uri.parse(userURL+"_en_attente");
+    final response = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+
+    switch(response.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['user'].map((p) => Users.fromJson(p)).toList();
+        apiResponse.data as List<dynamic>;
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+/** ---------------- Get alL Users Valide ---------------- **/
+Future<ApiResponse> getAllUsersValide() async{
+  ApiResponse apiResponse = ApiResponse();
+
+  try{
+    String token = await getToken();
+    var url = Uri.parse(userURL+"_valide");
+    final response = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+
+    switch(response.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['user'].map((p) => Users.fromJson(p)).toList();
+        apiResponse.data as List<dynamic>;
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
 
 Future<ApiResponse> getUserDetail() async{
   ApiResponse apiResponse = ApiResponse();
@@ -191,8 +258,6 @@ Future<ApiResponse> register({String? pseudo, String? email, String? mot_de_pass
           'mot_de_passe_confirmation': mot_de_passe
         }
     );
-
-    print("----------------> status: ${response.statusCode}");
 
     switch(response.statusCode){
       case 200:

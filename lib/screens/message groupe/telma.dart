@@ -1,3 +1,8 @@
+import 'package:aeutna/api/api_response.dart';
+import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/constants/fonctions_constant.dart';
+import 'package:aeutna/models/numero.dart';
+import 'package:aeutna/services/membres_services.dart';
 import 'package:aeutna/widgets/button.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -13,11 +18,32 @@ class Telma extends StatefulWidget {
 class _TelmaState extends State<Telma> {
   // Déclarations des variables
   String? message;
-  List<String> phoneNumbers = ["0327563770", "0329790536","0325965197", "0382921685","0324060777","0327339964","0322274385","0328111011"];
+  List<String> phoneNumbers = [];
+  List<dynamic> _numeroList = [];
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
 
-  RegExp regExp = RegExp(r'''
-(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$''');
+  Future _getAllListPuceTelma() async{
+    ApiResponse apiResponse = await getAllNumero("034");
+    if(apiResponse.error == null){
+      setState(() {
+        List<dynamic> numeroList = apiResponse.data as List<dynamic>;
+        List<Numero> numero = numeroList.map((p) => Numero.fromJson(p)).toList();
+        setState(() {
+          _numeroList = numero;
+        });
+      });
+      for(int i =0; i < _numeroList.length ; i++){
+        setState(() {
+          phoneNumbers.add(_numeroList[i].contact_personnel.toString());
+        });
+      }
+    }else if(apiResponse.error == unauthorized){
+      ErreurLogin(context);
+    }else{
+      MessageErreurs(context, "${apiResponse.error}");
+    }
+  }
+
 
   void sendBulkSMS(List<String> phoneNumbers, String message) async {
     String numbers = phoneNumbers.join(",");
@@ -31,11 +57,17 @@ class _TelmaState extends State<Telma> {
   }
 
   @override
+  void initState() {
+    _getAllListPuceTelma();
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: Text("Telma"),
+        elevation: 0,
+        title: Text("Telma", style: style_google.copyWith(color: Colors.white),),
         actions: [
           IconButton(onPressed: (){}, icon: Icon(Icons.sim_card_outlined))
         ],
@@ -47,54 +79,92 @@ class _TelmaState extends State<Telma> {
             child: Container(
               child: Column(
                 children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    width: double.infinity,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        // Mot de passe
-                        TextFormField(
-                          onChanged: (value){
-                            setState(() {
-                              message = value;
-                            });
-                          },
-                          validator: (value){
-                            if(value!.isEmpty){
-                              return "Veuillez saisir votre message!";
-                            }
-                          },
-                          style: TextStyle(color: Colors.blueGrey),
-                          decoration: InputDecoration(
-                            hintText: "Message",
-                            suffixIcon: Icon(Icons.message_outlined),
-                            hintStyle: TextStyle(color: Colors.blueGrey),
-                            suffixIconColor: Colors.grey,
-                            enabledBorder : UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors.grey
+                  Card(
+                    shape: Border(
+                      //  bottom: BorderSide(color: Colors.orangeAccent, width: 2),
+                    ),
+                    elevation: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                      child: Row(
+                        children: [
+                          Text("Nombres : ", style: style_google.copyWith(color: Colors.green),),
+                          Text("Il y a ${phoneNumbers.length} numéro", style: style_google.copyWith(color: Colors.black54),),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Card(
+                    margin: EdgeInsets.symmetric(horizontal: 5),
+                    elevation: 1,
+                    shape: Border(),
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      width: double.infinity,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          TextFormField(
+                            enabled: phoneNumbers.length == 0 ? false : true,
+                            onChanged: (value){
+                              setState(() {
+                                message = value;
+                              });
+                            },
+                            validator: (value){
+                              if(value!.isEmpty){
+                                return "Veuillez saisir votre message!";
+                              }
+                            },
+                            style: TextStyle(color: Colors.blueGrey),
+                            decoration: InputDecoration(
+                              hintText: "Rédiger votre message",
+                              suffixIcon: Icon(Icons.message_outlined),
+                              hintStyle: TextStyle(color: Colors.blueGrey),
+                              suffixIconColor: Colors.grey,
+                              enabledBorder : OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.grey
+                                ),
+                              ),
+                              disabledBorder : OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.grey
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.green,
+                                ),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.red
+                                  )
                               ),
                             ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.green,
+                            maxLines: 10,
+                          ),
+                          SizedBox(height: 5,),
+                          //Button
+                          InkWell(
+                            onTap: () => phoneNumbers.length == 0 ? null : validation(),
+                            child: Container(
+                              height: 40,
+                              color: phoneNumbers.length == 0 ? Colors.grey : Colors.lightBlue,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text("Envoyer", style: style_google.copyWith(color: Colors.white, fontWeight: FontWeight.bold),),
+                                  SizedBox(width: 10,),
+                                  Icon(Icons.send,color: Colors.white,)
+                                ],
                               ),
                             ),
                           ),
-                          maxLines: 10,
-                        )
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 5,),
-                  //Button
-                  Container(
-                    width: 325,
-                    child: Button(
-                        color: Colors.lightBlue,
-                        onPressed: () => validation,
-                        name: "Envoyer"),
                   ),
                 ],
               ),
@@ -107,7 +177,9 @@ class _TelmaState extends State<Telma> {
   void validation() async{
     final FormState _formkey = _key!.currentState!;
     if(_formkey.validate()){
-      sendBulkSMS(phoneNumbers, message!);
+      phoneNumbers.length == 0
+          ? print("Il n'y a pas d'action")
+          : sendBulkSMS(phoneNumbers, message!);
     }else{
       print("Non");
     }

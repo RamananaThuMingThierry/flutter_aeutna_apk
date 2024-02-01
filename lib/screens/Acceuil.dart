@@ -27,7 +27,6 @@ class _AcceuilState extends State<Acceuil> {
 
   void getUsers() async{
     ApiResponse apiResponse = await getUserDetail();
-    print("ApiResponse : ${apiResponse.data}");
     if(apiResponse.error == null){
       setState(() {
         users = apiResponse.data as User?;
@@ -51,7 +50,7 @@ class _AcceuilState extends State<Acceuil> {
   Widget build(BuildContext context) {
 
     List<Widget> page = [
-      Publication(),
+      Publication(user: users!,),
       Container(),
       Container(),
       MembresScreen(),

@@ -146,3 +146,45 @@ void onLoadingDeconnection(BuildContext context){
         );
       });
 }
+
+void ActionsCallOrMessage(BuildContext context, String? numero){
+  showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(2)),
+          ),
+          contentPadding: EdgeInsets.all(0.0),
+          insetPadding: EdgeInsets.symmetric(horizontal: 50),
+          content: Padding(
+            padding: EdgeInsets.symmetric(vertical: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton.icon(
+                    onPressed: (){
+                      Navigator.pop(context);
+                      ContactezNous(numero: numero, action: "tel");
+                    },
+                    icon: Icon(Icons.call_outlined, color: Colors.blue,),
+                    label: Text("Appeler", style: style_google.copyWith(fontWeight: FontWeight.w500),)),
+                Container(
+                  color: Colors.grey,
+                  width: .5,
+                  height: 25,
+                ),
+                TextButton.icon(
+                    onPressed: (){
+                      Navigator.pop(context);
+                      ContactezNous(numero: numero, action: "sms");
+                    },
+                    icon: Icon(Icons.sms_outlined, color: Colors.lightBlue,),
+                    label: Text("Message", style: style_google.copyWith(fontWeight: FontWeight.w500),)),
+              ],
+            ),
+          ),
+        );
+      });
+}

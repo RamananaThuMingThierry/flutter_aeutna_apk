@@ -6,8 +6,6 @@ import 'package:aeutna/models/membres.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/screens/membres/showMembre.dart';
 import 'package:aeutna/services/membres_services.dart';
-import 'package:aeutna/services/user_services.dart';
-import 'package:aeutna/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
 
 class MembresScreen extends StatefulWidget {
@@ -34,12 +32,9 @@ class _MembresState extends State<MembresScreen> {
         loading = loading ? !loading : loading;
       });
     }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+      ErreurLogin(context);
     }else{
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
-      );
+      MessageErreurs(context, "${apiResponse.error}");
     }
   }
 
@@ -56,22 +51,23 @@ class _MembresState extends State<MembresScreen> {
       backgroundColor: Colors.grey,
       appBar: AppBar(
         elevation: 0,
-        centerTitle: true,
         actions: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 7),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(250), // Image border
-              child: SizedBox.fromSize(
-                size: Size.fromRadius(23), // Image radius
-                child: Image.asset('assets/logo.jpeg', fit: BoxFit.cover),
-              ),
-            ),
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+            child: CircleAvatar(
+              radius: 15,
+              backgroundImage: AssetImage("assets/logo.jpeg"),
+            )
           )
         ],
-        title: Text("MEMBRES A.E.U.T.N.A", style: style_google.copyWith(fontWeight: FontWeight.bold)),
+        title: Text("Membres", style: style_google.copyWith(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
-        leading: Icon(Icons.people, color: Colors.blueGrey,),
+        leading: IconButton(
+          onPressed: (){
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.keyboard_backspace, color: Colors.blueGrey,),
+        ),
       ),
       body: Column(
         children: [

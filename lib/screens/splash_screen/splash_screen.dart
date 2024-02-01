@@ -3,6 +3,7 @@ import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/Acceuil.dart';
+import 'package:aeutna/screens/admin/administrateurs.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -17,7 +18,8 @@ class SplashScreen extends StatefulWidget{
 }
 
 class SplashScreenState extends State<SplashScreen>{
-
+  User? users;
+  
   void _loading() async{
     String token = await getToken();
     print("Token $token");
@@ -26,10 +28,16 @@ class SplashScreenState extends State<SplashScreen>{
     }else{
       ApiResponse apiResponse = await getUserDetail();
 
-      print("${apiResponse.error}");
-
       if(apiResponse.error == null){
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (ctx) => Acceuil()), (route) => false);
+        setState(() {
+          users = apiResponse.data as User?;
+        });
+        print(users!.image);
+        if(users!.roles == "Administrateurs"){
+          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (ctx) => AdministrateursScreen(user: users!)), (route) => false);
+        }else{
+          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (ctx) => Acceuil()), (route) => false);
+        }
       }else if(apiResponse.error == unauthorized){
         ErreurLogin(context);
       }else{
