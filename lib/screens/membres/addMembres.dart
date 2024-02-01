@@ -1,6 +1,16 @@
 import 'dart:io';
 
+import 'package:aeutna/api/api_response.dart';
+import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
+import 'package:aeutna/models/axes.dart';
+import 'package:aeutna/models/filieres.dart';
+import 'package:aeutna/models/fonctions.dart';
+import 'package:aeutna/models/niveau.dart';
+import 'package:aeutna/services/axes_services.dart';
+import 'package:aeutna/services/filieres_services.dart';
+import 'package:aeutna/services/fonctions_services.dart';
+import 'package:aeutna/services/niveau_services.dart';
 import 'package:aeutna/widgets/ligne_horizontale.dart';
 import 'package:aeutna/widgets/myTextFieldForm.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +33,91 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
   File? imageFiles;
   CroppedFile? croppedImage;
   final _key = GlobalKey<FormState>();
+
+  /** -------------------------- Axes ----------------------------------------- **/
+  int selectedAxesId = 1;
+  List<Axes> _axesList = [];
+  Future _getallAxes() async{
+    ApiResponse apiResponse = await getAllAxes();
+    if(apiResponse.error == null){
+      List<dynamic> axesList = apiResponse.data as List<dynamic>;
+      List<Axes> axes = axesList.map((p) => Axes.fromJson(p)).toList();
+      setState(() {
+        _axesList = axes;
+      });
+    }else if(apiResponse.error == unauthorized){
+      MessageErreurs(context, "${apiResponse.data}");
+      ErreurLogin(context);
+    }else{
+      MessageErreurs(context, apiResponse.error);
+    }
+  }
+
+  /** -------------------------- Fonctions ----------------------------------------- **/
+  int selectedFonctionsId = 1;
+  List<FonctionModel> _listFonctions = [];
+  Future _getAllFonctions() async{
+    ApiResponse apiResponse = await getAllFonctions();
+    if(apiResponse.error == null){
+      List<dynamic> fonctionsList = apiResponse.data as List<dynamic>;
+      List<FonctionModel> fonctions = fonctionsList.map((p) => FonctionModel.fromJson(p)).toList();
+      setState(() {
+        _listFonctions = fonctions;
+      });
+    }else if(apiResponse.error == unauthorized){
+      MessageErreurs(context, "${apiResponse.data}");
+      ErreurLogin(context);
+    }else{
+      MessageErreurs(context, apiResponse.error);
+    }
+  }
+
+  /** -------------------------- Filières ----------------------------------------- **/
+  int selectedFilieresId = 1;
+  List<Filieres> _listFilieres = [];
+  Future _getAllFilieres() async{
+    ApiResponse apiResponse = await getAllFilieres();
+    if(apiResponse.error == null){
+      List<dynamic> filieresList = apiResponse.data as List<dynamic>;
+      List<Filieres> filieres = filieresList.map((p) => Filieres.fromJson(p)).toList();
+      setState(() {
+        _listFilieres = filieres;
+      });
+    }else if(apiResponse.error == unauthorized){
+      MessageErreurs(context, "${apiResponse.data}");
+      ErreurLogin(context);
+    }else{
+      MessageErreurs(context, apiResponse.error);
+    }
+  }
+
+  /** -------------------------- Niveau ----------------------------------------- **/
+  int selectedNiveauId = 1;
+  List<Niveau> _listNiveau = [];
+  Future _getAllNiveau() async{
+    ApiResponse apiResponse = await getAllNiveau();
+    if(apiResponse.error == null){
+      List<dynamic> niveauList = apiResponse.data as List<dynamic>;
+      List<Niveau> niveau = niveauList.map((p) => Niveau.fromJson(p)).toList();
+      setState(() {
+        _listNiveau = niveau;
+      });
+    }else if(apiResponse.error == unauthorized){
+      MessageErreurs(context, "${apiResponse.data}");
+      ErreurLogin(context);
+    }else{
+      MessageErreurs(context, apiResponse.error);
+    }
+  }
+
+  @override
+  void initState() {
+    _getallAxes();
+    _getAllFonctions();
+    _getAllFilieres();
+    _getAllNiveau();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +245,6 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                   ],
                                 ),
                                 Ligne(color: Colors.grey),
-                                Titre("Axes"),
                                 Row(
                                   children: [
 
@@ -172,7 +266,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                     textInputType: TextInputType.text,
                                     edit: false,
                                     value: ""),
-                                Titre("Facebook"),
+                                Titre("C.I.N"),
                                 MyTextFieldForm(
                                     name: "C.I.N",
                                     onChanged: () => (value){
@@ -190,6 +284,110 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                     textInputType: TextInputType.number,
                                     edit: false,
                                     value: ""),
+                                Titre("Fonctions"),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.account_tree, color: Colors.grey,),
+                                      SizedBox(width: 10,),
+                                      DropdownButton(
+                                          underline: SizedBox(height: 0,),
+                                          hint: Text("Sélectionner votre fonctions                  "),
+                                          value: selectedFonctionsId,
+                                          items: _listFonctions.map((fonction){
+                                            return DropdownMenuItem(
+                                                value: fonction.id,
+                                                child: Tooltip(message: fonction.fonctions!, child: Center(child: Text(fonction.fonctions!, style: style_google.copyWith(color: Colors.grey),)))
+                                            );
+                                          }).toList(),
+                                          onChanged: (value){
+                                            setState(() {
+                                              selectedFonctionsId = value as int;
+                                            });
+                                          }),
+                                    ],
+                                  ),
+                                ),
+                                Ligne(color: Colors.grey),
+                                Titre("Filières"),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.local_library_sharp, color: Colors.grey,),
+                                      SizedBox(width: 10,),
+                                      DropdownButton(
+                                          underline: SizedBox(height: 0,),
+                                          hint: Text("Sélectionner votre filière                         "),
+                                          value: selectedFilieresId,
+                                          items: _listFilieres.map((filiere){
+                                            return DropdownMenuItem(
+                                                value: filiere.id,
+                                                child: Tooltip(message: filiere.nom_filieres!, child: Center(child: Text(filiere.nom_filieres!, style: style_google.copyWith(color: Colors.grey),)))
+                                            );
+                                          }).toList(),
+                                          onChanged: (value){
+                                            setState(() {
+                                              selectedFilieresId = value as int;
+                                            });
+                                          }),
+                                    ],
+                                  ),
+                                ),
+                                Ligne(color: Colors.grey),
+                                Titre("Niveau"),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.stacked_bar_chart, color: Colors.grey,),
+                                      SizedBox(width: 10,),
+                                      DropdownButton(
+                                          underline: SizedBox(height: 0,),
+                                          hint: Text("Sélectionner votre niveau                       "),
+                                          value: selectedNiveauId,
+                                          items: _listNiveau.map((niveau){
+                                            return DropdownMenuItem(
+                                                value: niveau.id,
+                                                child: Tooltip(message: niveau.niveau!, child: Center(child: Text(niveau.niveau!, style: style_google.copyWith(color: Colors.grey),)))
+                                            );
+                                          }).toList(),
+                                          onChanged: (value){
+                                            setState(() {
+                                              selectedNiveauId = value as int;
+                                            });
+                                          }),
+                                    ],
+                                  ),
+                                ),
+                                Ligne(color: Colors.grey),
+                                Titre("Axes"),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.local_library_sharp, color: Colors.grey,),
+                                      SizedBox(width: 10,),
+                                      DropdownButton(
+                                          underline: SizedBox(height: 0,),
+                                          hint: Text("Sélectionner votre axes                           "),
+                                          value: selectedAxesId,
+                                          items: _axesList.map((axes){
+                                            return DropdownMenuItem(
+                                                value: axes.id,
+                                                child: Tooltip(message: axes.nom_axes!, child: Center(child: Text(axes.nom_axes!, style: style_google.copyWith(color: Colors.grey),)))
+                                            );
+                                          }).toList(),
+                                          onChanged: (value){
+                                            setState(() {
+                                              selectedAxesId = value as int;
+                                            });
+                                          }),
+                                    ],
+                                  ),
+                                ),
+                                Ligne(color: Colors.grey),
                                 Titre("Adresse"),
                                 MyTextFieldForm(
                                     name: "Adresse",
