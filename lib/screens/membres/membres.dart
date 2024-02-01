@@ -4,6 +4,7 @@ import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/constants/onLoadingMembreShimmer.dart';
 import 'package:aeutna/models/membres.dart';
 import 'package:aeutna/screens/auth/login.dart';
+import 'package:aeutna/screens/membres/addMembres.dart';
 import 'package:aeutna/screens/membres/showMembre.dart';
 import 'package:aeutna/services/membres_services.dart';
 import 'package:flutter/material.dart';
@@ -147,6 +148,14 @@ class _MembresState extends State<MembresScreen> {
               )
           )
         ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (ctx) => AddMembresScreen()));
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.blueGrey,
       ),
     );
   }

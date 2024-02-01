@@ -14,13 +14,13 @@ class MyTextFieldForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return   TextFormField(
-      style: TextStyle(color: Colors.blueGrey),
+      style: TextStyle(color: Colors.grey),
       initialValue: edit ? value : null,
       decoration: InputDecoration(
         hintText: name,
-        suffixIcon: Icon(iconData),
-        hintStyle: TextStyle(color: Colors.blueGrey),
-        suffixIconColor: Colors.grey,
+        prefixIcon: Icon(iconData),
+        hintStyle: TextStyle(color: Colors.grey),
+        prefixIconColor: Colors.grey,
         enabledBorder : UnderlineInputBorder(
           borderSide: BorderSide(
               color: Colors.grey
@@ -30,6 +30,11 @@ class MyTextFieldForm extends StatelessWidget {
             borderSide: BorderSide(
               color: Colors.blueGrey,
             ),
+        ),
+        errorBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.red,
+          ),
         ),
       ),
       keyboardType: textInputType,
