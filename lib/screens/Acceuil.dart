@@ -42,7 +42,7 @@ class _AcceuilState extends State<Acceuil> {
       Publication(user: users!,),
       Container(),
       Container(),
-      MembresScreen(),
+      MembresScreen(user: users!),
       users == null
           ?
       Container(

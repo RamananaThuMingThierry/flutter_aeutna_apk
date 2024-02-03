@@ -195,8 +195,12 @@ class _ProfilesState extends State<Profiles> {
                       Container(
                         height: status == 0 ?  200 : 145,
                         child: CircleAvatar(
-                          maxRadius: 65,
-                          backgroundImage: AssetImage("assets/photo.png"),
+                          radius: 70,
+                          backgroundColor: Colors.blueGrey,
+                          child: CircleAvatar(
+                            radius: 65,
+                            backgroundImage: AssetImage("assets/photo.png"),
+                          ),
                         ),
                       ),
                         SizedBox(height: 20,),
@@ -260,7 +264,9 @@ class _ProfilesState extends State<Profiles> {
               _textTitre(titre: "Adresse e-mail"),
               _CardText(iconData: Icons.account_box_rounded, value: email),
               _textTitre(titre: "Contact"),
-              _CardText(iconData: Icons.phone, value: contact),
+              GestureDetector(
+                  onTap: () => ActionsCallOrMessage(context, contact),
+                  child: _CardText(iconData: Icons.phone, value: contact)),
               _textTitre(titre: "Rôles"),
               _CardText(iconData: Icons.person, value: roles),
               _textTitre(titre: "Status"),
@@ -330,9 +336,13 @@ class _ProfilesState extends State<Profiles> {
               _textTitre(titre: "Fonctions"),
               _CardText(iconData: Icons.mail, value: fonction),
               _textTitre(titre: "Contact Personnel"),
-              _CardText(iconData: Icons.phone, value: contact),
+              GestureDetector(
+                  onTap: () => ActionsCallOrMessage(context, contact),
+                  child: _CardText(iconData: Icons.phone, value: contact)),
               _textTitre(titre: "Contact Tuteur"),
-              _CardText(iconData: Icons.phone_outlined, value: contact_tutaire),
+              GestureDetector(
+                  onTap: () => ActionsCallOrMessage(context, contact_tutaire),
+                  child: _CardText(iconData: Icons.phone_outlined, value: contact_tutaire)),
               _textTitre(titre: "Adresse"),
               _CardText(iconData: Icons.location_on, value: adresse),
               _textTitre(titre: "Facebook"),

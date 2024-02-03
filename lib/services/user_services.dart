@@ -160,6 +160,44 @@ Future<ApiResponse> getUserDetail() async{
   return apiResponse;
 }
 
+Future<ApiResponse> ValideUser(int userId, int membreId) async{
+  ApiResponse apiResponse = ApiResponse();
+
+  try{
+    String token = await getToken();
+    var url = Uri.parse(userURL+"_valide/${userId}/${membreId}");
+   print(url);
+    final response = await http.put(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        }
+    );
+
+    switch(response.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 404:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+
+  return apiResponse;
+}
+
 Future<ApiResponse> updateUser(String name, String? image) async{
   ApiResponse apiResponse = ApiResponse();
 

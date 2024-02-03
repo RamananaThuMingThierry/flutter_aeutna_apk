@@ -38,6 +38,39 @@ Future<ApiResponse> getAllMembres() async{
   return apiResponse;
 }
 
+/** ---------------- Get alL Membres ---------------- **/
+Future<ApiResponse> getallMembresNAPasUtilisateur() async{
+  ApiResponse apiResponse = ApiResponse();
+
+  try{
+    String token = await getToken();
+    var url = Uri.parse(membresURL+"_getAllUsersNonPasUtilisateurs");
+    final response = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+    switch(response.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['membres'];
+        apiResponse.data as List<dynamic>;
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+
 /** ---------------- Get Numéro ---------------------**/
 Future<ApiResponse> getAllNumero(String? prefixNumero) async{
   ApiResponse apiResponse = ApiResponse();

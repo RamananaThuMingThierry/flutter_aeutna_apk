@@ -1,5 +1,6 @@
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/users.dart';
+import 'package:aeutna/screens/utilisateurs/approuverUtilisateurs.dart';
 import 'package:flutter/material.dart';
 
 class ShowUsers extends StatefulWidget {
@@ -49,7 +50,7 @@ class _ShowUsersState extends State<ShowUsers> {
                     onPressed: (){})
               ],),
             SizedBox(height: 10,),
-            UserInfo(users: data,)
+            UserInfo(users: data,),
           ],
         ),
       ),
@@ -106,12 +107,12 @@ class ProfileHeader extends StatelessWidget{
           ),
           Container(
           width: double.infinity,
-          padding: EdgeInsets.only(top: 160),
+          padding: EdgeInsets.only(top: 100),
           child: Column(
             children: [
               Avatar(
                   image: AssetImage("assets/photo.png"),
-                  radius: 40,
+                  radius: 60,
                   backgroundColor: Colors.white,
                   borderColor: Colors.grey.shade300,
                   borderWith: 4,
@@ -226,7 +227,14 @@ class UserInfo extends StatelessWidget{
                           leading: Icon(users!.status == 0 ? Icons.disabled_by_default_outlined :  Icons.check_box, color: Colors.blueGrey,),
                           title: Text("Status", style: style_google.copyWith(fontWeight: FontWeight.w500),),
                           subtitle: Text("${users!.status == 0 ? "En attente" : "Membre"}"),
-                        )
+                          trailing: users!.status == 0
+                              ? IconButton(
+                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => ApprouverUtilisateurs(users: users!)))
+                            ,
+                            icon: Icon(Icons.check_circle_outlined, color: Colors.blueGrey,),
+                          )
+                              : SizedBox()
+                        ),
                       ])
                 ],
               ),

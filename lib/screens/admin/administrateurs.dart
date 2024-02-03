@@ -157,7 +157,7 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
                             }else if(page.nom == "Fonctions"){
                               Navigator.push(context, MaterialPageRoute(builder: (ctx) => FonctionsScreen()));
                             }else if(page.nom == "Membres"){
-                              Navigator.push(context, MaterialPageRoute(builder: (ctx) => MembresScreen()));
+                              Navigator.push(context, MaterialPageRoute(builder: (ctx) => MembresScreen(user: data!,)));
                             }else if(page.nom == "Message Groupes"){
                               Navigator.push(context, MaterialPageRoute(builder: (ctx) => MessagesGroupes()));
                             }else if(page.nom == "Utilisateurs En attente"){

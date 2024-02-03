@@ -3,6 +3,7 @@ import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/constants/onLoadingMembreShimmer.dart';
 import 'package:aeutna/models/membres.dart';
+import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/screens/membres/addMembres.dart';
 import 'package:aeutna/screens/membres/showMembre.dart';
@@ -11,7 +12,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class MembresScreen extends StatefulWidget {
-  const MembresScreen({Key? key}) : super(key: key);
+  User user;
+  MembresScreen({required this.user});
 
   @override
   State<MembresScreen> createState() => _MembresState();
@@ -19,6 +21,7 @@ class MembresScreen extends StatefulWidget {
 
 class _MembresState extends State<MembresScreen> {
   // Déclarations des variables
+  User? user;
   String? recherche;
   bool loading = true;
   List<Membres> _membresList = [];
@@ -42,6 +45,7 @@ class _MembresState extends State<MembresScreen> {
 
   @override
   void initState() {
+    user = widget.user;
     _getallMembres();
     super.initState();
   }
@@ -157,13 +161,13 @@ class _MembresState extends State<MembresScreen> {
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: user!.roles == "Administrateurs" ? FloatingActionButton(
         onPressed: (){
           Navigator.push(context, MaterialPageRoute(builder: (ctx) => AddMembresScreen()));
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.blueGrey,
-      ),
+      ): SizedBox(),
     );
   }
 }
