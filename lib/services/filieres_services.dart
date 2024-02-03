@@ -60,7 +60,7 @@ Future<ApiResponse> createFilieres({String? nom_filieres}) async{
 
     switch(rep.statusCode){
       case 200:
-        apiResponse.data = jsonDecode(rep.body);
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 401:
         apiResponse.error = unauthorized;

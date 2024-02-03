@@ -75,7 +75,8 @@ Future<ApiResponse> getAllNumero(String? prefixNumero) async{
 }
 
 /** --------------- Créer un Membres ----------------- **/
-Future<ApiResponse> createAxes({
+Future<ApiResponse> createMembre({
+  String? image,
   int? numero_carte,
   String? nom,
   String? prenom,
@@ -98,7 +99,30 @@ Future<ApiResponse> createAxes({
 
   try{
     String token = await getToken();
+
     var url = Uri.parse(membresURL);
+    print(url);
+    print(token);
+    print(
+        "image : $image \n"
+        "Numéro carte : $numero_carte \n"
+        "Nom : $nom \n"
+        "Prénom : $prenom \n"
+        "Date de naissance : $date_de_naissance \n"
+        "Lieu de naissance : $lieu_de_naissance \n"
+        "CIN : $cin \n"
+        "Genre : $genre \n"
+        "Contact personnel $contact_personnel \n"
+        "Contact tuteur : $contact_tutaire \n"
+        "Sympathisant : ${sympathisant == true ? 1 : 0} \n"
+        "Axes_id : $axesId \n"
+        "Filiere_id :$filieres_id \n"
+        "Fonctions_id : $fonctions_id \n"
+        "Niveau_id : $niveau_id \n"
+        "Facebook : $facebook \n"
+        "Adresse : $adresse \n"
+        "Date d'inscription : $date_inscription"
+    );
     final rep = await http.post(
         url,
         headers: {
@@ -106,39 +130,49 @@ Future<ApiResponse> createAxes({
           'Authorization' : 'Bearer $token'
         },
         body: {
-          'numero_carte': numero_carte,
-          'nom' : nom,
-          'prenom' : prenom,
-          'date_de_naissance' : date_de_naissance,
-          'lieu_de_niassence' : lieu_de_naissance,
-          'cin' : cin,
-          'genre' : genre,
-          'contact_personnel': contact_personnel,
-          'contact_tutaire' : contact_tutaire,
-          'sympathisant' : sympathisant,
-          'axes_id': axesId,
-          'filieres_id': filieres_id,
-          'fonctions_id': fonctions_id,
-          'levels_id': niveau_id,
-          'facebook': facebook,
-          'adresse':adresse,
-          'date_inscription': date_inscription
-        }
+              'image' : image,
+              'numero_carte': numero_carte.toString(),
+               'nom' : nom,
+              'prenom' : prenom ?? null,
+               'date_de_naissance' : date_de_naissance,
+              'lieu_de_naissance' : lieu_de_naissance,
+               'cin' : cin,
+              'genre' : genre,
+              'contact_personnel': contact_personnel,
+              'contact_tutaire' : contact_tutaire,
+              'sympathisant' : "${sympathisant == true ? 1 : 0}",
+              'axes_id': axesId.toString(),
+              'filieres_id': filieres_id.toString(),
+              'fonctions_id': fonctions_id.toString(),
+              'levels_id': niveau_id.toString(),
+              'facebook': facebook,
+              'adresse':adresse,
+              'date_inscription': date_inscription
+            }
     );
+
+    print("---------------> status : ${url}");
 
     switch(rep.statusCode){
       case 200:
-        apiResponse.data = jsonDecode(rep.body);
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 422:
+        apiResponse.error = avertissement;
+        String errorMessages = "";
         final errors = jsonDecode(rep.body)['errors'];
-        apiResponse.error = errors[errors.keys.elementAt(0)][0];
+        errors.forEach((field, message) {
+          errorMessages += "* ${message.join(', ')}\n";
+        });
+        apiResponse.data = errorMessages;
         break;
       case 401:
         apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 403:
-        apiResponse.error = jsonDecode(rep.body)['message'];
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       default:
         apiResponse.error = somethingWentWrong;

@@ -36,7 +36,7 @@ class _LoginState extends State<Login> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     await sharedPreferences.setString('token', user.token ?? '');
     await sharedPreferences.setInt('userId', user.id ?? 0);
-    onLoadingLogin(context);
+    onLoadingLogin(context, user);
   }
 
   void loginUser() async{

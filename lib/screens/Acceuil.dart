@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/screens/membres/membres.dart';
@@ -14,7 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Acceuil extends StatefulWidget {
-  const Acceuil({Key? key}) : super(key: key);
+  User? user;
+  Acceuil({required this.user});
 
   @override
   State<Acceuil> createState() => _AcceuilState();
@@ -25,22 +27,9 @@ class _AcceuilState extends State<Acceuil> {
   User? users;
   GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
-  void getUsers() async{
-    ApiResponse apiResponse = await getUserDetail();
-    if(apiResponse.error == null){
-      setState(() {
-        users = apiResponse.data as User?;
-      });
-    }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
-    }else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${apiResponse.error}")));
-    }
-  }
-
   @override
   void initState() {
-    getUsers();
+    users = widget.user;
     super.initState();
   }
 
@@ -71,7 +60,6 @@ class _AcceuilState extends State<Acceuil> {
           :
       Profiles(user: users,),
     ];
-
     return
       Scaffold(
         key: _key,
@@ -88,7 +76,7 @@ class _AcceuilState extends State<Acceuil> {
               });
             }
             if(index == 2){
-              Navigator.push(context, MaterialPageRoute(builder: (ctx) => AjouterPublication()));
+              Navigator.push(context, MaterialPageRoute(builder: (ctx) => AjouterPublication(user: users!)));
               setState(() {
                 currentIndex = 0;
               });

@@ -3,6 +3,7 @@ import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/Acceuil.dart';
+import 'package:aeutna/screens/admin/administrateurs.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/PasswordFiledForm.dart';
@@ -52,7 +53,11 @@ class _RegisterState extends State<Register> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     sharedPreferences.setString('token', user.token ?? '');
     sharedPreferences.setInt('userId', user.id ?? 0);
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Acceuil()), (route) => false);
+    if(user.roles == "Administrateurs"){
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => AdministrateursScreen(user: user,)), (route) => false);
+    }else{
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Acceuil(user: user,)), (route) => false);
+    }
   }
 
   @override

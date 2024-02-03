@@ -25,10 +25,8 @@ class _PublicationState extends State<Publication> {
   List<Post> _postList = [];
   int userId = 0;
   bool loading = true;
-
+  User? users;
   Future retreivePosts() async{
-
-    userId = await getUserId();
     ApiResponse apiResponse = await getAllPosts();
 
     if(apiResponse.error == null){
@@ -64,14 +62,15 @@ class _PublicationState extends State<Publication> {
     if(response.error == null){
       retreivePosts();
     }else if(response.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+      ErreurLogin(context);
     }else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${response.error}")));
+      MessageErreurs(context, "${response.error}");
     }
   }
 
   @override
   void initState() {
+    users = widget.user;
     retreivePosts();
     super.initState();
   }

@@ -10,7 +10,9 @@ import 'package:aeutna/models/niveau.dart';
 import 'package:aeutna/services/axes_services.dart';
 import 'package:aeutna/services/filieres_services.dart';
 import 'package:aeutna/services/fonctions_services.dart';
+import 'package:aeutna/services/membres_services.dart';
 import 'package:aeutna/services/niveau_services.dart';
+import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/ligne_horizontale.dart';
 import 'package:aeutna/widgets/myTextFieldForm.dart';
 import 'package:flutter/material.dart';
@@ -27,9 +29,11 @@ class AddMembresScreen extends StatefulWidget {
 
 class _AddMembresScreenState extends State<AddMembresScreen> {
   // Déclarations des variables
-  DateTime? selectedDate = DateTime.now();
-  int? numero_porte, axes_id, filieres_id, levels_id, fonctions_id;
-  String? image, nom, prenom, contact, date_de_naissance, lieu_de_naissance, cin, contact_personnel, contact_tuteur, facebook, adresse, date_inscription;
+  DateTime? selectedDateDeNaissance = DateTime.now();
+  DateTime? selectedDateDInscription = DateTime.now();
+  int? numero_carte, axes_id, filieres_id, levels_id, fonctions_id;
+  String? image, nom, prenom, contact,genre, date_de_naissance, lieu_de_naissance, cin, contact_personnel, contact_tuteur, facebook, adresse, date_inscription;
+  bool? sympathisant = false;
   File? imageFiles;
   CroppedFile? croppedImage;
   final _key = GlobalKey<FormState>();
@@ -181,12 +185,12 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                     name: "Numéro carte",
                                     onChanged: () => (value){
                                       setState(() {
-                                        numero_porte = int.parse(value);
+                                        numero_carte = int.parse(value);
                                       });
                                       },
                                     validator: () => (value){
                                       if(value == null || value.isEmpty){
-                                        return 'Veuillez entrer le nombre de votre carte.';
+                                        return 'Veuillez entrer le numéro de votre carte.';
                                       }
                                       try{
                                         int nombre = int.parse(value);
@@ -225,9 +229,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                       });
                                     },
                                     validator: () => (value){
-                                      if(value == null || value.isEmpty){
-                                        return 'Veuillez entrer votre prénom!';
-                                      }
+                                      if(value.isEmpty || value == null) return null;
                                     }, iconData: Icons.person_2_outlined,
                                     textInputType: TextInputType.text,
                                     edit: false,
@@ -236,12 +238,9 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                 Row(
                                   children: [
                                     IconButton(onPressed: (){
-                                      _selectedDate(context);
-                                      setState(() {
-                                        date_de_naissance = selectedDate as String?;
-                                      });
+                                      _selectedDateDeNaissance(context);
                                     } , icon: Icon(Icons.calendar_month, color: Colors.grey,)),
-                                    Text("${DateFormat.yMMMMd('fr').format(selectedDate!)}", style: style_google.copyWith(color: Colors.grey),)
+                                    Text("${DateFormat.yMMMMd('fr').format(selectedDateDeNaissance!)}", style: style_google.copyWith(color: Colors.grey),)
                                   ],
                                 ),
                                 Ligne(color: Colors.grey),
@@ -271,7 +270,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                     name: "C.I.N",
                                     onChanged: () => (value){
                                       setState(() {
-                                        lieu_de_naissance = value;
+                                        cin = value;
                                       });
                                     },
                                     validator: () => (value){
@@ -284,6 +283,33 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                     textInputType: TextInputType.number,
                                     edit: false,
                                     value: ""),
+                                Titre("Genre"),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 30),
+                                  child: Row(
+                                    children: [
+                                      Radio(
+                                        activeColor: Colors.blueGrey,
+                                        value: "Masculin", groupValue: genre, onChanged: (dynamic value){
+                                        setState(() {
+                                          genre = value;
+                                        });
+                                      }),
+                                      Icon(Icons.man, color: Colors.blueGrey,),
+                                      Text("Masculin", style: style_google.copyWith(fontSize: 16, color: Colors.grey),),
+                                      SizedBox(width: 30,),
+                                      Radio(
+                                        activeColor: Colors.pink,
+                                        value: "Feminin", groupValue: genre, onChanged: (dynamic value){
+                                        setState(() {
+                                          genre = value;
+                                        });
+                                      }),
+                                      Icon(Icons.woman_2, color: Colors.pink,),
+                                      Text("Feminin", style: style_google.copyWith(fontSize: 16, color: Colors.grey)),
+                                    ],
+                                  ),
+                                ),
                                 Titre("Fonctions"),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 10),
@@ -414,7 +440,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                     },
                                     validator: () => (value){
                                       if(value == null || value.isEmpty){
-                                        return 'Veuillez entrer votre contact';
+                                        return 'Veuillez entrer votre contact personnel';
                                       }else if(value!.length != 10){
                                         return "Votre numéro doit-être composé de 10 chiffres!";
                                       }else if(!verifierPrefixNumeroTelephone(value)){
@@ -434,7 +460,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                     },
                                     validator: () => (value){
                                       if(value == null || value.isEmpty){
-                                        return 'Veuillez entrer votre contact';
+                                        return 'Veuillez entrer votre contact parental';
                                       }else if(value!.length != 10){
                                         return "Votre numéro doit-être composé de 10 chiffres!";
                                       }else if(!verifierPrefixNumeroTelephone(value)){
@@ -460,20 +486,69 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                     textInputType: TextInputType.text,
                                     edit: false,
                                     value: ""),
+                                Titre("Sympathisant"),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
+                                  child: Row(
+                                    children: [
+                                      Text("Est-vous symapthisant ? coucher si oui", style: style_google.copyWith(color: Colors.grey, fontSize: 16),),
+                                      SizedBox(width: 10,),
+                                      Container(
+                                        width: 25,
+                                        height: 25,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            width: 1,
+                                            color: Colors.blueGrey
+                                          ),
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                        child: Theme(
+                                          data: ThemeData(
+                                            unselectedWidgetColor: Colors.transparent
+                                          ),
+                                          child: Checkbox(
+                                            value: sympathisant,
+                                            onChanged: (state){
+                                              setState(() {
+                                                sympathisant = !sympathisant!;
+                                              });
+                                            },
+                                            activeColor: Colors.transparent,
+                                            checkColor: Colors.blueGrey,
+                                            materialTapTargetSize: MaterialTapTargetSize.padded,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Ligne(color: Colors.grey),
                                 Titre("Date d'inscription"),
                                 Row(
                                   children: [
                                     IconButton(onPressed: (){
-                                      _selectedDate(context);
-                                      setState(() {
-                                        date_inscription = selectedDate as String?;
-                                      });
+                                      _selectedDateDInscription(context);
                                     } , icon: Icon(Icons.calendar_month, color: Colors.grey,)),
-                                    Text("${DateFormat.yMMMMd('fr').format(selectedDate!)}", style: style_google.copyWith(color: Colors.grey),)
+                                    Text("${DateFormat.yMMMMd('fr').format(selectedDateDInscription!)}", style: style_google.copyWith(color: Colors.grey),)
                                   ],
                                 ),
                                 Ligne(color: Colors.grey),
                                 SizedBox(height: 5,),
+                                Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () => _validation(),
+                                      child: Container(
+                                          width: MediaQuery.of(context).size.width - 20,
+                                          height: 50,
+                                          color: Colors.lightBlue,
+                                          child: Center(child: Text("Enregistrer", style: style_google.copyWith(color: Colors.white, fontSize: 16),))
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 15,)
                               ],
                             ),
                         ),
@@ -488,11 +563,62 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
     );
   }
 
-  Future<void> _selectedDate(BuildContext context) async{
+  Future<void> _validation() async {
+    if(_key.currentState!.validate()){
+      if(image == null){
+        MessageAvertissement(context, "Veuillez sélectionner votre image");
+      }else if(genre == null){
+        MessageAvertissement(context, "Veuillez sélectionner votre genre");
+      }else if(date_de_naissance == null){
+        MessageAvertissement(context, "Veuillez sélectionner votre date de naissance");
+      }else if(date_inscription == null){
+        MessageAvertissement(context, "Veuillez sélectionner votre date d'inscription");
+      }else if(sympathisant == true && axes_id != 0){
+        MessageAvertissement(context, "Etes-vous vraiment sympathisant ?");
+      }else{
+        String? _images = imageFiles == null ? null : getStringImage(imageFiles);
+        ApiResponse apiResponse = await createMembre(
+          image: _images,
+          numero_carte: numero_carte,
+          nom: nom,
+          prenom: prenom,
+          date_de_naissance: date_de_naissance,
+          lieu_de_naissance: lieu_de_naissance,
+          cin: cin,
+          genre: genre,
+          fonctions_id: selectedFonctionsId,
+          filieres_id: selectedFilieresId,
+          niveau_id: selectedNiveauId,
+          axesId: selectedAxesId,
+          adresse: adresse,
+          contact_personnel: contact_personnel,
+          contact_tutaire: contact_tuteur,
+          facebook: facebook,
+          sympathisant: sympathisant,
+          date_inscription: date_inscription
+        );
+
+        if(apiResponse.error == null){
+            Navigator.pop(context);
+            MessageReussi(context, "${apiResponse.data}");
+        }else if(apiResponse.error == avertissement){
+          MessageAvertissement(context, "${apiResponse.data}");
+        }else if(apiResponse.error == unauthorized){
+          MessageErreurs(context, apiResponse.error);
+        }else{
+          MessageErreurs(context, "${apiResponse.error}");
+        }
+      }
+    }else{
+      print("Non");
+    }
+  }
+
+  Future<void> _selectedDateDInscription(BuildContext context) async{
     final DateTime? picked = await showDatePicker(
         context: context,
         helpText: "Selectionner la data d'ajout",
-        initialDate: selectedDate!,
+        initialDate: selectedDateDInscription!,
         firstDate: DateTime(2020, 8),
         lastDate: DateTime(2101),
         cancelText: "Annuler",
@@ -506,9 +632,38 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
         }
     );
 
-    if(picked != null && picked != selectedDate){
+    if(picked != null && picked != selectedDateDInscription){
       setState(() {
-        selectedDate = picked;
+        selectedDateDInscription = picked;
+        DateTime date = DateTime(selectedDateDInscription!.year, selectedDateDInscription!.month, selectedDateDInscription!.day);
+        date_inscription = DateFormat('yyyy-MM-dd').format(date);
+      });
+    }
+  }
+
+  Future<void> _selectedDateDeNaissance(BuildContext context) async{
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        helpText: "Selectionner la data d'ajout",
+        initialDate: selectedDateDeNaissance!,
+        firstDate: DateTime(1990, 1),
+        lastDate: DateTime(2101),
+        cancelText: "Annuler",
+        confirmText: "Valider",
+        fieldLabelText: "Date",
+        fieldHintText: "Mois/jour/année",
+        errorFormatText: "Entrer la date valide",
+        errorInvalidText: "Enter date in valid range",
+        builder: (BuildContext context, Widget? child){
+          return Theme(data: ThemeData.light(), child: child!);
+        }
+    );
+
+    if(picked != null && picked != selectedDateDeNaissance){
+      setState(() {
+        selectedDateDeNaissance = picked;
+        DateTime date = DateTime(selectedDateDeNaissance!.year, selectedDateDeNaissance!.month, selectedDateDeNaissance!.day);
+        date_de_naissance = DateFormat('yyyy-MM-dd').format(date);
       });
     }
   }
@@ -558,13 +713,11 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
       ],
     );
     if (croppedFile != null) {
-      print("******************************************************************************** ${croppedFile}");
       setState(() {
         croppedImage = croppedFile;
         image = croppedFile.path;
         imageFiles = File(croppedFile!.path);
       });
-      print("******************************************************************************** ${croppedImage}");
     }
   }
 }

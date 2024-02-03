@@ -177,7 +177,7 @@ class _AvisScreenState extends State<AvisScreen> {
                             backgroundImage: (avis.user!.image != null ?  NetworkImage("${avis.user!.image}") : AssetImage("assets/photo.png")) as ImageProvider,
                           ),
                           title: Text("${avis.user!.pseudo}", style: style_google.copyWith(color: Colors.black87),),
-                          subtitle: Text("${avis.message}"),
+                          subtitle: Text(ajouterTroisPointSiTextTropLong("${avis.message}", 30)),
                           trailing: Icon(Icons.chevron_right, color: Colors.blueGrey,),
                         ),
                       ),

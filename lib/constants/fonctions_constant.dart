@@ -1,5 +1,7 @@
 import 'dart:ui';
+import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/Acceuil.dart';
+import 'package:aeutna/screens/admin/administrateurs.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/showDialog.dart';
@@ -11,6 +13,40 @@ TextStyle style_google = GoogleFonts.k2d(color: Colors.blueGrey);
 
 void ErreurLogin(BuildContext context){
   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false);
+}
+
+void deconnectionAlertDialog(BuildContext context){
+  showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext buildContext){
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          content: SizedBox(
+            height: 70,
+            child: Column(
+              children: [
+                SizedBox(height: 20,),
+                Text("Vous déconnecter de votre compte?", textAlign: TextAlign.center, style: style_google.copyWith(fontSize: 18),),
+              ],
+            ),
+          ),
+          contentPadding: EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0),
+          actions: [
+            TextButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                  print("Annuler");
+                },
+                child: Text("Annuler", style: style_google.copyWith(color: Colors.lightBlue),)),
+            TextButton(
+                onPressed: (){
+                  Navigator.pop(context);
+                  onLoadingDeconnection(context);
+                }, child: Text("Se déconnecter",style: style_google.copyWith(color: Colors.redAccent))),
+          ],
+        );
+      });
 }
 
 void AutorisationAlertDialog({BuildContext? context, String? message, required Function onLoading}){
@@ -89,12 +125,28 @@ void ContactezNous({String? numero, String? action}) async {
   }
 }
 
-void onLoadingLogin(BuildContext context){
+String separerParEspace(String texte){
+  return texte.replaceAllMapped(RegExp(r".{3}"), (match) => "${match.group(0)} ");
+}
+
+String ajouterTroisPointSiTextTropLong(String texte, int longueur){
+  if(texte.length <= longueur){
+    return texte;
+  }else{
+    int dernierEspace = texte.lastIndexOf(' ', longueur - 4);
+    return texte.substring(0, dernierEspace) + '...';
+  }
+}
+void onLoadingLogin(BuildContext context, User user){
   showDialog(
       context: context,
       builder: (BuildContext context){
         Future.delayed(Duration(seconds: 3), () async {
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Acceuil()), (route) => false);
+          if(user.roles == "Administrateurs"){
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => AdministrateursScreen(user: user,)), (route) => false);
+          }else{
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Acceuil(user: user,)), (route) => false);
+          }
         });
         return AlertDialog(
           backgroundColor: Colors.white,

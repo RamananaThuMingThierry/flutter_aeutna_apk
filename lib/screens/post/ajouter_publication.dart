@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
+import 'package:aeutna/constants/fonctions_constant.dart';
+import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/Acceuil.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/services/post_services.dart';
@@ -10,7 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AjouterPublication extends StatefulWidget {
-  const AjouterPublication({Key? key}) : super(key: key);
+  User user;
+  AjouterPublication({required this.user});
 
   @override
   State<AjouterPublication> createState() => _AjouterPublicationState();
@@ -19,6 +22,7 @@ class AjouterPublication extends StatefulWidget {
 class _AjouterPublicationState extends State<AjouterPublication> {
   /** ---------- Déclarations des variables ---------------- **/
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  User? users;
   String? description;
   bool loading = false;
   File? imageFile = null;
@@ -37,11 +41,11 @@ class _AjouterPublicationState extends State<AjouterPublication> {
     String? image = imageFile == null ? null : getStringImage(imageFile);
     ApiResponse apiResponse = await createPost(description: description,image: image);
     if(apiResponse.error == null){
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Acceuil()), (route) => false);
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Acceuil(user: users,)), (route) => false);
     }else if(apiResponse.error == unauthorized){
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false);
+      ErreurLogin(context);
     }else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${apiResponse.error}")));
+      MessageErreurs(context, "${apiResponse.error}");
       setState(() {
         loading = !loading;
       });
@@ -67,6 +71,7 @@ class _AjouterPublicationState extends State<AjouterPublication> {
 
   @override
   void initState() {
+    users = widget.user;
     super.initState();
   }
 
@@ -155,7 +160,7 @@ class _AjouterPublicationState extends State<AjouterPublication> {
                       backgroundColor: Colors.red
                   ),
                   onPressed: (){
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Acceuil()), (route) => false);
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Acceuil(user: users,)), (route) => false);
                   },
                   child: Text("Annuler", style: TextStyle(color: Colors.white),),
                 ),

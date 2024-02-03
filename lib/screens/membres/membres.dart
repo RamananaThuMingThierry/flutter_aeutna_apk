@@ -7,6 +7,7 @@ import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/screens/membres/addMembres.dart';
 import 'package:aeutna/screens/membres/showMembre.dart';
 import 'package:aeutna/services/membres_services.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class MembresScreen extends StatefulWidget {
@@ -136,9 +137,15 @@ class _MembresState extends State<MembresScreen> {
                               leading: Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 7),
                                 child: CircleAvatar(
-                                  backgroundImage: AssetImage("assets/photo.png"),
+                                  radius: 25,
+                                  backgroundColor: Colors.blueGrey,
+                                  child: CircleAvatar(
+                                    radius: 21,
+                                    backgroundImage: membres.image == null ? AssetImage("assets/photo.png") : NetworkImage(membres!.image!) as ImageProvider,
+                                  ),
                                 ),
                               ),
+                              trailing: Icon(Icons.chevron_right_outlined, color: Colors.blueGrey,),
                               title: Text("${membres.numero_carte}", style: TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.bold),),
                               subtitle: Text("${membres.nom} ${membres.prenom ?? ''}", style: TextStyle(fontSize: 13),),
                             ),

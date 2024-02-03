@@ -233,104 +233,12 @@ class _ProfilesState extends State<Profiles> {
                   ),
                 ),
               ),
-              WidgetListTitle(title: "Messages Groupe", leading: Icons.message_rounded, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => MessagesGroupes ()))),
-              WidgetListTitle(title: "Message Membres", leading: Icons.mail_rounded, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => AvisScreen()))),
               WidgetListTitle(title: "Avis", leading: Icons.question_mark_outlined, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => NousContactez()))),
-              FiltreAll(),
               WidgetListTitle(title: "Déconnections", leading: Icons.logout_outlined, trailing: Icons.chevron_right, onTap: () => () => deconnectionAlertDialog(context)),
             ],
           ),
         ),
       )
-    );
-  }
-
-  Widget FiltreAll(){
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 2),
-      child: Card(
-        elevation: 0,
-        child: Theme(
-          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-          child: ExpansionTile(
-              iconColor: Colors.blueGrey,
-              backgroundColor: Colors.white,
-              title:  Text("Menu", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold),),
-              leading: Icon(Icons.menu, color: Colors.grey,),
-              expandedCrossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Ligne(color: Colors.transparent),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  child: InkWell(
-                    onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (ctx) => AxesScreen()));
-                    },
-                    child: Row(
-                      children: [
-                        RichText(text: TextSpan(children: [
-                          WidgetSpan(child: Icon(Icons.local_library, color: Colors.grey,)),
-                          TextSpan(text: "         Axes", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold, fontSize: 15)),
-                        ]))
-                      ],
-                    ),
-                  ),
-                ),
-                Ligne(color: Colors.transparent,),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-                  child: InkWell(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (ctx) => FonctionsScreen()));
-                    },
-                    child: Row(
-                      children: [
-                        RichText(text: TextSpan(children: [
-                          WidgetSpan(child: Icon(Icons.account_tree, color: Colors.grey,)),
-                          TextSpan(text: "         Fonctions", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold, fontSize: 15)),
-                        ]))
-                      ],
-                    ),
-                  ),
-                ),
-                Ligne(color: Colors.transparent,),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-                  child: InkWell(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => FilieresScreen()));
-                    },
-                    child: Row(
-                      children: [
-                        RichText(text: TextSpan(children: [
-                          WidgetSpan(child: Icon(Icons.card_travel, color: Colors.grey,)),
-                          TextSpan(text: "         Filières", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold, fontSize: 15)),
-                        ]))
-                      ],
-                    ),
-                  ),
-                ),
-                Ligne(color: Colors.transparent,),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-                  child: InkWell(
-                    onTap: (){
-                       Navigator.push(context, MaterialPageRoute(builder: (ctx) => NiveauScreen()));
-                    },
-                    child: Row(
-                      children: [
-                        RichText(text: TextSpan(children: [
-                          WidgetSpan(child: Icon(Icons.stacked_bar_chart_sharp, color: Colors.grey,)),
-                          TextSpan(text: "         Niveau", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold, fontSize: 15)),
-                        ]))
-                      ],
-                    ),
-                  ),
-                ),
-              ]
-          ),
-        ),
-      ),
     );
   }
 
@@ -462,40 +370,6 @@ class _ProfilesState extends State<Profiles> {
     );
   }
 
-  void deconnectionAlertDialog(BuildContext context){
-    showDialog(
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext buildContext){
-          return AlertDialog(
-            backgroundColor: Colors.white,
-            content: SizedBox(
-              height: 65,
-              child: Column(
-                children: [
-                  SizedBox(height: 20,),
-                  Text("Vous déconnecter de votre compte?", textAlign: TextAlign.center,style: GoogleFonts.roboto(color: Colors.blueGrey, fontSize: 17),),
-                ],
-              ),
-            ),
-            contentPadding: EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0),
-            actions: [
-              TextButton(
-                  onPressed: (){
-                    Navigator.pop(context);
-                    print("Annuler");
-                  },
-                  child: Text("Annuler", style: TextStyle(color: Colors.lightBlue),)),
-              TextButton(
-                  onPressed: (){
-                    Navigator.pop(context);
-                    onLoadingDeconnection(context);
-                  }, child: Text("Se déconnecter",style: TextStyle(color: Colors.redAccent),)),
-            ],
-          );
-        });
-  }
-
   Parametre(BuildContext context,User? data){
     showModalBottomSheet(context: context,
         shape: RoundedRectangleBorder(
@@ -531,33 +405,33 @@ class _ProfilesState extends State<Profiles> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.language, color: Colors.white,),
-                        SizedBox(width: 10,),
-                        TextButton(onPressed: (){
-                          print("Change la langue");
-                        }, child:  Text("Change la langue", style: TextStyle(color: Colors.white),),)
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.collections, color: Colors.white,),
-                        SizedBox(width: 10,),
-                        TextButton(onPressed: (){
-                          Navigator.pop(context);
-                          print("Change le thème");
-                        }, child:  Text("Change le thème", style: TextStyle(color: Colors.white),),)
-                      ],
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: EdgeInsets.symmetric(horizontal: 20),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.start,
+                  //     children: [
+                  //       Icon(Icons.language, color: Colors.white,),
+                  //       SizedBox(width: 10,),
+                  //       TextButton(onPressed: (){
+                  //         print("Change la langue");
+                  //       }, child:  Text("Change la langue", style: TextStyle(color: Colors.white),),)
+                  //     ],
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: EdgeInsets.symmetric(horizontal: 20),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.start,
+                  //     children: [
+                  //       Icon(Icons.collections, color: Colors.white,),
+                  //       SizedBox(width: 10,),
+                  //       TextButton(onPressed: (){
+                  //         Navigator.pop(context);
+                  //         print("Change le thème");
+                  //       }, child:  Text("Change le thème", style: TextStyle(color: Colors.white),),)
+                  //     ],
+                  //   ),
+                  // ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
@@ -581,19 +455,6 @@ class _ProfilesState extends State<Profiles> {
                         TextButton(onPressed: (){
                           Navigator.pop(context);
                         }, child:  Text("Modifier le profil", style: TextStyle(color: Colors.white),),)
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.people, color: Colors.white,),
-                        SizedBox(width: 10,),
-                        TextButton(onPressed: (){
-                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => UsersScreen()), (route) => false);
-                        }, child:  Text("Listes des utilisateurs", style: TextStyle(color: Colors.white),),)
                       ],
                     ),
                   ),

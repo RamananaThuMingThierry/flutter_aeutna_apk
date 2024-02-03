@@ -13,6 +13,7 @@ import 'package:aeutna/services/fonctions_services.dart';
 import 'package:aeutna/services/niveau_services.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/showDialog.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -169,18 +170,20 @@ class _ShowMembresState extends State<ShowMembres> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(250), // Image border
-                    child: SizedBox.fromSize(
-                      size: Size.fromRadius(60), // Image radius
-                      child: Image.asset('assets/photo.png', fit: BoxFit.cover),
-                    ),
-                  ),
+                CircleAvatar(
+                radius: 65,
+                backgroundColor: Colors.grey.shade500,
+                child: CircleAvatar(
+                  radius: 60,
+                  backgroundImage: membre!.image == null
+                      ? AssetImage('assets/photo.png')
+                      : NetworkImage(membre!.image!) as ImageProvider,
+                )),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Numéro Carte", style: TextStyle(color: Colors.blueGrey,fontSize: 14),),
-                      Text("${membre!.numero_carte}", style: TextStyle(color: Colors.blueGrey,fontSize: 50),),
+                      Text("Numéro Carte", style: style_google,),
+                      Text("${membre!.numero_carte}", style: style_google.copyWith(fontWeight: FontWeight.bold, fontSize: 50),),
                     ],
                   ),
                 ],
@@ -213,10 +216,10 @@ class _ShowMembresState extends State<ShowMembres> {
             CardText(context, iconData: Icons.account_box_rounded, value: "${membre!.nom}"),
             SizedBox(height: 10,),
             TextTitre(name: "Prénom"),
-            CardText(context, iconData: Icons.account_box_rounded, value: "${membre!.prenom}"),
+            CardText(context, iconData: Icons.account_box_rounded, value: "${membre!.prenom ?? "-"}"),
             SizedBox(height: 10,),
             TextTitre(name: "Date de naissance"),
-            CardText(context, iconData: Icons.date_range, value: "${DateFormat.yMMMd('fr').format(DateTime.parse(membre!.date_de_naissance!)) }"),
+            CardText(context, iconData: Icons.date_range, value: "${DateFormat.yMMMMd('fr').format(DateTime.parse(membre!.date_de_naissance!)) }"),
             SizedBox(height: 10,),TextTitre(name: "Lieu de naissance"),
             CardText(context, iconData: Icons.local_library_sharp, value: "${membre!.lieu_de_naissance}"),
             SizedBox(height: 10,),
@@ -224,7 +227,7 @@ class _ShowMembresState extends State<ShowMembres> {
             CardText(context, iconData: membre!.genre == "Masculin" ? Icons.man : Icons.woman, value: "${membre!.genre}"),
             SizedBox(height: 10,),
             TextTitre(name: "C.I.N"),
-            CardText(context, iconData: Icons.credit_card_rounded, value: "${membre!.cin}"),
+            CardText(context, iconData: Icons.credit_card_rounded, value: separerParEspace("${membre!.cin}")),
             SizedBox(height: 10,),
             TextTitre(name: "Fonctions"),
             CardText(context, iconData: Icons.account_tree, value: "${fonctionModel!.fonctions}"),
@@ -237,13 +240,13 @@ class _ShowMembresState extends State<ShowMembres> {
             SizedBox(height: 10,),
             TextTitre(name: "Contact Personnel"),
             GestureDetector(child: CardText(context, iconData: Icons.phone_outlined, value: "${membre!.contact_personnel}"), onTap: (){
-              ContactezNous(numero: "${membre!.contact_personnel}", action: "tel");
+              ActionsCallOrMessage(context, "${membre!.contact_personnel}");
             },),
             SizedBox(height: 10,),
             TextTitre(name: "Contact Tuteur"),
             GestureDetector(child: CardText(context, iconData: Icons.phone, value: "${membre!.contact_tutaire}"), onTap: (){
-              ContactezNous(numero: "${membre!.contact_tutaire}", action: "tel");
-            },),
+              ActionsCallOrMessage(context, "${membre!.contact_tutaire}");
+              },),
             SizedBox(height: 10,),
             TextTitre(name: "Adresse"),
             CardText(context, iconData: Icons.location_city, value: "${membre!.adresse}"),
@@ -266,19 +269,19 @@ class _ShowMembresState extends State<ShowMembres> {
                 children: [
                   Expanded(child: TextButton.icon(
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(Colors.lightBlue)
-                      ),
-                      onPressed: (){
-                        print("Modifier");
-                      }, icon: Icon(Icons.edit, color: Colors.white,), label: Text("Modifier", style: GoogleFonts.roboto(color: Colors.white),))),
-                  SizedBox(width: 5,),
-                  Expanded(child: TextButton.icon(
-                      style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(Colors.red)
                       ),
                       onPressed: (){
                         print("Supprimer");
                       }, icon: Icon(Icons.delete, color: Colors.white,), label: Text("Supprimer", style: GoogleFonts.roboto(color: Colors.white),))),
+                  SizedBox(width: 5,),
+                  Expanded(child: TextButton.icon(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(Colors.lightBlue)
+                      ),
+                      onPressed: (){
+                        print("Modifier");
+                      }, icon: Icon(Icons.edit, color: Colors.white,), label: Text("Modifier", style: GoogleFonts.roboto(color: Colors.white),))),
                 ],
               ),
             )
@@ -294,7 +297,7 @@ Padding TextTitre({String? name}){
     padding: const EdgeInsets.symmetric(horizontal: 18),
     child: Row(
       children: [
-        Text("${name}", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),),
+        Text("${name}", style: style_google.copyWith(fontWeight: FontWeight.bold),),
       ],
     ),
   );
@@ -309,8 +312,8 @@ Widget CardText(BuildContext context, {IconData? iconData, String? value}){
       enabledBorder: InputBorder.none,
       focusedBorder: InputBorder.none,
       hintText: "${value}",
-      hintStyle: TextStyle(color: Colors.blueGrey),
-      prefixIcon: Icon(iconData, color: Colors.blueGrey, size: 20,),
+      hintStyle: style_google,
+      prefixIcon: Icon(iconData, color: Colors.grey, size: 20,),
     ),
     textAlignVertical: TextAlignVertical.center,
   );

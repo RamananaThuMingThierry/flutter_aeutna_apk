@@ -1,5 +1,6 @@
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/user.dart';
+import 'package:aeutna/models/users.dart';
 import 'package:aeutna/screens/admin/adminPageLoading.dart';
 import 'package:aeutna/screens/admin/class/Drawer.dart';
 import 'package:aeutna/screens/admin/class/Pages.dart';
@@ -11,6 +12,8 @@ import 'package:aeutna/screens/membres/membres.dart';
 import 'package:aeutna/screens/message%20groupe/message_groupe.dart';
 import 'package:aeutna/screens/niveau/niveau.dart';
 import 'package:aeutna/screens/post/publication.dart';
+import 'package:aeutna/screens/profiles/profile.dart';
+import 'package:aeutna/screens/utilisateurs/showUsers.dart';
 import 'package:aeutna/screens/utilisateurs/users.dart';
 import 'package:aeutna/screens/utilisateurs/utilisateurs_en_attentes.dart';
 import 'package:aeutna/widgets/ligne_horizontale.dart';
@@ -96,13 +99,15 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
               ListTile(
                 leading: Icon(Icons.home_outlined, color: Colors.blueGrey,),
                 title: Text("Accueil", style: style_google,),
-                onTap: (){},
+                onTap: () => Navigator.pop(context),
               ),
               Ligne(color: Colors.grey,),
               ListTile(
                 leading: Icon(Icons.person_2_outlined, color: Colors.blueGrey,),
                 title: Text("Profiles", style: style_google,),
-                onTap: (){},
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (ctx) => Profile(user: data!)));
+                },
               ),
               Ligne(color: Colors.grey,),
               ListTile(
@@ -114,7 +119,10 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
               ListTile(
                 leading: Icon(Icons.logout, color: Colors.blueGrey,),
                 title: Text("Déconnection", style: style_google,),
-                onTap: (){},
+                onTap: (){
+                  Navigator.pop(context);
+                  deconnectionAlertDialog(context);
+                },
               ),
               Ligne(color: Colors.grey,),
             ],
@@ -161,7 +169,7 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Icon(page.iconData, size: 40, color: Colors.blueGrey,),
+                              Icon(page.iconData, size: 40, color: Colors.grey,),
                               Text("${page.nom}", style: style_google.copyWith(fontWeight: FontWeight.bold),)
                             ],
                           ),

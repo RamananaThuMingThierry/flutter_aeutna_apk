@@ -27,16 +27,17 @@ class SplashScreenState extends State<SplashScreen>{
       ErreurLogin(context);
     }else{
       ApiResponse apiResponse = await getUserDetail();
-
       if(apiResponse.error == null){
-        setState(() {
-          users = apiResponse.data as User?;
-        });
-        print(users!.image);
+        while(users == null){
+          setState(() {
+            users = apiResponse.data as User?;
+          });
+        }
         if(users!.roles == "Administrateurs"){
           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (ctx) => AdministrateursScreen(user: users!)), (route) => false);
         }else{
-          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (ctx) => Acceuil()), (route) => false);
+          print("${users!.roles}");
+          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (ctx) => Acceuil(user: users,)), (route) => false);
         }
       }else if(apiResponse.error == unauthorized){
         ErreurLogin(context);
