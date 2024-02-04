@@ -5,6 +5,7 @@ import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/models/post.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 /** ---------------- Get alL Posts ---------------- **/
 Future<ApiResponse> getAllPosts() async{
@@ -41,32 +42,35 @@ Future<ApiResponse> getAllPosts() async{
 }
 
 /** --------------- Créer un Post ----------------- **/
-Future<ApiResponse> createPost({String? description, String? image}) async{
+Future<ApiResponse> createPost({String? description, List<XFile>? images}) async{
   ApiResponse apiResponse = ApiResponse();
 
-  print("Description $description et Image : $image");
+  print("Description $description et Image : ${images!.length}");
 
   try{
     String token = await getToken();
     var url = Uri.parse(postsURL);
-    print("Url $url et Token $token");
-    final rep = await http.post(
-      url,
-      headers: {
-        'Accept': 'application/json',
-        'Authorization' : 'Bearer $token'
-      },
-      body: image != null
-          ? {
-        'description' : description,
-        'image' : image,
-          }
-          :{
-        'description': description
-      }
-    );
+    var request = http.MultipartRequest('POST', url);
+    // Ajouter authorization et accept à l'en-tête de la requête
+    request.headers['Accept'] = 'application/json';
+    request.headers['Authorization'] = 'Bearer $token';
 
-    print(rep.statusCode);
+    // Ajouter les champs texte (description)
+    request.fields['description'] = description!;
+    if(images != null && images.isNotEmpty){
+      // Ajoutez les images au corps de la requête
+      for(var image in images){
+        var stream = http.ByteStream(image.openRead());
+        var length = await image.length();
+        var multipartFile  = http.MultipartFile('images[]', stream, length, filename: 'image.jpg');
+        request.files.add(multipartFile);
+      }
+    }
+
+    // Envoyer la requête eet récupérez la réponse
+    var rep = await http.Response.fromStream(await request.send());
+
+    print("--------------- status : ${rep.statusCode} et message : ${rep.body}");
 
     switch(rep.statusCode){
       case 200:
@@ -81,8 +85,13 @@ Future<ApiResponse> createPost({String? description, String? image}) async{
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 422:
+        apiResponse.error = avertissement;
+        String errorMessages = "";
         final errors = jsonDecode(rep.body)['errors'];
-        apiResponse.error = errors[errors.keys.elementAt(0)][0];
+        errors.forEach((field, message) {
+          errorMessages += "* ${message.join(', ')}\n";
+        });
+        apiResponse.data = errorMessages;
         break;
       default:
         apiResponse.error = somethingWentWrong;

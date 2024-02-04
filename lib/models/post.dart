@@ -1,10 +1,12 @@
+import 'package:aeutna/models/postImage.dart';
+
 import 'user.dart';
 
 class Post{
 
   int? id;
   String? description;
-  String? image;
+  List<PostImage>? images;
   int? likesCount;
   int? commentairesCount;
   User? user;
@@ -13,7 +15,7 @@ class Post{
   Post({
     this.id,
     this.description,
-    this.image,
+    this.images,
     this.likesCount,
     this.commentairesCount,
     this.user,
@@ -22,10 +24,18 @@ class Post{
 
   // Map json to post model
   factory Post.fromJson(Map<String, dynamic> p){
+    print(p);
+    List<PostImage> images = [];
+    if (p['images'] != null) {
+      images = List<PostImage>.from(
+        p['images'].map((imageJson) => PostImage.fromJson(imageJson)),
+      );
+    }
+
     return Post(
       id: p['id'],
       description: p['description'],
-      image: p['image'],
+      images: images,
       likesCount: p['likes_count'],
       commentairesCount: p['commentaires_count'],
       user: User(

@@ -35,10 +35,10 @@ class _NousContactezState extends State<NousContactez> {
           },
           icon: Icon(Icons.keyboard_backspace, color: Colors.blueGrey,),
         ),
-        title: Text("Contactez-nous", style: GoogleFonts.roboto(color: Colors.blueGrey),),
+        title: Text("Contactez-nous", style: style_google.copyWith(fontWeight: FontWeight.bold),),
         backgroundColor: Colors.white,
         actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.message_outlined, color: Colors.blueGrey,))
+          IconButton(onPressed: (){}, icon: Icon(Icons.help_outline, color: Colors.blueGrey,))
         ],
       ),
       resizeToAvoidBottomInset: false,
@@ -133,7 +133,6 @@ class _NousContactezState extends State<NousContactez> {
   }
 
   void _createAvis() async {
-    print("Nous somme là");
     ApiResponse apiResponse = await createAvis(message: message.text);
     setState(() {
       message.clear();

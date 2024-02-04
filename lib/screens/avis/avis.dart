@@ -166,7 +166,10 @@ class _AvisScreenState extends State<AvisScreen> {
                         Navigator.push(context, MaterialPageRoute(builder: (ctx) => ShowAvisScreen(avis: avis,)));
                       },
                       onLongPress: (){
-                        print("Voulez-vous le supprimer");
+                        AutorisationAlertDialog(context: context, message: "Voulez-vous vraiment le supprimer ?", onLoading: () => (){
+                          _deleteAvis(avis.id!);
+                          getAllAvis();
+                        });
                       },
                       child: Card(
                         margin: EdgeInsets.symmetric(horizontal: 2, vertical: 2),

@@ -52,6 +52,7 @@ class _UtilisateursEnAttentesState extends State<UtilisateursEnAttentes> {
 
   @override
   Widget build(BuildContext context) {
+    print(_usersList.length);
     return Scaffold(
         backgroundColor: Colors.grey,
         appBar: AppBar(
@@ -71,7 +72,11 @@ class _UtilisateursEnAttentesState extends State<UtilisateursEnAttentes> {
         body: loading
             ? OnLoadingMembreShimmer()
             : RefreshIndicator(
-            child: ListView.builder(
+                child: _usersList.length == 0
+                    ?  Center(
+                  child: Text("Aucun résultat", style: style_google.copyWith(fontSize: 18, color: Colors.white),),
+                )
+                : ListView.builder(
                 itemCount: _usersList.length,
                 itemBuilder: (BuildContext context, int index){
                   Users users = _usersList[index];

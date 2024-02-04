@@ -170,13 +170,14 @@ class _ProfilesState extends State<Profiles> {
 
   @override
   Widget build(BuildContext context) {
+    print(data);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
         actions: [
-          IconButton(onPressed: () => Parametre(context, data), icon: Icon(Icons.menu, color: Colors.black45,))
+          IconButton(onPressed: () => Parametre(context, data), icon: Icon(Icons.settings_outlined, color: Colors.grey,))
         ],
         backgroundColor: Colors.transparent
       ),
@@ -237,7 +238,8 @@ class _ProfilesState extends State<Profiles> {
                   ),
                 ),
               ),
-              WidgetListTitle(title: "Avis", leading: Icons.question_mark_outlined, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => NousContactez()))),
+              WidgetListTitle(title: "Apropos", leading: Icons.info_outlined, trailing: Icons.chevron_right, onTap: () => () => print("Apropos")),
+              WidgetListTitle(title: "Contactez-nous", leading: Icons.help, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => NousContactez()))),
               WidgetListTitle(title: "Déconnections", leading: Icons.logout_outlined, trailing: Icons.chevron_right, onTap: () => () => deconnectionAlertDialog(context)),
             ],
           ),
@@ -254,7 +256,7 @@ class _ProfilesState extends State<Profiles> {
         child: ExpansionTile(
             iconColor: Colors.blueGrey,
             backgroundColor: Colors.white,
-            title:  Text("Mon compte", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold),),
+            title:  Text("Mon compte", style: style_google,),
             leading: Icon(Icons.newspaper, color: Colors.grey,),
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
             childrenPadding: EdgeInsets.symmetric(horizontal: 10),
@@ -285,7 +287,7 @@ class _ProfilesState extends State<Profiles> {
         child: ExpansionTile(
             iconColor: Colors.blueGrey,
             backgroundColor: Colors.white,
-            title:  Text("Information Personnel", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold),),
+            title:  Text("Information Personnel", style: style_google,),
             leading: Icon(Icons.credit_card_outlined, color: Colors.grey,),
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
             childrenPadding: EdgeInsets.symmetric(horizontal: 10),
@@ -293,11 +295,11 @@ class _ProfilesState extends State<Profiles> {
               _textTitre(titre: "Nom"),
               _CardText(iconData: Icons.account_box_rounded, value: nom),
               _textTitre(titre: "Prénom"),
-              _CardText(iconData: Icons.account_box_rounded, value: prenom),
+              _CardText(iconData: Icons.account_box_rounded, value: prenom ?? '-'),
               _textTitre(titre: "Genre"),
               _CardText(iconData: Icons.person, value: genre),
               _textTitre(titre: "C.I.N"),
-              _CardText(iconData: Icons.credit_card_outlined, value: cin),
+              _CardText(iconData: Icons.credit_card_outlined, value: separerParEspace(cin.toString())),
               _textTitre(titre: "Date de naissance"),
              _CardText(iconData: Icons.calendar_month, value: "${ date_naissance == "" ? "" : DateFormat.yMMMd('fr').format(DateTime.parse(date_naissance!)) }"),
               _textTitre(titre: "Lieu de naissance"),
@@ -327,7 +329,7 @@ class _ProfilesState extends State<Profiles> {
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
             backgroundColor: Colors.white,
-            title:  Text("Informations AEUTNA", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold),),
+            title:  Text("Informations AEUTNA", style: style_google,),
             leading: Icon(Icons.credit_card_outlined, color: Colors.grey,),
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -372,7 +374,7 @@ class _ProfilesState extends State<Profiles> {
         enabledBorder: InputBorder.none,
         focusedBorder: InputBorder.none,
         hintText: "${value}",
-        hintStyle: TextStyle(fontSize: 15, color: Colors.grey),
+        hintStyle: style_google.copyWith(color: Colors.grey, fontSize: 14),
         prefixIcon: Icon(iconData, color: Colors.blueGrey, size: 20,),
       ),
       textInputAction: TextInputAction.search,
@@ -397,7 +399,7 @@ class _ProfilesState extends State<Profiles> {
                     children: [
                       Icon(Icons.settings, color: Colors.white,),
                       SizedBox(width: 10,),
-                      Text("Paramètres", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+                      Text("Paramètres", style: style_google.copyWith(color: Colors.white, fontWeight: FontWeight.bold)),
                     ],
                   ),
                   Ligne(color: Colors.white,),
@@ -411,37 +413,10 @@ class _ProfilesState extends State<Profiles> {
                         TextButton(onPressed: (){
                           Navigator.pop(context);
                           Apropos(context);
-                        }, child:  Text("Apropos", style: TextStyle(color: Colors.white),),)
+                        }, child:  Text("Apropos", style: style_google.copyWith(color: Colors.white)),)
                       ],
                     ),
                   ),
-                  // Padding(
-                  //   padding: EdgeInsets.symmetric(horizontal: 20),
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.start,
-                  //     children: [
-                  //       Icon(Icons.language, color: Colors.white,),
-                  //       SizedBox(width: 10,),
-                  //       TextButton(onPressed: (){
-                  //         print("Change la langue");
-                  //       }, child:  Text("Change la langue", style: TextStyle(color: Colors.white),),)
-                  //     ],
-                  //   ),
-                  // ),
-                  // Padding(
-                  //   padding: EdgeInsets.symmetric(horizontal: 20),
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.start,
-                  //     children: [
-                  //       Icon(Icons.collections, color: Colors.white,),
-                  //       SizedBox(width: 10,),
-                  //       TextButton(onPressed: (){
-                  //         Navigator.pop(context);
-                  //         print("Change le thème");
-                  //       }, child:  Text("Change le thème", style: TextStyle(color: Colors.white),),)
-                  //     ],
-                  //   ),
-                  // ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
@@ -451,7 +426,7 @@ class _ProfilesState extends State<Profiles> {
                         SizedBox(width: 10,),
                         TextButton(onPressed: (){
                           Navigator.pop(context);
-                        }, child:  Text("Changer le mot de passe", style: TextStyle(color: Colors.white),),)
+                        }, child:  Text("Changer le mot de passe", style: style_google.copyWith(color: Colors.white)),)
                       ],
                     ),
                   ),
@@ -464,7 +439,7 @@ class _ProfilesState extends State<Profiles> {
                         SizedBox(width: 10,),
                         TextButton(onPressed: (){
                           Navigator.pop(context);
-                        }, child:  Text("Modifier le profil", style: TextStyle(color: Colors.white),),)
+                        }, child:  Text("Modifier le profil", style: style_google.copyWith(color: Colors.white),),)
                       ],
                     ),
                   ),
@@ -481,7 +456,7 @@ class _ProfilesState extends State<Profiles> {
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
       child: Row(
         children: [
-          Text("${titre}", style: TextStyle(color: Colors.blueGrey, fontSize: 15, fontWeight: FontWeight.bold),),
+          Text("${titre}", style: style_google.copyWith(fontWeight: FontWeight.bold),),
         ],
       ),
     );

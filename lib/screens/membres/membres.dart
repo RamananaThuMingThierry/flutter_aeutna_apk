@@ -133,7 +133,7 @@ class _MembresState extends State<MembresScreen> {
                         Membres membres = _membresList[index];
                         return GestureDetector(
                           onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (ctx) => ShowMembres(membres: membres,)));
+                            Navigator.push(context, MaterialPageRoute(builder: (ctx) => ShowMembres(membres: membres,user: user,)));
                           },
                           child: Card(
                             margin: EdgeInsets.symmetric(horizontal: 3,vertical: 2),

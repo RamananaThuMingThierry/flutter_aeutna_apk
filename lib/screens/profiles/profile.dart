@@ -107,12 +107,12 @@ class ProfileHeader extends StatelessWidget{
           ),
           Container(
           width: double.infinity,
-          padding: EdgeInsets.only(top: 160),
+          padding: EdgeInsets.only(top: 100),
           child: Column(
             children: [
               Avatar(
                   image: AssetImage("assets/photo.png"),
-                  radius: 40,
+                  radius: 60,
                   backgroundColor: Colors.white,
                   borderColor: Colors.grey.shade300,
                   borderWith: 4,

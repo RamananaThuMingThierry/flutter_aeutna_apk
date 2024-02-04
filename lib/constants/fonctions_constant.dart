@@ -137,6 +137,7 @@ String ajouterTroisPointSiTextTropLong(String texte, int longueur){
     return texte.substring(0, dernierEspace) + '...';
   }
 }
+
 void onLoadingLogin(BuildContext context, User user){
   showDialog(
       context: context,

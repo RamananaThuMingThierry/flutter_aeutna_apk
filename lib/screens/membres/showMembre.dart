@@ -6,6 +6,7 @@ import 'package:aeutna/models/filieres.dart';
 import 'package:aeutna/models/fonctions.dart';
 import 'package:aeutna/models/membres.dart';
 import 'package:aeutna/models/niveau.dart';
+import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/services/axes_services.dart';
 import 'package:aeutna/services/filieres_services.dart';
@@ -21,15 +22,16 @@ import 'package:intl/intl.dart';
 
 class ShowMembres extends StatefulWidget {
   Membres? membres;
+  User? user;
 
-  ShowMembres({this.membres});
+  ShowMembres({this.membres, this.user});
 
   @override
   State<ShowMembres> createState() => _ShowMembresState();
 }
 
 class _ShowMembresState extends State<ShowMembres> {
-
+  User? user;
   Membres? membre;
   Axes? axes;
   Filieres? filieres;
@@ -40,6 +42,7 @@ class _ShowMembresState extends State<ShowMembres> {
 
   void initState() {
     membre = widget.membres;
+    user = widget.user;
     getAxes();
     getFilieres();
     getNiveau();
@@ -262,8 +265,8 @@ class _ShowMembresState extends State<ShowMembres> {
             SizedBox(height: 10,),
             TextTitre(name: "Date d'inscription"),
             CardText(context, iconData: Icons.date_range_outlined, value: "${DateFormat.yMMMMEEEEd('fr').format(DateTime.parse(membre!.date_inscription!)) }"),
-            SizedBox(height: 10,),
-            Padding(
+            user!.roles == "Administrateurs" ? SizedBox(height: 10,) : SizedBox(),
+            user!.roles == "Administrateurs" ? Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
               child: Row(
                 children: [
@@ -284,7 +287,7 @@ class _ShowMembresState extends State<ShowMembres> {
                       }, icon: Icon(Icons.edit, color: Colors.white,), label: Text("Modifier", style: GoogleFonts.roboto(color: Colors.white),))),
                 ],
               ),
-            )
+            ) : SizedBox()
           ],
         ),
       ),
@@ -306,13 +309,13 @@ Padding TextTitre({String? name}){
 Widget CardText(BuildContext context, {IconData? iconData, String? value}){
   return TextFormField(
     enabled: false,
-    style: TextStyle(color: Colors.blueGrey),
+    style: style_google.copyWith(color: Colors.grey),
     onFieldSubmitted: (arg){},
     decoration: InputDecoration(
       enabledBorder: InputBorder.none,
       focusedBorder: InputBorder.none,
       hintText: "${value}",
-      hintStyle: style_google,
+      hintStyle: style_google.copyWith(color: Colors.grey),
       prefixIcon: Icon(iconData, color: Colors.grey, size: 20,),
     ),
     textAlignVertical: TextAlignVertical.center,

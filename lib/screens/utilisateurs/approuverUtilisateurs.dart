@@ -3,6 +3,7 @@ import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/membres.dart';
 import 'package:aeutna/models/users.dart';
+import 'package:aeutna/screens/admin/administrateurs.dart';
 import 'package:aeutna/services/membres_services.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class _ApprouverUtilisateursState extends State<ApprouverUtilisateurs> {
   Users? users;
   bool loading = true;
   List<Membres> _membresList = [];
-  int selectMembreId = 7;
+  int selectMembreId = 0;
   Future _getallMembresNAPasUtilisateur() async{
     ApiResponse apiResponse = await getallMembresNAPasUtilisateur();
 
@@ -30,6 +31,17 @@ class _ApprouverUtilisateursState extends State<ApprouverUtilisateurs> {
         _membresList = membres;
         loading = loading ? !loading : loading;
       });
+
+      if(_membresList.isEmpty){
+        setState(() {
+          selectMembreId = 0;
+        });
+      }else if(!_membresList.any((element) => element.id == selectMembreId)){
+        setState(() {
+          selectMembreId = _membresList.first.id!;
+        });
+      }
+
     }else if(apiResponse.error == unauthorized){
       ErreurLogin(context);
     }else{
@@ -85,17 +97,23 @@ class _ApprouverUtilisateursState extends State<ApprouverUtilisateurs> {
                           SizedBox(width: 10,),
                           DropdownButton(
                               underline: SizedBox(height: 0,),
-                              hint: Text("Sélectionner votre nom                       "),
+                              hint: Text("Sélectionner votre nom et prénom          ", style: style_google.copyWith(color: Colors.grey),),
                               value: selectMembreId,
-                              items: _membresList.map((membre){
-                                return DropdownMenuItem(
-                                    value: membre.id,
-                                    child: Tooltip(message: membre.nom!, child: Text("${membre.nom!} ${membre.prenom ?? ""}", style: style_google.copyWith(color: Colors.grey),))
-                                );
-                              }).toList(),
-                              onChanged: (value){
+                              items: [
+                                DropdownMenuItem<int>(
+                                    value: 0,
+                                    child: Center(child: Text("Sélectionner votre nom et prénom", style: style_google,))
+                                ),
+                                ..._membresList.map<DropdownMenuItem<int>>((Membres membre){
+                                  return DropdownMenuItem<int>(
+                                      value: membre.id,
+                                      child: Center(child: Text("${membre.nom} ${membre.prenom ?? ''}"!, style: style_google.copyWith(color: Colors.grey),))
+                                  );
+                                }).toList(),
+                              ],
+                              onChanged: (int? value){
                                 setState(() {
-                                  selectMembreId = value as int;
+                                  selectMembreId = value!;
                                 });
                               }),
                         ],
@@ -129,7 +147,6 @@ class _ApprouverUtilisateursState extends State<ApprouverUtilisateurs> {
 
   Future<void> approuverUser() async{
     ApiResponse apiResponse = await ValideUser(users!.id!, selectMembreId);
-
     if(apiResponse.error == null){
       Navigator.pop(context);
       MessageReussi(context, "${apiResponse.data}");

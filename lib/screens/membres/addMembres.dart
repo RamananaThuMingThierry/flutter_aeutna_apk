@@ -39,7 +39,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
   final _key = GlobalKey<FormState>();
 
   /** -------------------------- Axes ----------------------------------------- **/
-  int selectedAxesId = 1;
+  int selectedAxesId = 0;
   List<Axes> _axesList = [];
   Future _getallAxes() async{
     ApiResponse apiResponse = await getAllAxes();
@@ -49,6 +49,17 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
       setState(() {
         _axesList = axes;
       });
+
+      if(_axesList.isEmpty){
+        setState(() {
+          selectedAxesId = 0;
+        });
+      }else if(!_axesList.any((element) => element.id == selectedAxesId)){
+          setState(() {
+            selectedAxesId = _axesList.first.id!;
+          });
+      }
+
     }else if(apiResponse.error == unauthorized){
       MessageErreurs(context, "${apiResponse.data}");
       ErreurLogin(context);
@@ -58,7 +69,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
   }
 
   /** -------------------------- Fonctions ----------------------------------------- **/
-  int selectedFonctionsId = 1;
+  int selectedFonctionsId = 0;
   List<FonctionModel> _listFonctions = [];
   Future _getAllFonctions() async{
     ApiResponse apiResponse = await getAllFonctions();
@@ -68,6 +79,17 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
       setState(() {
         _listFonctions = fonctions;
       });
+
+      if(_listFonctions.isEmpty){
+        setState(() {
+          selectedFonctionsId = 0;
+        });
+      }else if(!_listFonctions.any((element) => element.id == selectedFonctionsId)){
+        setState(() {
+          selectedFonctionsId = _listFonctions.first.id!;
+        });
+      }
+
     }else if(apiResponse.error == unauthorized){
       MessageErreurs(context, "${apiResponse.data}");
       ErreurLogin(context);
@@ -77,7 +99,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
   }
 
   /** -------------------------- Filières ----------------------------------------- **/
-  int selectedFilieresId = 1;
+  int selectedFilieresId = 0;
   List<Filieres> _listFilieres = [];
   Future _getAllFilieres() async{
     ApiResponse apiResponse = await getAllFilieres();
@@ -87,6 +109,15 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
       setState(() {
         _listFilieres = filieres;
       });
+      if(_listFilieres.isEmpty){
+        setState(() {
+          selectedFilieresId = 0;
+        });
+      }else if(!_listFilieres.any((element) => element.id == selectedFilieresId)){
+        setState(() {
+          selectedFilieresId = _listFilieres.first.id!;
+        });
+      }
     }else if(apiResponse.error == unauthorized){
       MessageErreurs(context, "${apiResponse.data}");
       ErreurLogin(context);
@@ -96,7 +127,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
   }
 
   /** -------------------------- Niveau ----------------------------------------- **/
-  int selectedNiveauId = 1;
+  int selectedNiveauId = 0;
   List<Niveau> _listNiveau = [];
   Future _getAllNiveau() async{
     ApiResponse apiResponse = await getAllNiveau();
@@ -106,6 +137,17 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
       setState(() {
         _listNiveau = niveau;
       });
+
+      if(_listNiveau.isEmpty){
+        setState(() {
+          selectedNiveauId = 0;
+        });
+      }else if(!_listNiveau.any((element) => element.id == selectedNiveauId)){
+        setState(() {
+          selectedNiveauId = _listNiveau.first.id!;
+        });
+      }
+
     }else if(apiResponse.error == unauthorized){
       MessageErreurs(context, "${apiResponse.data}");
       ErreurLogin(context);
@@ -120,7 +162,18 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
     _getAllFonctions();
     _getAllFilieres();
     _getAllNiveau();
+
+    setState(() {
+      date_de_naissance = formatageDate(selectedDateDeNaissance!);
+      date_inscription = formatageDate(selectedDateDInscription!);
+    });
     super.initState();
+  }
+
+
+  String formatageDate(DateTime date){
+    DateTime dateformat = DateTime(date!.year, date!.month, date!.day);
+    return DateFormat('yyyy-MM-dd').format(dateformat);
   }
 
   @override
@@ -319,17 +372,23 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                       SizedBox(width: 10,),
                                       DropdownButton(
                                           underline: SizedBox(height: 0,),
-                                          hint: Text("Sélectionner votre fonctions                  "),
+                                          hint: Text("Sélectionner votre fonctions                 ", style: style_google.copyWith(color: Colors.grey),),
                                           value: selectedFonctionsId,
-                                          items: _listFonctions.map((fonction){
-                                            return DropdownMenuItem(
-                                                value: fonction.id,
-                                                child: Tooltip(message: fonction.fonctions!, child: Center(child: Text(fonction.fonctions!, style: style_google.copyWith(color: Colors.grey),)))
-                                            );
-                                          }).toList(),
-                                          onChanged: (value){
+                                          items: [
+                                            DropdownMenuItem<int>(
+                                                value: 0,
+                                                child: Center(child: Text('Veuillez sélectionner votre fonction', style: style_google,))
+                                            ),
+                                            ..._listFonctions.map<DropdownMenuItem<int>>((FonctionModel fonction){
+                                              return DropdownMenuItem<int>(
+                                                  value: fonction.id,
+                                                  child: Center(child: Text(fonction.fonctions!, style: style_google.copyWith(color: Colors.grey),))
+                                              );
+                                            }).toList(),
+                                          ],
+                                          onChanged: (int? value){
                                             setState(() {
-                                              selectedFonctionsId = value as int;
+                                              selectedFonctionsId = value!;
                                             });
                                           }),
                                     ],
@@ -345,17 +404,24 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                       SizedBox(width: 10,),
                                       DropdownButton(
                                           underline: SizedBox(height: 0,),
-                                          hint: Text("Sélectionner votre filière                         "),
+                                          hint: Text("Sélectionner votre filières                     ", style: style_google.copyWith(color: Colors.grey),),
                                           value: selectedFilieresId,
-                                          items: _listFilieres.map((filiere){
-                                            return DropdownMenuItem(
-                                                value: filiere.id,
-                                                child: Tooltip(message: filiere.nom_filieres!, child: Center(child: Text(filiere.nom_filieres!, style: style_google.copyWith(color: Colors.grey),)))
-                                            );
-                                          }).toList(),
-                                          onChanged: (value){
+                                          items: [
+                                            DropdownMenuItem<int>(
+                                                value: 0,
+                                                child: Center(child: Text('Veuillez sélectionner votre filière', style: style_google,))
+                                            ),
+                                            ..._listFilieres.map<DropdownMenuItem<int>>((Filieres filiere){
+                                              return DropdownMenuItem<int>(
+                                                  value: filiere.id,
+                                                  child: Center(
+                                                      child: Text(filiere.nom_filieres!, style: style_google.copyWith(color: Colors.grey),))
+                                              );
+                                            }).toList(),
+                                          ],
+                                          onChanged: (int? value){
                                             setState(() {
-                                              selectedFilieresId = value as int;
+                                              selectedFilieresId = value!;
                                             });
                                           }),
                                     ],
@@ -371,17 +437,24 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                       SizedBox(width: 10,),
                                       DropdownButton(
                                           underline: SizedBox(height: 0,),
-                                          hint: Text("Sélectionner votre niveau                       "),
+                                          hint: Text("Sélectionner votre niveau                      ", style: style_google.copyWith(color: Colors.grey),),
                                           value: selectedNiveauId,
-                                          items: _listNiveau.map((niveau){
-                                            return DropdownMenuItem(
-                                                value: niveau.id,
-                                                child: Tooltip(message: niveau.niveau!, child: Center(child: Text(niveau.niveau!, style: style_google.copyWith(color: Colors.grey),)))
-                                            );
-                                          }).toList(),
-                                          onChanged: (value){
+                                          items: [
+                                            DropdownMenuItem<int>(
+                                                value: 0,
+                                                child: Center(child: Text('Veuillez sélectionner votre niveau', style: style_google,))
+                                            ),
+                                            ..._listNiveau.map<DropdownMenuItem<int>>((Niveau niveau){
+                                              return DropdownMenuItem<int>(
+                                                  value: niveau.id,
+                                                  child: Center(
+                                                      child: Text(niveau.niveau!, style: style_google.copyWith(color: Colors.grey),))
+                                              );
+                                            }).toList(),
+                                          ],
+                                          onChanged: (int? value){
                                             setState(() {
-                                              selectedNiveauId = value as int;
+                                              selectedNiveauId = value!;
                                             });
                                           }),
                                     ],
@@ -399,15 +472,21 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                           underline: SizedBox(height: 0,),
                                           hint: Text("Sélectionner votre axes                           "),
                                           value: selectedAxesId,
-                                          items: _axesList.map((axes){
-                                            return DropdownMenuItem(
-                                                value: axes.id,
-                                                child: Tooltip(message: axes.nom_axes!, child: Center(child: Text(axes.nom_axes!, style: style_google.copyWith(color: Colors.grey),)))
-                                            );
-                                          }).toList(),
-                                          onChanged: (value){
+                                          items: [
+                                              DropdownMenuItem<int>(
+                                                  value: 0,
+                                                  child: Center(child: Text('Veuillez sélectionner votre axes', style: style_google,))
+                                              ),
+                                            ..._axesList.map<DropdownMenuItem<int>>((Axes axes){
+                                              return DropdownMenuItem<int>(
+                                                  value: axes.id,
+                                                  child: Center(child: Text(axes.nom_axes!, style: style_google.copyWith(color: Colors.grey),))
+                                              );
+                                            }).toList(),
+                                            ],
+                                          onChanged: (int? value){
                                             setState(() {
-                                              selectedAxesId = value as int;
+                                              selectedAxesId = value!;
                                             });
                                           }),
                                     ],

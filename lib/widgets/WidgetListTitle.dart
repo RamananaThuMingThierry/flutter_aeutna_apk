@@ -1,3 +1,4 @@
+import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:flutter/material.dart';
 
 class WidgetListTitle extends StatelessWidget {
@@ -17,7 +18,7 @@ class WidgetListTitle extends StatelessWidget {
       child: ListTile(
         onTap: onTap(),
         leading: Icon(leading, color: Colors.grey,),
-        title: Text("${title}", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold),),
+        title: Text("${title}", style: style_google,),
         trailing: Icon(trailing, color: Colors.blueGrey,),
       ),
     );;

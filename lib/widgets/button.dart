@@ -1,3 +1,4 @@
+import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:flutter/material.dart';
 
 class Button extends StatelessWidget {
@@ -12,7 +13,7 @@ class Button extends StatelessWidget {
     return MaterialButton(
       color: color,
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-      child: Text(name, style: TextStyle(color: Colors.white,fontSize: 18),),
+      child: Text(name, style: style_google.copyWith(color: Colors.white),),
       onPressed: onPressed(),
     );
   }

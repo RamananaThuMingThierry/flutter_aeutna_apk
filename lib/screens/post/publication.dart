@@ -10,6 +10,7 @@ import 'package:aeutna/services/post_services.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/btnLikeOrDisLike.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -36,6 +37,7 @@ class _PublicationState extends State<Publication> {
         _postList = posts;
         loading = loading ? !loading : loading;
       });
+
     }else if(apiResponse.error == unauthorized){
       ErreurLogin(context);
     }else{
@@ -77,6 +79,9 @@ class _PublicationState extends State<Publication> {
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Colors.grey,
       appBar: AppBar(
@@ -125,7 +130,9 @@ class _PublicationState extends State<Publication> {
                 onRefresh: () {
                   return retreivePosts();
                 },
-                child: ListView.builder(
+                child: _postList.length == 0
+                    ? Center(child: Text("Aucun publication", style: style_google.copyWith(fontSize: 17, color: Colors.white),),)
+                    : ListView.builder(
                   itemCount: _postList!.length,
                   itemBuilder: (BuildContext context, int index){
                     Post post = _postList![index];
@@ -161,7 +168,7 @@ class _PublicationState extends State<Publication> {
                                         SizedBox(width: 10,),
                                         Text(
                                           "${post.user!.pseudo}",
-                                          style: style_google.copyWith(fontWeight: FontWeight.bold, color: Colors.black87, fontSize: 16),
+                                          style: style_google.copyWith(fontWeight: FontWeight.bold, color: Colors.black87, fontSize: 14),
                                         )
                                       ],
                                     ),
@@ -197,7 +204,7 @@ class _PublicationState extends State<Publication> {
                                 ],
                               ),
                               SizedBox(height: 12,),
-                              post.image != null
+                              post.images!.length != 0
                                   ?
                               Column(
                                 children: [
@@ -206,25 +213,34 @@ class _PublicationState extends State<Publication> {
                                       children: [
                                         Expanded(child: Padding(
                                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                          child: Text("${post.description}",style: GoogleFonts.roboto() ,textAlign: TextAlign.left,),
+                                          child: Text("${post.description}",style: style_google.copyWith(color: Colors.black87) ,textAlign: TextAlign.left,),
                                         )),
                                       ],
                                     ),
                                   ),
                                   SizedBox(
-                                    child: Expanded(
-                                      child: CachedNetworkImage(
-                                        fit: BoxFit.cover,
-                                        imageUrl: "${post!.image}",
-                                        placeholder: (context, url) => Icon(Icons.image, size: 200,color: Colors.black54,), // Widget de chargement affiché pendant le chargement de l'image
-                                        errorWidget: (context, url, error) => Icon(Icons.error), // Widget d'erreur affiché si l'image ne peut pas être chargée
+                                    height: 300,
+                                    child:  CarouselSlider(
+                                      options: CarouselOptions(
+                                        height: screenHeight, // Utilisez la hauteur de l'écran comme hauteur du Carousel
+                                        aspectRatio: screenWidth / screenHeight, // Maintient le rapport hauteur/largeur
+                                        viewportFraction: 1.0, // Affiche une seule image à la fois
+                                        enlargeCenterPage: true,
                                       ),
-                                      //child: Image.network("${post.image}", fit: BoxFit.cover,)
+                                      items: post.images!.map((image) {
+                                        return Builder(
+                                          builder: (BuildContext context) {
+                                            return Image.network(image.imagePath, fit: BoxFit.cover,height: screenHeight,
+                                              width: screenWidth,);
+                                          },
+                                        );
+                                      }).toList(),
                                     ),
                                   ),
                                 ],
                               )
-                                  : Container(
+                                  :
+                              Container(
                                 constraints: BoxConstraints(
                                   minHeight: 180.0, // Set a minimum height if needed
                                 ),
@@ -232,7 +248,7 @@ class _PublicationState extends State<Publication> {
                                 child: Center(
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Text("${post.description}", style: GoogleFonts.roboto(color: Colors.white),textAlign: TextAlign.justify,),
+                                    child: Text("${post.description}", style: style_google.copyWith(color: Colors.white),textAlign: TextAlign.justify,),
                                   ),
                                 ),
                               ),
