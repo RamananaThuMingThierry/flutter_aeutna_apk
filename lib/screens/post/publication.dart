@@ -27,6 +27,8 @@ class _PublicationState extends State<Publication> {
   int userId = 0;
   bool loading = true;
   User? users;
+  int _currentIndex = 0;
+
   Future retreivePosts() async{
     ApiResponse apiResponse = await getAllPosts();
 
@@ -222,16 +224,40 @@ class _PublicationState extends State<Publication> {
                                     height: 300,
                                     child:  CarouselSlider(
                                       options: CarouselOptions(
+                                        enableInfiniteScroll: false,
                                         height: screenHeight, // Utilisez la hauteur de l'écran comme hauteur du Carousel
                                         aspectRatio: screenWidth / screenHeight, // Maintient le rapport hauteur/largeur
                                         viewportFraction: 1.0, // Affiche une seule image à la fois
                                         enlargeCenterPage: true,
+                                        onPageChanged: (index, reason){
+                                          setState(() {
+                                            _currentIndex = index;
+                                          });
+                                        }
                                       ),
-                                      items: post.images!.map((image) {
+                                      items: post.images!.asMap().entries.map((entry) {
+                                        int index = entry.key + 1; // Start the index from 1
+                                        var image = entry.value;
                                         return Builder(
                                           builder: (BuildContext context) {
-                                            return Image.network(image.imagePath, fit: BoxFit.cover,height: screenHeight,
-                                              width: screenWidth,);
+                                            return Stack(
+                                              alignment: Alignment.topRight,
+                                              children: [
+                                                Image.network(image.imagePath, fit: BoxFit.cover,height: screenHeight,
+                                                  width: screenWidth,),
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                                                  child: Container(
+                                                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.grey,
+                                                      borderRadius: BorderRadius.circular(10)
+                                                    ),
+                                                    child: Text("${index} / ${post.images!.length}", style: style_google.copyWith(color: Colors.white),),
+                                                  ),
+                                                )
+                                              ]
+                                            );
                                           },
                                         );
                                       }).toList(),
@@ -252,24 +278,39 @@ class _PublicationState extends State<Publication> {
                                   ),
                                 ),
                               ),
-                              Row(
-                                children: [
-                                  KBtnLikesOrComment(
-                                      value: post.likesCount ?? 0,
-                                      onTap: (){
-                                        handlePostLikeDislike(post.id ?? 0);
-                                      },
-                                      iconData: post.selfLiked == true ? Icons.favorite : Icons.favorite_outline,
-                                      color: post.selfLiked == true ? Colors.red : Colors.grey),
-                                  Container(
-                                    height: 40,
-                                    width: .5,
-                                  ),
-                                  KBtnLikesOrComment(
-                                      value: post.commentairesCount ?? 0, onTap: (){
-                                    Navigator.push(context, MaterialPageRoute(builder: (ctx) => CommentairesScreen(postId: post.id,)));
-                                  }, iconData: Icons.comment, color: Colors.grey),
-                                ],
+                              SizedBox(
+                                height: 40,
+                                child: Row(
+                                  children: [
+                                    KBtnLikesOrComment(
+                                        value: post.likesCount ?? 0,
+                                        onTap: (){
+                                          handlePostLikeDislike(post.id ?? 0);
+                                        },
+                                        iconData: post.selfLiked == true ? Icons.favorite : Icons.favorite_outline,
+                                        color: post.selfLiked == true ? Colors.red : Colors.grey),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: List.generate(post.images!.length, (index){
+                                        return Padding(
+                                          padding: EdgeInsets.all(4),
+                                          child: Container(
+                                            width: 8,
+                                            height: 8,
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: index == _currentIndex ? Colors.blueGrey : Colors.grey
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                    ),
+                                    KBtnLikesOrComment(
+                                        value: post.commentairesCount ?? 0, onTap: (){
+                                      Navigator.push(context, MaterialPageRoute(builder: (ctx) => CommentairesScreen(postId: post.id,)));
+                                    }, iconData: Icons.comment, color: Colors.grey),
+                                  ],
+                                ),
                               ),
                               Container(
                                 height: .5,

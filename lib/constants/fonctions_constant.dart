@@ -10,6 +10,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 TextStyle style_google = GoogleFonts.k2d(color: Colors.blueGrey);
+Text TitreText(String titre){
+  return Text(titre, style: style_google.copyWith(fontWeight: FontWeight.bold),);
+}
 
 void ErreurLogin(BuildContext context){
   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false);

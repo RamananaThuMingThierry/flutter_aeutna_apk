@@ -1,3 +1,4 @@
+import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/messages/nouvel_conversation.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +16,10 @@ class _MessagesState extends State<Messages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Messages"),
+        title: TitreText("Messages"),
+        leading: IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.keyboard_backspace, color: Colors.blueGrey,),),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 10),
@@ -29,10 +32,11 @@ class _MessagesState extends State<Messages> {
             ),
           ),
         ],
-        backgroundColor: Colors.blueGrey,
+        elevation: 0,
+        backgroundColor: Colors.white,
       ),
       body: Center(
-        child: Text("Messages"),
+        child: Text("Démarrer votre discussions", style: style_google,),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(

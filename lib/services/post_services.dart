@@ -70,8 +70,6 @@ Future<ApiResponse> createPost({String? description, List<XFile>? images}) async
     // Envoyer la requête eet récupérez la réponse
     var rep = await http.Response.fromStream(await request.send());
 
-    print("--------------- status : ${rep.statusCode} et message : ${rep.body}");
-
     switch(rep.statusCode){
       case 200:
         apiResponse.data = jsonDecode(rep.body)['message'];
