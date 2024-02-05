@@ -63,12 +63,9 @@ class _ProfilesState extends State<Profiles> {
         axes = apiResponse.data as Axes?;
       });
     }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+      ErreurLogin(context);
     }else{
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
-      );
+      MessageErreurs(context, "${apiResponse.error}");
     }
   }
 
@@ -83,12 +80,9 @@ class _ProfilesState extends State<Profiles> {
       });
 
     }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+      ErreurLogin(context);
     }else{
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
-      );
+      MessageErreurs(context, "${apiResponse.error}");
     }
   }
 
@@ -102,12 +96,9 @@ class _ProfilesState extends State<Profiles> {
       });
 
     }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+      ErreurLogin(context);
     }else{
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
-      );
+      MessageErreurs(context, "${apiResponse.error}");
     }
   }
 
@@ -119,12 +110,9 @@ class _ProfilesState extends State<Profiles> {
       });
 
     }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+      ErreurLogin(context);
     }else{
-      showDialog(
-          context: context,
-          builder: (BuildContext context) => MessageErreur(context, apiResponse.error)
-      );
+      MessageErreurs(context, "${apiResponse.error}");
     }
   }
 
@@ -147,9 +135,9 @@ class _ProfilesState extends State<Profiles> {
         getNiveau();
       }
     }else if(apiResponse.error == unauthorized){
-      logout().then((value) => Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Login()), (route) => false));
+      ErreurLogin(context);
     }else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${apiResponse.error}")));
+      MessageErreurs(context, "${apiResponse.error}");
     }
   }
 

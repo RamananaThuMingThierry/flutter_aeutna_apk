@@ -127,7 +127,9 @@ class _MembresState extends State<MembresScreen> {
                 onRefresh: (){
                   return _getallMembres();
                 },
-                  child: ListView.builder(
+                  child: _membresList.length == 0
+                      ? Center(child: Text("Aucun membre", style: style_google.copyWith(color: Colors.white),),)
+                      : ListView.builder(
                       itemCount: _membresList.length,
                       itemBuilder: (BuildContext context, int index){
                         Membres membres = _membresList[index];

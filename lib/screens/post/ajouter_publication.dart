@@ -81,9 +81,34 @@ class _AjouterPublicationState extends State<AjouterPublication> {
         print(e.toString());
       }
       if(!mounted) return;
-      setState(() {
-        images = resultList;
-      });
+      // setState(() {
+      //   images = resultList;
+      // });
+
+      if (resultList.length + images.length <= 5) {
+        setState(() {
+          images.addAll(resultList);
+        });
+      } else {
+        // Afficher un message d'erreur ou une alerte
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Center(child: Text('Limite atteinte', style: style_google,)),
+              content: Center(child: Text('Vous ne pouvez sélectionner que 5 images au maximum.', style: style_google.copyWith(color: Colors.grey),)),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('OK', style: style_google.copyWith(color: Colors.lightBlue),),
+                ),
+              ],
+            );
+          },
+        );
+      }
 
     }else{
       print("L'utisateur a refusé l'autorisation");

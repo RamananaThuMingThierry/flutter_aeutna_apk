@@ -30,8 +30,8 @@ class _PublicationState extends State<Publication> {
   int _currentIndex = 0;
 
   Future retreivePosts() async{
+    userId = await getUserId();
     ApiResponse apiResponse = await getAllPosts();
-
     if(apiResponse.error == null){
       List<dynamic> postList = apiResponse.data as List<dynamic>;
       List<Post> posts = postList.map((p) => Post.fromJson(p)).toList();
@@ -49,7 +49,6 @@ class _PublicationState extends State<Publication> {
 
   // Post like or dislike
   void handlePostLikeDislike(int postId) async {
-
     ApiResponse apiResponse = await likeUnlikePost(postId);
     if(apiResponse.error == null){
       retreivePosts();
