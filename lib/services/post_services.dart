@@ -162,6 +162,8 @@ Future<ApiResponse> deletePost(int postId) async{
         }
     );
 
+    print("-------- status : ${rep.statusCode} et ------------------ body : ${rep.body}");
+
     switch(rep.statusCode){
       case 200:
         apiResponse.data = jsonDecode(rep.body)['message'];

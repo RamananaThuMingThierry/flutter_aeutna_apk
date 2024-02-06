@@ -222,7 +222,7 @@ class _NiveauScreenState extends State<NiveauScreen> {
               child: _niveauList.length == 0
                   ?
               Center(
-                child: Text("Aucun résultat", style: style_google.copyWith(fontSize: 18),),
+                child: Text("Aucun résultat", style: style_google.copyWith(fontSize: 18, color: Colors.white),),
               )
                   :
               ListView.builder(

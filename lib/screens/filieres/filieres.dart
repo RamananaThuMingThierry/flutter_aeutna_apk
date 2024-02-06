@@ -224,7 +224,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
                   child: _filieresList.length == 0
                       ?
                       Center(
-                        child: Text("Aucun résultat", style: GoogleFonts.roboto(color: Colors.blueGrey, fontSize: 18),),
+                        child: Text("Aucun résultat", style: style_google.copyWith(fontSize: 18, color: Colors.white),),
                       )
                       :ListView.builder(
                       itemCount: _filieresList.length,

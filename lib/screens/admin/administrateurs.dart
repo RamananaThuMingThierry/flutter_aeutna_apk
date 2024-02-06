@@ -8,6 +8,7 @@ import 'package:aeutna/screens/avis/avis.dart';
 import 'package:aeutna/screens/axes/axes.dart';
 import 'package:aeutna/screens/filieres/filieres.dart';
 import 'package:aeutna/screens/fonctions/fonctions.dart';
+import 'package:aeutna/screens/historiques/historiques.dart';
 import 'package:aeutna/screens/membres/membres.dart';
 import 'package:aeutna/screens/message%20groupe/message_groupe.dart';
 import 'package:aeutna/screens/niveau/niveau.dart';
@@ -44,6 +45,8 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
    Pages("Message Groupes", Icons.message_outlined),
    Pages("Utilisateurs En attente", Icons.people_alt_outlined),
    Pages("Utilisateurs", Icons.people),
+   Pages("Statistiques", Icons.area_chart),
+   Pages("Historiques", Icons.location_history_rounded),
  ];
 
  @override
@@ -111,6 +114,12 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
               ),
               Ligne(color: Colors.grey,),
               ListTile(
+                leading: Icon(Icons.info_outlined, color: Colors.blueGrey,),
+                title: Text("Apropos", style: style_google,),
+                onTap: (){},
+              ),
+              Ligne(color: Colors.grey,),
+              ListTile(
                 leading: Icon(Icons.settings_outlined, color: Colors.blueGrey,),
                 title: Text("Paramètre", style: style_google,),
                 onTap: (){},
@@ -164,6 +173,9 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
                               Navigator.push(context, MaterialPageRoute(builder: (ctx) => UtilisateursEnAttentes()));
                             }else if(page.nom == "Utilisateurs"){
                               Navigator.push(context, MaterialPageRoute(builder: (ctx) => UsersScreen()));
+                            }else if(page.nom == "Statistiques"){
+                            }else if(page.nom == "Historiques"){
+                              Navigator.push(context, MaterialPageRoute(builder: (ctx) => HistoriquesScreen()));
                             }
                           },
                           child: Column(

@@ -211,7 +211,7 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
               child: _fonctionsList.length == 0
                       ?
                   Center(
-                    child: Text("Aucun résultat", style: GoogleFonts.roboto(color: Colors.blueGrey, fontSize: 18),),
+                    child: Text("Aucun résultat", style: style_google.copyWith(color: Colors.white, fontSize: 18),),
                   )
                       :
               ListView.builder(

@@ -91,7 +91,7 @@ class _OrangeState extends State<Orange> {
                       child: Row(
                         children: [
                           Text("Nombres : ", style: style_google.copyWith(color: Colors.orange),),
-                          Text("Il y a ${phoneNumbers.length} numéro", style: style_google.copyWith(color: Colors.black54),),
+                          Text(phoneNumbers.length == 0 ? "Il n'y a aucun numéro" : "Il y a ${phoneNumbers.length} numéro", style: style_google.copyWith(color: Colors.black54),),
                         ],
                       ),
                     ),

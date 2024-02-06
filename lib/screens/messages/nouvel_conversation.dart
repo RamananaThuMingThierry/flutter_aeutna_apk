@@ -129,14 +129,17 @@ class _NouvelConversationState extends State<NouvelConversation> {
                       ),
                       elevation: 1,
                       child: ListTile(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (ctx) => SendMessage(users: users,)));
+                          print("Salut");
+                        },
                         leading: Padding(
                           padding: EdgeInsets.all(10),
                           child: CircleAvatar(
                             backgroundImage: AssetImage("assets/photo.png"),
                           ),
                         ),
-                        title: Text("${users.pseudo}", style: style_google.copyWith(fontWeight: FontWeight.bold),),
-                        subtitle: Text("${users.email}",style: style_google.copyWith(fontSize: 14),),
+                        title: Text("${users.pseudo}", style: style_google.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
                         trailing: Icon(Icons.chevron_right, color: Colors.blueGrey,),
                       ),
                     );

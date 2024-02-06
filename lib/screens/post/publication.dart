@@ -186,16 +186,60 @@ class _PublicationState extends State<Publication> {
                                         // Modifier
                                       }else{
                                         // Supprimer
-                                        handleDeletePost(post.id ?? 0);
+                                        showDialog(
+                                            context: context!,
+                                            barrierDismissible: true,
+                                            builder: (BuildContext buildContext){
+                                              return AlertDialog(
+                                                backgroundColor: Colors.white,
+                                                content: SizedBox(
+                                                  height: 65,
+                                                  child: Column(
+                                                    children: [
+                                                      SizedBox(height: 20,),
+                                                      Text("Voulez-vous vraiment supprimer cette publication ?", textAlign: TextAlign.center,style: style_google.copyWith(fontSize: 17),),
+                                                    ],
+                                                  ),
+                                                ),
+                                                contentPadding: EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: (){
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Text("Non", style: style_google.copyWith(color: Colors.red),)
+                                                  ),
+                                                  TextButton(
+                                                      onPressed: () => handleDeletePost(post.id ?? 0),
+                                                      child: Text("Oui",style: style_google.copyWith(color: Colors.lightBlue))),
+                                                ],
+                                              );
+                                            });
                                       }
                                     },
                                     itemBuilder: (ctx) => [
                                       PopupMenuItem(
-                                        child: Text("Modifier"),
+                                        child: RichText(
+                                          text: TextSpan(
+                                            style: style_google.copyWith(color: Colors.lightBlue),
+                                            children: [
+                                              WidgetSpan(child: Padding(padding: EdgeInsets.only(right: 10), child: Icon(Icons.edit, color: Colors.lightBlue,),),),
+                                              TextSpan(text: "Modifier", style: style_google.copyWith(fontSize: 16, color: Colors.lightBlue))
+                                            ]
+                                          ),
+                                        ),
                                         value: "Modifier",
                                       ),
                                       PopupMenuItem(
-                                        child: Text("Supprimer"),
+                                        child: RichText(
+                                          text: TextSpan(
+                                              style: style_google.copyWith(color: Colors.red),
+                                              children: [
+                                                WidgetSpan(child: Padding(padding: EdgeInsets.only(right: 10), child: Icon(Icons.delete, color: Colors.red,),),),
+                                                TextSpan(text: "Supprimer", style: style_google.copyWith(fontSize: 16, color: Colors.red))
+                                              ]
+                                          ),
+                                        ),
                                         value: "Supprimer",
                                       )
                                     ],

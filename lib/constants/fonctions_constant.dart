@@ -3,6 +3,7 @@ import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/Acceuil.dart';
 import 'package:aeutna/screens/admin/administrateurs.dart';
 import 'package:aeutna/screens/auth/login.dart';
+import 'package:aeutna/screens/enattente.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
@@ -132,8 +133,18 @@ String separerParEspace(String texte){
   return texte.replaceAllMapped(RegExp(r".{3}"), (match) => "${match.group(0)} ");
 }
 
-String ajouterTroisPointSiTextTropLong(String texte, int longueur){
-  if(texte.length <= longueur){
+
+void redirectToFacebook({String? nom}) async {
+  String url = 'https://www.facebook.com/$nom';
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Impossible de lancer $url';
+  }
+}
+
+String ajouterTroisPointSiTextTropLong({String? texte, int? longueur}){
+  if(texte!.length <= longueur!){
     return texte;
   }else{
     int dernierEspace = texte.lastIndexOf(' ', longueur - 4);
@@ -146,10 +157,14 @@ void onLoadingLogin(BuildContext context, User user){
       context: context,
       builder: (BuildContext context){
         Future.delayed(Duration(seconds: 3), () async {
-          if(user.roles == "Administrateurs"){
-            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => AdministrateursScreen(user: user,)), (route) => false);
+          if(user.status == 0){
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => EnAttente(user: user)), (route) => false);
           }else{
-            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Acceuil(user: user,)), (route) => false);
+            if(user.roles == "Administrateurs"){
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => AdministrateursScreen(user: user,)), (route) => false);
+            }else{
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => Acceuil(user: user,)), (route) => false);
+            }
           }
         });
         return AlertDialog(

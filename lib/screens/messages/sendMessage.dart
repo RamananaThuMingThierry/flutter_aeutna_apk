@@ -84,21 +84,15 @@ class _SendMessageState extends State<SendMessage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(50), // Image border
-                    child: SizedBox.fromSize(
-                      size: Size.fromRadius(20), // Image radius
-                      child: Image.asset('assets/photo.png', fit: BoxFit.cover),
-                    ),
+                  child: CircleAvatar(
+                    radius: 20,
+                    backgroundImage: AssetImage("assets/photo.png"),
                   ),
                 ),
-                SizedBox(width: 10,),
-                Text("${data!.pseudo}", style: TextStyle(color: Colors.blueGrey),)
               ],
             ),
             actions: [
               IconButton(onPressed: (){}, icon: Icon(Icons.phone_outlined, color: Colors.blueGrey,)),
-              IconButton(onPressed: (){}, icon: Icon(Icons.email, color: Colors.blueGrey)),
               IconButton(onPressed: (){}, icon: Icon(Icons.more_vert, color: Colors.blueGrey)),
             ],
       ),

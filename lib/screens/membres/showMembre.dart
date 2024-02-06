@@ -134,7 +134,6 @@ class _ShowMembresState extends State<ShowMembres> {
             ContactezNous(numero: "${membre!.contact_personnel}", action: "sms");
           }, icon: Icon(Icons.sms, color: Colors.blueGrey,)),
           compte != 4 ? SizedBox() : membre!.lien_membre_id == 0 ? SizedBox() : IconButton(onPressed: (){
-
           }, icon: Icon(Icons.email, color: Colors.blueGrey,)),
         ],
       ),
@@ -193,7 +192,10 @@ class _ShowMembresState extends State<ShowMembres> {
               ),
             ),
             SizedBox(height: 10,),
-            membre!.lien_membre_id == 0 ? SizedBox() : Padding(
+            membre!.lien_membre_id == 0
+                ? SizedBox()
+                : membre!.lien_membre_id != user!.id
+                          ?  Padding(
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 child: Row(
                   children: [
@@ -213,30 +215,50 @@ class _ShowMembresState extends State<ShowMembres> {
                     ),
                   ],
                 ),
-            ),
+            )
+                          : SizedBox(),
             SizedBox(height: 15,),
             TextTitre(name: "Nom"),
             CardText(context, iconData: Icons.account_box_rounded, value: "${membre!.nom}"),
             SizedBox(height: 10,),
             TextTitre(name: "Prénom"),
             CardText(context, iconData: Icons.account_box_rounded, value: "${membre!.prenom ?? "-"}"),
-            SizedBox(height: 10,),
-            TextTitre(name: "Date de naissance"),
-            CardText(context, iconData: Icons.date_range, value: "${DateFormat.yMMMMd('fr').format(DateTime.parse(membre!.date_de_naissance!)) }"),
-            SizedBox(height: 10,),TextTitre(name: "Lieu de naissance"),
-            CardText(context, iconData: Icons.local_library_sharp, value: "${membre!.lieu_de_naissance}"),
+            user!.roles == "Administrateurs"
+              ? SizedBox(height: 10,)
+              : SizedBox(),
+            user!.roles == "Administrateurs"
+              ? TextTitre(name: "Date de naissance")
+              : SizedBox(),
+            user!.roles == "Administrateurs"
+                ? CardText(context, iconData: Icons.date_range, value: "${DateFormat.yMMMMd('fr').format(DateTime.parse(membre!.date_de_naissance!)) }")
+                : SizedBox(),
+            user!.roles == "Administrateurs"
+                ? SizedBox(height: 10,)
+                : SizedBox(),
+            user!.roles == "Administrateurs"
+                ? TextTitre(name: "Lieu de naissance")
+                : SizedBox(),
+            user!.roles == "Administrateurs"
+                ? CardText(context, iconData: Icons.add_location, value: "${membre!.lieu_de_naissance}")
+                : SizedBox(),
             SizedBox(height: 10,),
             TextTitre(name: "Genre"),
             CardText(context, iconData: membre!.genre == "Masculin" ? Icons.man : Icons.woman, value: "${membre!.genre}"),
-            SizedBox(height: 10,),
-            TextTitre(name: "C.I.N"),
-            CardText(context, iconData: Icons.credit_card_rounded, value: separerParEspace("${membre!.cin}")),
+            user!.roles == "Administrateurs"
+                ? SizedBox(height: 10,)
+                : SizedBox(),
+            user!.roles == "Administrateurs"
+                ? TextTitre(name: "C.I.N")
+                : SizedBox(),
+            user!.roles == "Administrateurs"
+                ? CardText(context, iconData: Icons.credit_card_rounded, value: separerParEspace("${membre!.cin}"))
+                : SizedBox(),
             SizedBox(height: 10,),
             TextTitre(name: "Fonctions"),
             CardText(context, iconData: Icons.account_tree, value: "${fonctionModel!.fonctions}"),
             SizedBox(height: 10,),
             TextTitre(name: "Filières"),
-            CardText(context, iconData: Icons.account_tree, value: "${filieres!.nom_filieres!}"),
+            CardText(context, iconData: Icons.card_travel, value: "${filieres!.nom_filieres!}"),
             SizedBox(height: 10,),
             TextTitre(name: "Niveau"),
             CardText(context, iconData: Icons.stacked_bar_chart_sharp, value: "${niveau!.niveau}"),
@@ -255,16 +277,36 @@ class _ShowMembresState extends State<ShowMembres> {
             CardText(context, iconData: Icons.location_city, value: "${membre!.adresse}"),
             SizedBox(height: 10,),
             TextTitre(name: "Facebook"),
-            CardText(context, iconData: Icons.credit_card_rounded, value: "${membre!.facebook}"),
+            GestureDetector(
+                onTap: (){
+                  membre!.facebook != null ? redirectToFacebook(nom: "${membre!.facebook}"): print("Aucun facebook");
+                },
+                child: CardText(context, iconData: Icons.facebook_outlined, value: "${membre!.facebook}")),
+            user!.roles == "Administrateurs"
+                ? SizedBox(height: 10,)
+                : SizedBox(),
+            user!.roles == "Administrateurs"
+                ? TextTitre(name: "Sympathisant(e)")
+                : SizedBox(),
+            user!.roles == "Administrateurs"
+                ? CardText(context, iconData: Icons.account_tree, value: "${membre!.symapthisant == 0 ? "Non" : "Oui"}")
+                : SizedBox(),
             SizedBox(height: 10,),
-            TextTitre(name: "Sympathisant(e)"),
-            CardText(context, iconData: Icons.account_tree, value: "${membre!.symapthisant == 0 ? "Non" : "Oui"}"),
-            SizedBox(height: 10,),
-            TextTitre(name: "Axes"),
-            CardText(context, iconData: Icons.account_tree, value: "${axes!.nom_axes!}"),
-            SizedBox(height: 10,),
-            TextTitre(name: "Date d'inscription"),
-            CardText(context, iconData: Icons.date_range_outlined, value: "${DateFormat.yMMMMEEEEd('fr').format(DateTime.parse(membre!.date_inscription!)) }"),
+            user!.roles == "Administrateurs"
+                ? SizedBox(height: 10,)
+                : SizedBox(),
+            user!.roles == "Administrateurs"
+                ? CardText(context, iconData: Icons.local_library_sharp, value: "${axes!.nom_axes!}")
+                : SizedBox(),
+            user!.roles == "Administrateurs"
+                ? SizedBox(height: 10,)
+                : SizedBox(),
+            user!.roles == "Administrateurs"
+                ? TextTitre(name: "Date d'inscription")
+                : SizedBox(),
+            user!.roles == "Administrateurs"
+                ? CardText(context, iconData: Icons.date_range_outlined, value: "${DateFormat.yMMMMEEEEd('fr').format(DateTime.parse(membre!.date_inscription!)) }")
+                : SizedBox(),
             user!.roles == "Administrateurs" ? SizedBox(height: 10,) : SizedBox(),
             user!.roles == "Administrateurs" ? Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),

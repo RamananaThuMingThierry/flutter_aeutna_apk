@@ -13,6 +13,7 @@ import 'package:aeutna/screens/avis/nous_contactez.dart';
 import 'package:aeutna/screens/axes/axes.dart';
 import 'package:aeutna/screens/filieres/filieres.dart';
 import 'package:aeutna/screens/fonctions/fonctions.dart';
+import 'package:aeutna/screens/historiques/historiques.dart';
 import 'package:aeutna/screens/message%20groupe/message_groupe.dart';
 import 'package:aeutna/screens/niveau/niveau.dart';
 import 'package:aeutna/screens/profiles/apropos.dart';
@@ -158,7 +159,6 @@ class _ProfilesState extends State<Profiles> {
 
   @override
   Widget build(BuildContext context) {
-    print(data);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -415,6 +415,20 @@ class _ProfilesState extends State<Profiles> {
                         TextButton(onPressed: (){
                           Navigator.pop(context);
                         }, child:  Text("Changer le mot de passe", style: style_google.copyWith(color: Colors.white)),)
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.location_history_rounded, color: Colors.white,),
+                        SizedBox(width: 10,),
+                        TextButton(onPressed: (){
+                          Navigator.pop(context);
+                          Navigator.push(context, MaterialPageRoute(builder: (ctx) => HistoriquesScreen()));
+                        }, child:  Text("Historiques", style: style_google.copyWith(color: Colors.white),),)
                       ],
                     ),
                   ),

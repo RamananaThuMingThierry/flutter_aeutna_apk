@@ -92,8 +92,8 @@ class _UsersScreenState extends State<UsersScreen> {
                             backgroundImage: AssetImage("assets/photo.png"),
                           ),
                         ),
-                        title: Text("${users.pseudo}", style: style_google.copyWith(fontWeight: FontWeight.bold),),
-                        subtitle: Text("${users.email}",style: style_google.copyWith(fontSize: 14),),
+                        title: Text("${users.pseudo}", style: style_google.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
+                        subtitle: Text("${users.email}",style: style_google.copyWith(fontSize: 14, color: Colors.grey),),
                         trailing: Icon(Icons.chevron_right, color: Colors.blueGrey,),
                       ),
                     );

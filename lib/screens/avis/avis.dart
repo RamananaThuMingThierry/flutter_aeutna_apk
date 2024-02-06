@@ -154,7 +154,7 @@ class _AvisScreenState extends State<AvisScreen> {
               child: _avisList.length == 0
                   ?
               Center(
-                child: Text("Aucun résultat", style: style_google.copyWith(fontSize: 18),),
+                child: Text("Aucun résultat", style: style_google.copyWith(fontSize: 18, color: Colors.white),),
               )
                   :
               ListView.builder(
@@ -180,7 +180,7 @@ class _AvisScreenState extends State<AvisScreen> {
                             backgroundImage: (avis.user!.image != null ?  NetworkImage("${avis.user!.image}") : AssetImage("assets/photo.png")) as ImageProvider,
                           ),
                           title: Text("${avis.user!.pseudo}", style: style_google.copyWith(color: Colors.black87),),
-                          subtitle: Text(ajouterTroisPointSiTextTropLong("${avis.message}", 30)),
+                          subtitle: Text(ajouterTroisPointSiTextTropLong(texte: "${avis.message}",longueur: 30)),
                           trailing: Icon(Icons.chevron_right, color: Colors.blueGrey,),
                         ),
                       ),

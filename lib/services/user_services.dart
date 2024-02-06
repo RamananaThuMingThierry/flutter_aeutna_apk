@@ -140,7 +140,7 @@ Future<ApiResponse> getUserDetail() async{
         },
     );
 
-    print("********** status : ${response.statusCode}");
+    print("********** status : ${response.statusCode} ----------------  body : ${response.body}");
 
     switch(response.statusCode){
       case 200:

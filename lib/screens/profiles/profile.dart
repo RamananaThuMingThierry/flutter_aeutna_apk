@@ -117,6 +117,7 @@ class ProfileHeader extends StatelessWidget{
                   borderColor: Colors.grey.shade300,
                   borderWith: 4,
               ),
+              SizedBox(height: 10,),
               Text(
                 title,
                 style: style_google

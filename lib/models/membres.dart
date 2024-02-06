@@ -75,6 +75,7 @@ class Membres{
         id: m['users']['id'],
         pseudo: m['users']['pseudo'],
         image: m['users']['image'],
+        email: m['users']['email']
       ),
     );
   }
