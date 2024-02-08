@@ -9,6 +9,7 @@ class HistoriquesScreen extends StatefulWidget {
 }
 
 class _HistoriquesScreenState extends State<HistoriquesScreen> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,16 +41,34 @@ class _HistoriquesScreenState extends State<HistoriquesScreen> {
                     backgroundImage: AssetImage("assets/logo.jpeg"),
                   ),
                   SizedBox(height: 50,),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: RichText(
-                      text: TextSpan(
-                        children: [
-                          WidgetSpan(child: Text("A.E.U.T.N.A" , style: style_google.copyWith(fontWeight: FontWeight.bold),)),
-                          TextSpan(text: " est une Association des Etudiants Universitaires Natifs d'Antalaha fondé en 1999.", style: style_google)
-                        ]
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+                            child: RichText(
+                              textAlign: TextAlign.justify,
+                              text: TextSpan(
+                                children: [
+                                  WidgetSpan(
+                                    child: Text(
+                                      "A.E.U.T.N.A",
+                                      style: style_google.copyWith(fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: " est une Association des Etudiants Universitaires Natifs d'Antalaha fondé en 1999.",
+                                    style: style_google,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                   SizedBox(height: 30,),
                   Text("Les présidents en successions", style: style_google.copyWith(fontWeight: FontWeight.bold, fontSize: 18),),

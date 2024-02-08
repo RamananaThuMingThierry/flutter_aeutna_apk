@@ -6,12 +6,15 @@ import 'package:aeutna/models/filieres.dart';
 import 'package:aeutna/models/fonctions.dart';
 import 'package:aeutna/models/membres.dart';
 import 'package:aeutna/models/niveau.dart';
+import 'package:aeutna/models/sections.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/auth/login.dart';
+import 'package:aeutna/screens/membres/updateMembres.dart';
 import 'package:aeutna/services/axes_services.dart';
 import 'package:aeutna/services/filieres_services.dart';
 import 'package:aeutna/services/fonctions_services.dart';
 import 'package:aeutna/services/niveau_services.dart';
+import 'package:aeutna/services/sections_services.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/showDialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -36,6 +39,7 @@ class _ShowMembresState extends State<ShowMembres> {
   Axes? axes;
   Filieres? filieres;
   Niveau? niveau;
+  SectionsModel? sections;
   FonctionModel? fonctionModel;
   int? compte = 0;
   @override
@@ -47,7 +51,22 @@ class _ShowMembresState extends State<ShowMembres> {
     getFilieres();
     getNiveau();
     getFonctions();
+    getSections();
     super.initState();
+  }
+
+  void getSections() async{
+    ApiResponse apiResponse = await showSections(membre!.sections_id!);
+    if(apiResponse.error == null){
+      setState(() {
+        compte = compte! + 1;
+        sections = apiResponse.data as SectionsModel?;
+      });
+    }else if(apiResponse.error == unauthorized){
+      ErreurLogin(context);
+    }else{
+      MessageErreurs(context, "${apiResponse.error}");
+    }
   }
 
   void getAxes() async{
@@ -127,13 +146,13 @@ class _ShowMembresState extends State<ShowMembres> {
           icon: Icon(Icons.arrow_back, color: Colors.blueGrey,),
         ),
         actions: [
-          compte != 4 ? SizedBox() : IconButton(onPressed: (){
+          compte != 5 ? SizedBox() : IconButton(onPressed: (){
             ContactezNous(numero: "${membre!.contact_personnel}", action: "tel");
           }, icon: Icon(Icons.call, color: Colors.blueGrey,)),
-          compte != 4 ? SizedBox() :IconButton(onPressed: (){
+          compte != 5 ? SizedBox() :IconButton(onPressed: (){
             ContactezNous(numero: "${membre!.contact_personnel}", action: "sms");
           }, icon: Icon(Icons.sms, color: Colors.blueGrey,)),
-          compte != 4 ? SizedBox() : membre!.lien_membre_id == 0 ? SizedBox() : IconButton(onPressed: (){
+          compte != 5 ? SizedBox() : membre!.lien_membre_id == 0 ? SizedBox() : IconButton(onPressed: (){
           }, icon: Icon(Icons.email, color: Colors.blueGrey,)),
         ],
       ),
@@ -158,6 +177,12 @@ class _ShowMembresState extends State<ShowMembres> {
           )
           :
       compte == 3
+          ?
+      SpinKitCircle(
+        color: Colors.blueGrey,
+        size: 50,
+      )   :
+        compte == 4
           ?
       SpinKitCircle(
         color: Colors.blueGrey,
@@ -276,6 +301,9 @@ class _ShowMembresState extends State<ShowMembres> {
             TextTitre(name: "Adresse"),
             CardText(context, iconData: Icons.location_city, value: "${membre!.adresse}"),
             SizedBox(height: 10,),
+            TextTitre(name: "Sections"),
+            CardText(context, iconData: Icons.dashboard_outlined, value: "${sections!.nom_sections}"),
+            SizedBox(height: 10,),
             TextTitre(name: "Facebook"),
             GestureDetector(
                 onTap: (){
@@ -291,9 +319,12 @@ class _ShowMembresState extends State<ShowMembres> {
             user!.roles == "Administrateurs"
                 ? CardText(context, iconData: Icons.account_tree, value: "${membre!.symapthisant == 0 ? "Non" : "Oui"}")
                 : SizedBox(),
-            SizedBox(height: 10,),
             user!.roles == "Administrateurs"
                 ? SizedBox(height: 10,)
+                : SizedBox(),
+            user!.roles == "Administrateurs"
+
+                ? TextTitre(name: "Axes")
                 : SizedBox(),
             user!.roles == "Administrateurs"
                 ? CardText(context, iconData: Icons.local_library_sharp, value: "${axes!.nom_axes!}")
@@ -325,6 +356,7 @@ class _ShowMembresState extends State<ShowMembres> {
                           backgroundColor: MaterialStateProperty.all(Colors.lightBlue)
                       ),
                       onPressed: (){
+                        Navigator.push(context,MaterialPageRoute(builder: (ctx) => ModifierMembres(membres: membre, user: user,)));
                         print("Modifier");
                       }, icon: Icon(Icons.edit, color: Colors.white,), label: Text("Modifier", style: GoogleFonts.roboto(color: Colors.white),))),
                 ],

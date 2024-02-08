@@ -8,6 +8,7 @@ const registerURL = baseURL + '/register';
 const logoutURL = baseURL + '/logout';
 const userURL = baseURL + '/users';
 const axesURL = baseURL + '/axes';
+const sectionsURL = baseURL + '/sections';
 const commentairesURl = baseURL + '/commentaires';
 const fonctionsURL = baseURL + '/fonctions';
 const filieresURL = baseURL + '/filieres';

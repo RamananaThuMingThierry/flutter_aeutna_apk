@@ -46,7 +46,6 @@ class _AxesState extends State<AxesScreen> {
         loading = false;
       });
     }else if(apiResponse.error == unauthorized){
-      MessageErreurs(context, "${apiResponse.data}");
       ErreurLogin(context);
     }else{
       MessageErreurs(context, apiResponse.error);
@@ -63,7 +62,6 @@ class _AxesState extends State<AxesScreen> {
         _axesList = axes;
       });
     }else if(apiResponse.error == unauthorized){
-      MessageErreurs(context, apiResponse.error);
       ErreurLogin(context);
     }else{
       MessageErreurs(context, apiResponse.error);
@@ -85,7 +83,6 @@ class _AxesState extends State<AxesScreen> {
       Navigator.pop(context);
       MessageAvertissement(context, "${apiResponse.data}");
     }else if(apiResponse.error == unauthorized){
-      MessageErreurs(context, apiResponse.error);
       ErreurLogin(context);
     }else{
       Navigator.pop(context);

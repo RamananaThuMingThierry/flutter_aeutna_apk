@@ -14,6 +14,7 @@ import 'package:aeutna/screens/message%20groupe/message_groupe.dart';
 import 'package:aeutna/screens/niveau/niveau.dart';
 import 'package:aeutna/screens/post/publication.dart';
 import 'package:aeutna/screens/profiles/profile.dart';
+import 'package:aeutna/screens/statistiques/statistiques.dart';
 import 'package:aeutna/screens/utilisateurs/showUsers.dart';
 import 'package:aeutna/screens/utilisateurs/users.dart';
 import 'package:aeutna/screens/utilisateurs/utilisateurs_en_attentes.dart';
@@ -174,6 +175,7 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
                             }else if(page.nom == "Utilisateurs"){
                               Navigator.push(context, MaterialPageRoute(builder: (ctx) => UsersScreen()));
                             }else if(page.nom == "Statistiques"){
+                              Navigator.push(context, MaterialPageRoute(builder: (ctx) => StatistiquesScreen()));
                             }else if(page.nom == "Historiques"){
                               Navigator.push(context, MaterialPageRoute(builder: (ctx) => HistoriquesScreen()));
                             }

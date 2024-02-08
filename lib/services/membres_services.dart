@@ -86,8 +86,6 @@ Future<ApiResponse> getAllNumero(String? prefixNumero) async{
         }
     );
 
-    print("- status : ${response.statusCode }---------- ${jsonDecode(response.body)['membres']}");
-
     switch(response.statusCode){
       case 200:
         apiResponse.data = jsonDecode(response.body)['membres'];
@@ -121,6 +119,7 @@ Future<ApiResponse> createMembre({
   String? contact_tutaire,
   bool? sympathisant,
   int? axesId,
+  int? sectionsId,
   int? filieres_id,
   int? niveau_id,
   int? fonctions_id,
@@ -149,6 +148,7 @@ Future<ApiResponse> createMembre({
         "Contact tuteur : $contact_tutaire \n"
         "Sympathisant : ${sympathisant == true ? 1 : 0} \n"
         "Axes_id : $axesId \n"
+        "Sections_id : $sectionsId \n"
         "Filiere_id :$filieres_id \n"
         "Fonctions_id : $fonctions_id \n"
         "Niveau_id : $niveau_id \n"
@@ -175,6 +175,7 @@ Future<ApiResponse> createMembre({
               'contact_tutaire' : contact_tutaire,
               'sympathisant' : "${sympathisant == true ? 1 : 0}",
               'axes_id': axesId.toString(),
+               'sections_id': sectionsId.toString(),
               'filieres_id': filieres_id.toString(),
               'fonctions_id': fonctions_id.toString(),
               'levels_id': niveau_id.toString(),
@@ -183,7 +184,6 @@ Future<ApiResponse> createMembre({
               'date_inscription': date_inscription
             }
     );
-
     print("---------------> status : ${url}");
 
     switch(rep.statusCode){
@@ -231,6 +231,7 @@ Future<ApiResponse> getMembres(int membreId) async{
         }
     );
 
+
     switch(rep.statusCode){
       case 200:
           apiResponse.data = Membres.fromJson(jsonDecode(rep.body)['membres']);
@@ -264,6 +265,57 @@ Future<ApiResponse> deleteMembres(int membreId) async{
     switch(rep.statusCode){
       case 200:
         apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 404:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+/** --------------- Statistiques ----------------- **/
+Future<ApiResponse> statistiquesMembres() async{
+  ApiResponse apiResponse = ApiResponse();
+  try{
+    String token = await getToken();
+    var url = Uri.parse('${membresURL}_statistiques');
+    final rep = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+
+    switch(rep.statusCode){
+      case 200:
+      // Convertir la réponse JSON en une carte
+        Map<String, dynamic> jsonData = json.decode(rep.body);
+
+        // Créer une liste pour stocker les données
+        List<Map<String, int>> dataList = [];
+
+        // Itérer sur les entrées de la carte et les ajouter à la liste
+        jsonData.forEach((key, value) {
+          dataList.add({key: value as int});
+        });
+
+        apiResponse.data = dataList;
         break;
       case 401:
         apiResponse.error = unauthorized;

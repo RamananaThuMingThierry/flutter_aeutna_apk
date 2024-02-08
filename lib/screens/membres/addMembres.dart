@@ -7,11 +7,15 @@ import 'package:aeutna/models/axes.dart';
 import 'package:aeutna/models/filieres.dart';
 import 'package:aeutna/models/fonctions.dart';
 import 'package:aeutna/models/niveau.dart';
+import 'package:aeutna/models/sections.dart';
+import 'package:aeutna/models/user.dart';
+import 'package:aeutna/screens/membres/membres.dart';
 import 'package:aeutna/services/axes_services.dart';
 import 'package:aeutna/services/filieres_services.dart';
 import 'package:aeutna/services/fonctions_services.dart';
 import 'package:aeutna/services/membres_services.dart';
 import 'package:aeutna/services/niveau_services.dart';
+import 'package:aeutna/services/sections_services.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/ligne_horizontale.dart';
 import 'package:aeutna/widgets/myTextFieldForm.dart';
@@ -21,7 +25,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class AddMembresScreen extends StatefulWidget {
-  const AddMembresScreen({Key? key}) : super(key: key);
+  User user;
+  AddMembresScreen({required this.user});
 
   @override
   State<AddMembresScreen> createState() => _AddMembresScreenState();
@@ -29,14 +34,45 @@ class AddMembresScreen extends StatefulWidget {
 
 class _AddMembresScreenState extends State<AddMembresScreen> {
   // Déclarations des variables
+  User? user;
   DateTime? selectedDateDeNaissance = DateTime.now();
   DateTime? selectedDateDInscription = DateTime.now();
-  int? numero_carte, axes_id, filieres_id, levels_id, fonctions_id;
+  int? numero_carte, axes_id, filieres_id, levels_id, fonctions_id, sections_id;
   String? image, nom, prenom, contact,genre, date_de_naissance, lieu_de_naissance, cin, contact_personnel, contact_tuteur, facebook, adresse, date_inscription;
   bool? sympathisant = false;
   File? imageFiles;
   CroppedFile? croppedImage;
   final _key = GlobalKey<FormState>();
+
+  /** -------------------------- Axes ----------------------------------------- **/
+  int selectedSecionsId = 0;
+  List<SectionsModel> _sectionsList = [];
+  Future _getallSections() async{
+    ApiResponse apiResponse = await getAllSections();
+    if(apiResponse.error == null){
+      List<dynamic> sectionsList = apiResponse.data as List<dynamic>;
+      List<SectionsModel> sectionModel = sectionsList.map((p) => SectionsModel.fromJson(p)).toList();
+      setState(() {
+        _sectionsList = sectionModel;
+      });
+
+      if(_sectionsList.isEmpty){
+        setState(() {
+          selectedSecionsId = 0;
+        });
+      }else if(!_sectionsList.any((element) => element.id == selectedSecionsId)){
+        setState(() {
+          selectedSecionsId = _sectionsList.first.id!;
+        });
+      }
+
+    }else if(apiResponse.error == unauthorized){
+      MessageErreurs(context, "${apiResponse.data}");
+      ErreurLogin(context);
+    }else{
+      MessageErreurs(context, apiResponse.error);
+    }
+  }
 
   /** -------------------------- Axes ----------------------------------------- **/
   int selectedAxesId = 0;
@@ -158,11 +194,12 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
 
   @override
   void initState() {
+    user = widget.user;
     _getallAxes();
     _getAllFonctions();
     _getAllFilieres();
     _getAllNiveau();
-
+    _getallSections();
     setState(() {
       date_de_naissance = formatageDate(selectedDateDeNaissance!);
       date_inscription = formatageDate(selectedDateDInscription!);
@@ -509,6 +546,38 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                     textInputType: TextInputType.text,
                                     edit: false,
                                     value: ""),
+                                Titre("Sections"),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.dashboard_outlined, color: Colors.grey,),
+                                      SizedBox(width: 10,),
+                                      DropdownButton(
+                                          underline: SizedBox(height: 0,),
+                                          hint: Text("Sélectionner votre sections                    "),
+                                          value: selectedSecionsId,
+                                          items: [
+                                            DropdownMenuItem<int>(
+                                                value: 0,
+                                                child: Center(child: Text('Veuillez sélectionner votre section', style: style_google,))
+                                            ),
+                                            ..._sectionsList.map<DropdownMenuItem<int>>((SectionsModel section){
+                                              return DropdownMenuItem<int>(
+                                                  value: section.id,
+                                                  child: Center(child: Text(section.nom_sections!, style: style_google.copyWith(color: Colors.grey),))
+                                              );
+                                            }).toList(),
+                                          ],
+                                          onChanged: (int? value){
+                                            setState(() {
+                                              selectedSecionsId = value!;
+                                            });
+                                          }),
+                                    ],
+                                  ),
+                                ),
+                                Ligne(color: Colors.grey),
                                 Titre("Contact Personnel"),
                                 MyTextFieldForm(
                                     name: "Contact Personnel",
@@ -667,6 +736,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
           genre: genre,
           fonctions_id: selectedFonctionsId,
           filieres_id: selectedFilieresId,
+          sectionsId: selectedSecionsId,
           niveau_id: selectedNiveauId,
           axesId: selectedAxesId,
           adresse: adresse,
@@ -678,7 +748,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
         );
 
         if(apiResponse.error == null){
-            Navigator.pop(context);
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => MembresScreen(user: user!)), (route) => false);
             MessageReussi(context, "${apiResponse.data}");
         }else if(apiResponse.error == avertissement){
           MessageAvertissement(context, "${apiResponse.data}");

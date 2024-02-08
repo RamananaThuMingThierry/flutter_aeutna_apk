@@ -186,7 +186,7 @@ class _AjouterPublicationState extends State<AjouterPublication> {
                          });
                       }
                     },
-                    child: Text("Valider", style: TextStyle(color: Colors.white),),
+                    child: Text("Publier", style: style_google.copyWith(color: Colors.white)),
                   ),
                 ),
               ],

@@ -20,6 +20,7 @@ class Membres{
   int? filieres_id;
   int? levels_id;
   int? axes_id;
+  int? sections_id;
   int? symapthisant;
   int? lien_membre_id;
   User? user;
@@ -41,6 +42,7 @@ class Membres{
     this.filieres_id,
     this.levels_id,
     this.axes_id,
+    this.sections_id,
     this.contact_personnel,
     this.contact_tutaire,
     this.symapthisant,
@@ -68,6 +70,7 @@ class Membres{
       contact_personnel: m['contact_personnel'],
       contact_tutaire: m['contact_tutaire'],
       image: m['image'],
+      sections_id: m['sections_id'],
       symapthisant: m['sympathisant'],
       date_inscription: m['date_inscription'],
       lien_membre_id: m['lien_membre_id'],
