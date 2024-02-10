@@ -38,11 +38,9 @@ class _ModifierMembresState extends State<ModifierMembres> {
   // Déclarations des variables
   Membres? membres;
   User? user;
-  DateTime? selectedDateDeNaissance = DateTime.now();
-  DateTime? selectedDateDInscription = DateTime.now();
   int? numero_carte, axes_id, filieres_id, levels_id, fonctions_id, sections_id;
   String? image, nom, prenom, contact,genre, date_de_naissance, lieu_de_naissance, cin, contact_personnel, contact_tuteur, facebook, adresse, date_inscription;
-  bool? sympathisant = false;
+  bool? sympathisant;
   File? imageFiles;
   CroppedFile? croppedImage;
   final _key = GlobalKey<FormState>();
@@ -63,10 +61,8 @@ class _ModifierMembresState extends State<ModifierMembres> {
         setState(() {
           selectedSecionsId = 0;
         });
-      }else if(!_sectionsList.any((element) => element.id == selectedSecionsId)){
-        setState(() {
-          selectedSecionsId = _sectionsList.first.id!;
-        });
+      }else{
+        selectedSecionsId = membres!.sections_id!;
       }
 
     }else if(apiResponse.error == unauthorized){
@@ -92,14 +88,13 @@ class _ModifierMembresState extends State<ModifierMembres> {
         setState(() {
           selectedAxesId = 0;
         });
-      }else if(!_axesList.any((element) => element.id == selectedAxesId)){
+      }else{
         setState(() {
-          selectedAxesId = _axesList.first.id!;
+          selectedAxesId = membres!.axes_id!;
         });
       }
 
     }else if(apiResponse.error == unauthorized){
-      MessageErreurs(context, "${apiResponse.data}");
       ErreurLogin(context);
     }else{
       MessageErreurs(context, apiResponse.error);
@@ -122,14 +117,13 @@ class _ModifierMembresState extends State<ModifierMembres> {
         setState(() {
           selectedFonctionsId = 0;
         });
-      }else if(!_listFonctions.any((element) => element.id == selectedFonctionsId)){
+      }else{
         setState(() {
-          selectedFonctionsId = _listFonctions.first.id!;
+          selectedFonctionsId = membres!.fonctions_id!;
         });
       }
 
     }else if(apiResponse.error == unauthorized){
-      MessageErreurs(context, "${apiResponse.data}");
       ErreurLogin(context);
     }else{
       MessageErreurs(context, apiResponse.error);
@@ -151,13 +145,12 @@ class _ModifierMembresState extends State<ModifierMembres> {
         setState(() {
           selectedFilieresId = 0;
         });
-      }else if(!_listFilieres.any((element) => element.id == selectedFilieresId)){
+      }else{
         setState(() {
-          selectedFilieresId = _listFilieres.first.id!;
+          selectedFilieresId = membres!.filieres_id!;
         });
       }
     }else if(apiResponse.error == unauthorized){
-      MessageErreurs(context, "${apiResponse.data}");
       ErreurLogin(context);
     }else{
       MessageErreurs(context, apiResponse.error);
@@ -187,12 +180,15 @@ class _ModifierMembresState extends State<ModifierMembres> {
       }
 
     }else if(apiResponse.error == unauthorized){
-      MessageErreurs(context, "${apiResponse.data}");
       ErreurLogin(context);
     }else{
       MessageErreurs(context, apiResponse.error);
     }
   }
+
+
+  DateTime? selectedDateDeNaissance = DateTime.now();
+  DateTime? selectedDateDInscription = DateTime.now();
 
   @override
   void initState() {
@@ -204,10 +200,14 @@ class _ModifierMembresState extends State<ModifierMembres> {
     _getAllNiveau();
     _getallSections();
     genre = membres!.genre;
+    sympathisant = membres!.symapthisant == 0 ? false : true;
     setState(() {
+      selectedDateDeNaissance = DateTime.parse("${membres!.date_de_naissance}");
+      selectedDateDInscription = DateTime.parse("${membres!.date_inscription}");
       date_de_naissance = formatageDate(selectedDateDeNaissance!);
       date_inscription = formatageDate(selectedDateDInscription!);
     });
+
     super.initState();
   }
 

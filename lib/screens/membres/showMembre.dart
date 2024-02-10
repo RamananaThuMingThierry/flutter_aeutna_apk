@@ -42,11 +42,16 @@ class _ShowMembresState extends State<ShowMembres> {
   SectionsModel? sections;
   FonctionModel? fonctionModel;
   int? compte = 0;
-  @override
+  String? axes_null;
 
+  @override
   void initState() {
     membre = widget.membres;
     user = widget.user;
+
+    if(membre!.axes_id == null){
+      axes_null = null;
+    }
     getAxes();
     getFilieres();
     getNiveau();
@@ -70,16 +75,23 @@ class _ShowMembresState extends State<ShowMembres> {
   }
 
   void getAxes() async{
-    ApiResponse apiResponse = await showAxes(membre!.axes_id!);
-    if(apiResponse.error == null){
+    if(membre!.axes_id != null){
+      ApiResponse apiResponse = await showAxes(membre!.axes_id!);
+      if (apiResponse.error == null) {
+        setState(() {
+          compte = compte! + 1;
+          axes = apiResponse.data as Axes?;
+          axes_null = axes!.nom_axes;
+        });
+      } else if (apiResponse.error == unauthorized) {
+        ErreurLogin(context);
+      } else {
+        MessageErreurs(context, "${apiResponse.error}");
+      }
+    }else{
       setState(() {
         compte = compte! + 1;
-        axes = apiResponse.data as Axes?;
       });
-    }else if(apiResponse.error == unauthorized){
-      ErreurLogin(context);
-    }else{
-      MessageErreurs(context, "${apiResponse.error}");
     }
   }
 
@@ -276,7 +288,7 @@ class _ShowMembresState extends State<ShowMembres> {
                 ? TextTitre(name: "C.I.N")
                 : SizedBox(),
             user!.roles == "Administrateurs"
-                ? CardText(context, iconData: Icons.credit_card_rounded, value: separerParEspace("${membre!.cin}"))
+                ? CardText(context, iconData: Icons.credit_card_rounded, value: membre!.cin == null ? '-' : separerParEspace("${membre!.cin}"))
                 : SizedBox(),
             SizedBox(height: 10,),
             TextTitre(name: "Fonctions"),
@@ -323,11 +335,10 @@ class _ShowMembresState extends State<ShowMembres> {
                 ? SizedBox(height: 10,)
                 : SizedBox(),
             user!.roles == "Administrateurs"
-
                 ? TextTitre(name: "Axes")
                 : SizedBox(),
             user!.roles == "Administrateurs"
-                ? CardText(context, iconData: Icons.local_library_sharp, value: "${axes!.nom_axes!}")
+                ? CardText(context, iconData: Icons.local_library_sharp, value: "${axes_null ?? '-'}")
                 : SizedBox(),
             user!.roles == "Administrateurs"
                 ? SizedBox(height: 10,)

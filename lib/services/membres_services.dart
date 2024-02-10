@@ -133,49 +133,30 @@ Future<ApiResponse> createMembre({
     String token = await getToken();
 
     var url = Uri.parse(membresURL);
-    print(url);
-    print(token);
-    print(
-        "image : $image \n"
-        "Numéro carte : $numero_carte \n"
-        "Nom : $nom \n"
-        "Prénom : $prenom \n"
-        "Date de naissance : $date_de_naissance \n"
-        "Lieu de naissance : $lieu_de_naissance \n"
-        "CIN : $cin \n"
-        "Genre : $genre \n"
-        "Contact personnel $contact_personnel \n"
-        "Contact tuteur : $contact_tutaire \n"
-        "Sympathisant : ${sympathisant == true ? 1 : 0} \n"
-        "Axes_id : $axesId \n"
-        "Sections_id : $sectionsId \n"
-        "Filiere_id :$filieres_id \n"
-        "Fonctions_id : $fonctions_id \n"
-        "Niveau_id : $niveau_id \n"
-        "Facebook : $facebook \n"
-        "Adresse : $adresse \n"
-        "Date d'inscription : $date_inscription"
-    );
+
+    print("-------------> $axesId $cin <------------");
+
+
     final rep = await http.post(
         url,
         headers: {
           'Accept': 'application/json',
           'Authorization' : 'Bearer $token'
         },
-        body: {
+        body: sympathisant == true
+            ? cin == null
+               ? {
               'image' : image,
               'numero_carte': numero_carte.toString(),
                'nom' : nom,
               'prenom' : prenom ?? null,
                'date_de_naissance' : date_de_naissance,
               'lieu_de_naissance' : lieu_de_naissance,
-               'cin' : cin,
               'genre' : genre,
               'contact_personnel': contact_personnel,
               'contact_tutaire' : contact_tutaire,
               'sympathisant' : "${sympathisant == true ? 1 : 0}",
-              'axes_id': axesId.toString(),
-               'sections_id': sectionsId.toString(),
+              'sections_id': sectionsId.toString(),
               'filieres_id': filieres_id.toString(),
               'fonctions_id': fonctions_id.toString(),
               'levels_id': niveau_id.toString(),
@@ -183,8 +164,71 @@ Future<ApiResponse> createMembre({
               'adresse':adresse,
               'date_inscription': date_inscription
             }
+               : {
+          'image' : image,
+          'numero_carte': numero_carte.toString(),
+          'nom' : nom,
+          'prenom' : prenom ?? null,
+          'date_de_naissance' : date_de_naissance,
+          'lieu_de_naissance' : lieu_de_naissance,
+          'genre' : genre,
+          'cin' : cin,
+          'contact_personnel': contact_personnel,
+          'contact_tutaire' : contact_tutaire,
+          'sympathisant' : "${sympathisant == true ? 1 : 0}",
+          'sections_id': sectionsId.toString(),
+          'filieres_id': filieres_id.toString(),
+          'fonctions_id': fonctions_id.toString(),
+          'levels_id': niveau_id.toString(),
+          'facebook': facebook,
+          'adresse':adresse,
+          'date_inscription': date_inscription
+        }
+            : cin == null
+              ?  {
+                'image' : image,
+                'numero_carte': numero_carte.toString(),
+                'nom' : nom,
+                'prenom' : prenom ?? null,
+                'date_de_naissance' : date_de_naissance,
+                'lieu_de_naissance' : lieu_de_naissance,
+                'genre' : genre,
+                'contact_personnel': contact_personnel,
+                'contact_tutaire' : contact_tutaire,
+                'sympathisant' : "${sympathisant == true ? 1 : 0}",
+                'axes_id' : axesId.toString(),
+                'sections_id': sectionsId.toString(),
+                'filieres_id': filieres_id.toString(),
+                'fonctions_id': fonctions_id.toString(),
+                'levels_id': niveau_id.toString(),
+                'facebook': facebook,
+                'adresse':adresse,
+                'date_inscription': date_inscription
+              }
+              : {
+            'image' : image,
+            'numero_carte': numero_carte.toString(),
+            'nom' : nom,
+            'prenom' : prenom ?? null,
+            'cin' : cin,
+            'date_de_naissance' : date_de_naissance,
+            'lieu_de_naissance' : lieu_de_naissance,
+            'genre' : genre,
+            'contact_personnel': contact_personnel,
+            'contact_tutaire' : contact_tutaire,
+            'sympathisant' : "${sympathisant == true ? 1 : 0}",
+            'axes_id' : axesId.toString(),
+            'sections_id': sectionsId.toString(),
+            'filieres_id': filieres_id.toString(),
+            'fonctions_id': fonctions_id.toString(),
+            'levels_id': niveau_id.toString(),
+            'facebook': facebook,
+            'adresse':adresse,
+            'date_inscription': date_inscription
+          }
     );
-    print("---------------> status : ${url}");
+
+    print("---------------> status : ${rep.statusCode} : ${rep.body}");
 
     switch(rep.statusCode){
       case 200:

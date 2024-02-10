@@ -42,6 +42,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
   bool? sympathisant = false;
   File? imageFiles;
   CroppedFile? croppedImage;
+  bool? loading = false;
   final _key = GlobalKey<FormState>();
 
   /** -------------------------- Axes ----------------------------------------- **/
@@ -207,7 +208,6 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
     super.initState();
   }
 
-
   String formatageDate(DateTime date){
     DateTime dateformat = DateTime(date!.year, date!.month, date!.day);
     return DateFormat('yyyy-MM-dd').format(dateformat);
@@ -334,11 +334,6 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                   ],
                                 ),
                                 Ligne(color: Colors.grey),
-                                Row(
-                                  children: [
-
-                                  ],
-                                ),
                                 Titre("Lieu de naissance"),
                                 MyTextFieldForm(
                                     name: "Lieu de naissance",
@@ -364,10 +359,10 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                       });
                                     },
                                     validator: () => (value){
-                                      if(value == null || value.isEmpty){
-                                        return 'Veuillez entrer votre C.I.N!';
+                                      if(value.isEmpty || value == null){
+                                        return null;
                                       }else if(value.length != 12){
-                                        return 'C.I.N doit-être composer de 12 chiffres!';
+                                          return 'C.I.N doit-être composer de 12 chiffres!';
                                       }
                                     }, iconData: Icons.call_to_action,
                                     textInputType: TextInputType.number,
@@ -512,7 +507,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                           items: [
                                               DropdownMenuItem<int>(
                                                   value: 0,
-                                                  child: Center(child: Text('Veuillez sélectionner votre axes', style: style_google,))
+                                                  child: Center(child: Text('Aucun', style: style_google,))
                                               ),
                                             ..._axesList.map<DropdownMenuItem<int>>((Axes axes){
                                               return DropdownMenuItem<int>(
@@ -686,7 +681,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                 Row(
                                   children: [
                                     InkWell(
-                                      onTap: () => _validation(),
+                                      onTap: () => loading == true ? onLoading(context) :  _validation(),
                                       child: Container(
                                           width: MediaQuery.of(context).size.width - 20,
                                           height: 50,
@@ -711,6 +706,32 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
     );
   }
 
+  void onLoading(BuildContext context){
+    showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            contentPadding: EdgeInsets.all(0.0),
+            insetPadding: EdgeInsets.symmetric(horizontal: 100),
+            content: Padding(
+              padding: EdgeInsets.only(top: 20, bottom: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(color: Colors.blueGrey,),
+                  SizedBox(height: 16,),
+                  Text("Patientez...", style: TextStyle(color: Colors.grey),)
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   Future<void> _validation() async {
     if(_key.currentState!.validate()){
       if(image == null){
@@ -721,10 +742,18 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
         MessageAvertissement(context, "Veuillez sélectionner votre date de naissance");
       }else if(date_inscription == null){
         MessageAvertissement(context, "Veuillez sélectionner votre date d'inscription");
-      }else if(sympathisant == true && axes_id != 0){
+      }else if(sympathisant == true && selectedAxesId != 0){
         MessageAvertissement(context, "Etes-vous vraiment sympathisant ?");
-      }else{
+      }else if(sympathisant == false && selectedAxesId == 0){
+        MessageAvertissement(context, "Etes-vous sympathisant(e) ?");
+      }
+      else{
+        setState(() {
+          loading = true;
+        });
+
         String? _images = imageFiles == null ? null : getStringImage(imageFiles);
+
         ApiResponse apiResponse = await createMembre(
           image: _images,
           numero_carte: numero_carte,
@@ -748,6 +777,9 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
         );
 
         if(apiResponse.error == null){
+            setState(() {
+              loading = false;
+            });
             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => MembresScreen(user: user!)), (route) => false);
             MessageReussi(context, "${apiResponse.data}");
         }else if(apiResponse.error == avertissement){
@@ -845,9 +877,9 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
       uiSettings: [
         AndroidUiSettings(
             toolbarTitle: 'Recadrez l\'image',
-            toolbarColor: Colors.green,
+            toolbarColor: Colors.blueGrey,
             toolbarWidgetColor: Colors.white,
-            activeControlsWidgetColor: Colors.green,
+            activeControlsWidgetColor: Colors.blueGrey,
             hideBottomControls: false,
             cropGridColumnCount: 3,
             cropGridRowCount: 3,

@@ -45,7 +45,6 @@ class _RegisterState extends State<Register> {
         MessageAvertissement(context, "${apiResponse.data}");
       }else{
         MessageErreurs(context, "${apiResponse.error}");
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${apiResponse.error}')));
       }
     }
   }
