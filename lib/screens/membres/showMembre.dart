@@ -306,8 +306,8 @@ class _ShowMembresState extends State<ShowMembres> {
             },),
             SizedBox(height: 10,),
             TextTitre(name: "Contact Tuteur"),
-            GestureDetector(child: CardText(context, iconData: Icons.phone, value: "${membre!.contact_tutaire}"), onTap: (){
-              ActionsCallOrMessage(context, "${membre!.contact_tutaire}");
+            GestureDetector(child: CardText(context, iconData: Icons.phone, value: "${membre!.contact_tuteur}"), onTap: (){
+              ActionsCallOrMessage(context, "${membre!.contact_tuteur}");
               },),
             SizedBox(height: 10,),
             TextTitre(name: "Adresse"),

@@ -209,7 +209,7 @@ class _ProfilesState extends State<Profiles> {
                             lieu_naissance: membres == null ? "" : membres!.lieu_de_naissance
                         ) : SizedBox(),
                         status == 1 ? showInformationsAEUTNA(
-                            contact_tutaire: membres == null ? "" : membres!.contact_tutaire,
+                            contact_tutaire: membres == null ? "" : membres!.contact_tuteur,
                             numero_carte_aeutna: membres == null ? 0 : membres!.numero_carte ,
                             email: email,
                             filiere: filieres == null ? "" : filieres!.nom_filieres,

@@ -507,7 +507,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                           items: [
                                               DropdownMenuItem<int>(
                                                   value: 0,
-                                                  child: Center(child: Text('Aucun', style: style_google,))
+                                                  child: Center(child: Text('Aucun', style: style_google.copyWith(color: Colors.grey),))
                                               ),
                                             ..._axesList.map<DropdownMenuItem<int>>((Axes axes){
                                               return DropdownMenuItem<int>(
@@ -706,32 +706,6 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
     );
   }
 
-  void onLoading(BuildContext context){
-    showDialog(
-        context: context,
-        builder: (BuildContext context){
-          return AlertDialog(
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-            ),
-            contentPadding: EdgeInsets.all(0.0),
-            insetPadding: EdgeInsets.symmetric(horizontal: 100),
-            content: Padding(
-              padding: EdgeInsets.only(top: 20, bottom: 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircularProgressIndicator(color: Colors.blueGrey,),
-                  SizedBox(height: 16,),
-                  Text("Patientez...", style: TextStyle(color: Colors.grey),)
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
   Future<void> _validation() async {
     if(_key.currentState!.validate()){
       if(image == null){
@@ -767,26 +741,34 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
           filieres_id: selectedFilieresId,
           sectionsId: selectedSecionsId,
           niveau_id: selectedNiveauId,
-          axesId: selectedAxesId,
+          axesId: selectedAxesId == 0 ? null : selectedAxesId,
           adresse: adresse,
           contact_personnel: contact_personnel,
-          contact_tutaire: contact_tuteur,
+          contact_tuteur: contact_tuteur,
           facebook: facebook,
           sympathisant: sympathisant,
           date_inscription: date_inscription
         );
-
         if(apiResponse.error == null){
-            setState(() {
-              loading = false;
-            });
+          setState(() {
+            loading = false;
+          });
             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => MembresScreen(user: user!)), (route) => false);
             MessageReussi(context, "${apiResponse.data}");
         }else if(apiResponse.error == avertissement){
+          setState(() {
+            loading = false;
+          });
           MessageAvertissement(context, "${apiResponse.data}");
         }else if(apiResponse.error == unauthorized){
+          setState(() {
+            loading = false;
+          });
           MessageErreurs(context, apiResponse.error);
         }else{
+          setState(() {
+            loading = false;
+          });
           MessageErreurs(context, "${apiResponse.error}");
         }
       }

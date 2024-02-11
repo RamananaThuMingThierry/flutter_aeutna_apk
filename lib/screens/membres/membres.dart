@@ -4,6 +4,8 @@ import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/constants/onLoadingMembreShimmer.dart';
 import 'package:aeutna/models/membres.dart';
 import 'package:aeutna/models/user.dart';
+import 'package:aeutna/screens/Acceuil.dart';
+import 'package:aeutna/screens/admin/administrateurs.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/screens/membres/addMembres.dart';
 import 'package:aeutna/screens/membres/showMembre.dart';
@@ -70,7 +72,7 @@ class _MembresState extends State<MembresScreen> {
         backgroundColor: Colors.white,
         leading: IconButton(
           onPressed: (){
-            Navigator.pop(context);
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => AdministrateursScreen(user: user!,)), (route) => false);
           },
           icon: Icon(Icons.keyboard_backspace, color: Colors.blueGrey,),
         ),

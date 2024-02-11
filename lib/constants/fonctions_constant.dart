@@ -152,6 +152,33 @@ String ajouterTroisPointSiTextTropLong({String? texte, int? longueur}){
   }
 }
 
+
+void onLoading(BuildContext context){
+  showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          contentPadding: EdgeInsets.all(0.0),
+          insetPadding: EdgeInsets.symmetric(horizontal: 100),
+          content: Padding(
+            padding: EdgeInsets.only(top: 20, bottom: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(color: Colors.blueGrey,),
+                SizedBox(height: 16,),
+                Text("Patientez...", style: TextStyle(color: Colors.grey),)
+              ],
+            ),
+          ),
+        );
+      });
+}
+
 void onLoadingLogin(BuildContext context, User user){
   showDialog(
       context: context,

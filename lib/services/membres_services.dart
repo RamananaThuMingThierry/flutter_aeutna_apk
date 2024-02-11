@@ -70,7 +70,6 @@ Future<ApiResponse> getallMembresNAPasUtilisateur() async{
   return apiResponse;
 }
 
-
 /** ---------------- Get Numéro ---------------------**/
 Future<ApiResponse> getAllNumero(String? prefixNumero) async{
   ApiResponse apiResponse = ApiResponse();
@@ -116,7 +115,7 @@ Future<ApiResponse> createMembre({
   String? cin,
   String? genre,
   String? contact_personnel,
-  String? contact_tutaire,
+  String? contact_tuteur,
   bool? sympathisant,
   int? axesId,
   int? sectionsId,
@@ -134,8 +133,26 @@ Future<ApiResponse> createMembre({
 
     var url = Uri.parse(membresURL);
 
-    print("-------------> $axesId $cin <------------");
-
+    print(
+        "url : $url \n"
+            "numero carte : $numero_carte \n"
+            "sympathisant : $sympathisant \n"
+            "cin : $cin \n"
+            "nom : $nom \n"
+            "prenom : $prenom \n"
+            "date_de_naissaince : $date_de_naissance \n"
+            "lieu de naissance : $lieu_de_naissance \n"
+            "adresse : $adresse \n"
+            "contact personnel : $contact_personnel \n"
+            "contact tuteur : $contact_tuteur"
+            "sectionsId : $sectionsId \n"
+            "filiereId : $filieres_id \n"
+            "niveauId : $niveau_id \n"
+            "fonctionId : $fonctions_id \n"
+            "axesId : $axesId \n"
+            "date_inscription : $date_inscription \n"
+            "image : $image \n"
+    );
 
     final rep = await http.post(
         url,
@@ -143,89 +160,141 @@ Future<ApiResponse> createMembre({
           'Accept': 'application/json',
           'Authorization' : 'Bearer $token'
         },
-        body: sympathisant == true
-            ? cin == null
-               ? {
+        body: {
               'image' : image,
               'numero_carte': numero_carte.toString(),
-               'nom' : nom,
-              'prenom' : prenom ?? null,
-               'date_de_naissance' : date_de_naissance,
+              'nom' : nom,
+              'prenom' : prenom.toString(),
+              'cin' : cin.toString(),
+              'date_de_naissance' : date_de_naissance.toString(),
               'lieu_de_naissance' : lieu_de_naissance,
               'genre' : genre,
-              'contact_personnel': contact_personnel,
-              'contact_tutaire' : contact_tutaire,
-              'sympathisant' : "${sympathisant == true ? 1 : 0}",
-              'sections_id': sectionsId.toString(),
-              'filieres_id': filieres_id.toString(),
-              'fonctions_id': fonctions_id.toString(),
-              'levels_id': niveau_id.toString(),
-              'facebook': facebook,
-              'adresse':adresse,
-              'date_inscription': date_inscription
+              'contact_personnel' : contact_personnel,
+              'contact_tuteur' : contact_tuteur,
+               'sympathisant' : "${sympathisant == true ? 1 : 0}",
+              'fonctions_id' : fonctions_id.toString(),
+              'axes_id' : "${axesId == 0 ? null : axesId}",
+               'levels_id' : niveau_id.toString(),
+              'sections_id' : sectionsId.toString(),
+              'facebook' : facebook,
+              'adresse' : adresse,
+              'filieres_id' : filieres_id.toString(),
+              'date_inscription' : date_inscription.toString(),
             }
-               : {
+    );
+
+    print("---------------> status : ${rep.statusCode} : ${rep.body}");
+
+    switch(rep.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 422:
+        apiResponse.error = avertissement;
+        String errorMessages = "";
+        final errors = jsonDecode(rep.body)['errors'];
+        errors.forEach((field, message) {
+          errorMessages += "* ${message.join(', ')}\n";
+        });
+        apiResponse.data = errorMessages;
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+/** --------------- Modifier un Membre ----------------- **/
+Future<ApiResponse> updateMembre({
+  int? membreIdUpdate,
+  String? image,
+  int? numero_carte,
+  String? nom,
+  String? prenom,
+  String? date_de_naissance,
+  String? lieu_de_naissance,
+  String? cin,
+  String? genre,
+  String? contact_personnel,
+  String? contact_tuteur,
+  bool? sympathisant,
+  int? axesId,
+  int? sectionsId,
+  int? filieres_id,
+  int? niveau_id,
+  int? fonctions_id,
+  String? facebook,
+  String? adresse,
+  String? date_inscription
+}) async{
+
+  ApiResponse apiResponse = ApiResponse();
+
+  try{
+
+    String token = await getToken();
+
+    var url = Uri.parse("$membresURL/$membreIdUpdate");
+
+    print(
+          "url : $url \n"
+          "numero carte : $numero_carte \n"
+          "sympathisant : $sympathisant \n"
+          "cin : $cin \n"
+          "nom : $nom \n"
+          "prenom : $prenom \n"
+          "date_de_naissaince : $date_de_naissance \n"
+          "lieu de naissance : $lieu_de_naissance \n"
+          "adresse : $adresse \n"
+          "contact personnel : $contact_personnel \n"
+          "contact tuteur : $contact_tuteur"
+          "sectionsId : $sectionsId \n"
+          "filiereId : $filieres_id \n"
+          "fonctionId : $fonctions_id \n"
+          "axesId : $axesId \n"
+          "date_inscription : $date_inscription \n"
+          "image : $image \n"
+       );
+
+    final rep = await http.put(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        },
+        body: {
           'image' : image,
-          'numero_carte': numero_carte.toString(),
+          'numero_carte' : numero_carte.toString(),
           'nom' : nom,
-          'prenom' : prenom ?? null,
+          'prenom' : prenom,
           'date_de_naissance' : date_de_naissance,
           'lieu_de_naissance' : lieu_de_naissance,
+          'adresse' : adresse,
+          'cin' : cin.toString(),
+          'contact_personnel' : contact_personnel,
+          'contact_tuteur' : contact_tuteur,
+          'facebook' : facebook,
           'genre' : genre,
-          'cin' : cin,
-          'contact_personnel': contact_personnel,
-          'contact_tutaire' : contact_tutaire,
-          'sympathisant' : "${sympathisant == true ? 1 : 0}",
-          'sections_id': sectionsId.toString(),
-          'filieres_id': filieres_id.toString(),
-          'fonctions_id': fonctions_id.toString(),
-          'levels_id': niveau_id.toString(),
-          'facebook': facebook,
-          'adresse':adresse,
-          'date_inscription': date_inscription
+          'fonctions_id' : fonctions_id.toString(),
+          'filieres_id' : filieres_id.toString(),
+          'levels_id' : niveau_id.toString(),
+          'axes_id' : axesId == 0 ? null : axesId.toString(),
+          'sections_id' : sectionsId.toString(),
+          'sympathisant' : "${sympathisant! ? 1 : 0}",
+          'date_inscription' : date_inscription,
         }
-            : cin == null
-              ?  {
-                'image' : image,
-                'numero_carte': numero_carte.toString(),
-                'nom' : nom,
-                'prenom' : prenom ?? null,
-                'date_de_naissance' : date_de_naissance,
-                'lieu_de_naissance' : lieu_de_naissance,
-                'genre' : genre,
-                'contact_personnel': contact_personnel,
-                'contact_tutaire' : contact_tutaire,
-                'sympathisant' : "${sympathisant == true ? 1 : 0}",
-                'axes_id' : axesId.toString(),
-                'sections_id': sectionsId.toString(),
-                'filieres_id': filieres_id.toString(),
-                'fonctions_id': fonctions_id.toString(),
-                'levels_id': niveau_id.toString(),
-                'facebook': facebook,
-                'adresse':adresse,
-                'date_inscription': date_inscription
-              }
-              : {
-            'image' : image,
-            'numero_carte': numero_carte.toString(),
-            'nom' : nom,
-            'prenom' : prenom ?? null,
-            'cin' : cin,
-            'date_de_naissance' : date_de_naissance,
-            'lieu_de_naissance' : lieu_de_naissance,
-            'genre' : genre,
-            'contact_personnel': contact_personnel,
-            'contact_tutaire' : contact_tutaire,
-            'sympathisant' : "${sympathisant == true ? 1 : 0}",
-            'axes_id' : axesId.toString(),
-            'sections_id': sectionsId.toString(),
-            'filieres_id': filieres_id.toString(),
-            'fonctions_id': fonctions_id.toString(),
-            'levels_id': niveau_id.toString(),
-            'facebook': facebook,
-            'adresse':adresse,
-            'date_inscription': date_inscription
-          }
     );
 
     print("---------------> status : ${rep.statusCode} : ${rep.body}");

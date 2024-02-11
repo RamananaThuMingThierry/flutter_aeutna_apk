@@ -13,7 +13,7 @@ class Membres{
   String? cin;
   String? facebook;
   String? contact_personnel;
-  String? contact_tutaire;
+  String? contact_tuteur;
   String? adresse;
   String? date_inscription;
   int? fonctions_id;
@@ -44,7 +44,7 @@ class Membres{
     this.axes_id,
     this.sections_id,
     this.contact_personnel,
-    this.contact_tutaire,
+    this.contact_tuteur,
     this.symapthisant,
     this.date_inscription,
     this.lien_membre_id
@@ -68,7 +68,7 @@ class Membres{
       genre: m['genre'],
       adresse: m['adresse'],
       contact_personnel: m['contact_personnel'],
-      contact_tutaire: m['contact_tutaire'],
+      contact_tuteur: m['contact_tuteur'],
       image: m['image'],
       sections_id: m['sections_id'],
       symapthisant: m['sympathisant'],

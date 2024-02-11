@@ -14,11 +14,13 @@ import 'package:aeutna/screens/membres/membres.dart';
 import 'package:aeutna/services/axes_services.dart';
 import 'package:aeutna/services/filieres_services.dart';
 import 'package:aeutna/services/fonctions_services.dart';
+import 'package:aeutna/services/membres_services.dart';
 import 'package:aeutna/services/niveau_services.dart';
 import 'package:aeutna/services/sections_services.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/ligne_horizontale.dart';
 import 'package:aeutna/widgets/myTextFieldForm.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
@@ -40,8 +42,11 @@ class _ModifierMembresState extends State<ModifierMembres> {
   User? user;
   int? numero_carte, axes_id, filieres_id, levels_id, fonctions_id, sections_id;
   String? image, nom, prenom, contact,genre, date_de_naissance, lieu_de_naissance, cin, contact_personnel, contact_tuteur, facebook, adresse, date_inscription;
+  String? image_update;
+  bool? image_existe;
   bool? sympathisant;
   File? imageFiles;
+  bool? loading = false;
   CroppedFile? croppedImage;
   final _key = GlobalKey<FormState>();
 
@@ -90,7 +95,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
         });
       }else{
         setState(() {
-          selectedAxesId = membres!.axes_id!;
+          selectedAxesId = membres!.axes_id ?? 0;
         });
       }
 
@@ -199,8 +204,19 @@ class _ModifierMembresState extends State<ModifierMembres> {
     _getAllFilieres();
     _getAllNiveau();
     _getallSections();
+    numero_carte = membres!.numero_carte;
+    nom = membres!.nom;
+    prenom = membres!.prenom ?? '';
+    lieu_de_naissance = membres!.lieu_de_naissance;
+    adresse = membres!.adresse;
+    facebook  = membres!.facebook;
     genre = membres!.genre;
+    cin = membres!.cin ?? '';
+    contact_personnel = membres!.contact_personnel;
+    contact_tuteur = membres!.contact_tuteur;
     sympathisant = membres!.symapthisant == 0 ? false : true;
+    image_update = membres!.image;
+    image_existe = membres!.image == null ? false : true;
     setState(() {
       selectedDateDeNaissance = DateTime.parse("${membres!.date_de_naissance}");
       selectedDateDInscription = DateTime.parse("${membres!.date_inscription}");
@@ -245,7 +261,11 @@ class _ModifierMembresState extends State<ModifierMembres> {
                     shape: Border(),
                     child: Column(
                       children: [
-                        (croppedImage != null) ? Image.file(File(croppedImage!.path)) : Image.asset("assets/no_image.jpg"),
+                        (image_existe == false)
+                            ?  Image.asset("assets/no_image.jpg")
+                            : (image_update != null)
+                                  ? Image.network(image_update!, fit: BoxFit.cover,)
+                                  : (croppedImage != null) ? Image.file(File(croppedImage!.path)) : Image.asset("assets/no_image.jpg"),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -290,7 +310,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
                                   }, iconData: Icons.confirmation_num_outlined,
                                   textInputType: TextInputType.number,
                                   edit: true,
-                                  value: "${membres!.numero_carte}"),
+                                  value: numero_carte.toString()),
                               Titre("Nom"),
                               MyTextFieldForm(
                                   name: "Nom",
@@ -306,7 +326,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
                                   }, iconData: Icons.person_2_outlined,
                                   textInputType: TextInputType.text,
                                   edit: true,
-                                  value: "${membres!.nom}"),
+                                  value: nom!),
                               Titre("Prénom"),
                               MyTextFieldForm(
                                   name: "Prénom",
@@ -320,7 +340,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
                                   }, iconData: Icons.person_2_outlined,
                                   textInputType: TextInputType.text,
                                   edit: true,
-                                  value: "${membres!.prenom}"),
+                                  value: prenom!),
                               Titre("Date de naissance"),
                               Row(
                                 children: [
@@ -346,7 +366,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
                                   }, iconData: Icons.add_location,
                                   textInputType: TextInputType.text,
                                   edit: true,
-                                  value: "${membres!.lieu_de_naissance}"),
+                                  value: lieu_de_naissance!),
                               Titre("C.I.N"),
                               MyTextFieldForm(
                                   name: "C.I.N",
@@ -357,14 +377,14 @@ class _ModifierMembresState extends State<ModifierMembres> {
                                   },
                                   validator: () => (value){
                                     if(value == null || value.isEmpty){
-                                      return 'Veuillez entrer votre C.I.N!';
+                                      return null;
                                     }else if(value.length != 12){
                                       return 'C.I.N doit-être composer de 12 chiffres!';
                                     }
                                   }, iconData: Icons.call_to_action,
                                   textInputType: TextInputType.number,
                                   edit: true,
-                                  value: "${membres!.cin}"),
+                                  value: cin ?? ''),
                               Titre("Genre"),
                               Padding(
                                 padding: EdgeInsets.only(left: 30),
@@ -439,7 +459,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
                                         items: [
                                           DropdownMenuItem<int>(
                                               value: 0,
-                                              child: Center(child: Text('Veuillez sélectionner votre filière', style: style_google,))
+                                              child: Center(child: Text('Aucun', style: style_google.copyWith(color: Colors.grey),))
                                           ),
                                           ..._listFilieres.map<DropdownMenuItem<int>>((Filieres filiere){
                                             return DropdownMenuItem<int>(
@@ -472,7 +492,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
                                         items: [
                                           DropdownMenuItem<int>(
                                               value: 0,
-                                              child: Center(child: Text('Veuillez sélectionner votre niveau', style: style_google,))
+                                              child: Center(child: Text('Nouveau bachelier', style: style_google.copyWith(color: Colors.grey),))
                                           ),
                                           ..._listNiveau.map<DropdownMenuItem<int>>((Niveau niveau){
                                             return DropdownMenuItem<int>(
@@ -505,7 +525,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
                                         items: [
                                           DropdownMenuItem<int>(
                                               value: 0,
-                                              child: Center(child: Text('Veuillez sélectionner votre axes', style: style_google,))
+                                              child: Center(child: Text('Aucun', style: style_google.copyWith(color: Colors.grey),))
                                           ),
                                           ..._axesList.map<DropdownMenuItem<int>>((Axes axes){
                                             return DropdownMenuItem<int>(
@@ -538,7 +558,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
                                   }, iconData: Icons.local_library_sharp,
                                   textInputType: TextInputType.text,
                                   edit: true,
-                                  value: "${membres!.adresse}"),
+                                  value: adresse!),
                               Titre("Sections"),
                               Padding(
                                 padding: const EdgeInsets.only(left: 10),
@@ -548,12 +568,12 @@ class _ModifierMembresState extends State<ModifierMembres> {
                                     SizedBox(width: 10,),
                                     DropdownButton(
                                         underline: SizedBox(height: 0,),
-                                        hint: Text("Sélectionner votre sections                    "),
+                                        hint: Text("Sélectionner votre section                     "),
                                         value: selectedSecionsId,
                                         items: [
                                           DropdownMenuItem<int>(
                                               value: 0,
-                                              child: Center(child: Text('Veuillez sélectionner votre section', style: style_google,))
+                                              child: Center(child: Text('Veuillez sélectionner votre section', style: style_google.copyWith(color: Colors.grey),))
                                           ),
                                           ..._sectionsList.map<DropdownMenuItem<int>>((SectionsModel section){
                                             return DropdownMenuItem<int>(
@@ -590,7 +610,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
                                   }, iconData: Icons.call_outlined,
                                   textInputType: TextInputType.number,
                                   edit: true,
-                                  value: "${membres!.contact_personnel}"),
+                                  value: contact_personnel!),
                               Titre("Contact Tuteur"),
                               MyTextFieldForm(
                                   name: "Contact Tuteur",
@@ -610,7 +630,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
                                   }, iconData: Icons.call_outlined,
                                   textInputType: TextInputType.number,
                                   edit: true,
-                                  value: "${membres!.contact_tutaire}"),
+                                  value: contact_tuteur!),
                               Titre("Facebook"),
                               MyTextFieldForm(
                                   name: "Facebook",
@@ -626,7 +646,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
                                   }, iconData: Icons.facebook_rounded,
                                   textInputType: TextInputType.text,
                                   edit: true,
-                                  value: "${membres!.facebook}"),
+                                  value: facebook!),
                               Titre("Sympathisant"),
                               Padding(
                                 padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
@@ -679,7 +699,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
                               Row(
                                 children: [
                                   InkWell(
-                                    onTap: () => _validation(),
+                                    onTap: () => loading == true ? onLoading(context) :  _validation(),
                                     child: Container(
                                         width: MediaQuery.of(context).size.width - 20,
                                         height: 50,
@@ -706,53 +726,59 @@ class _ModifierMembresState extends State<ModifierMembres> {
 
   Future<void> _validation() async {
     if(_key.currentState!.validate()){
-
-      if(image == null){
-        MessageAvertissement(context, "Veuillez sélectionner votre image");
-      }else if(genre == null){
+      if(genre == null){
         MessageAvertissement(context, "Veuillez sélectionner votre genre");
       }else if(date_de_naissance == null){
         MessageAvertissement(context, "Veuillez sélectionner votre date de naissance");
       }else if(date_inscription == null){
         MessageAvertissement(context, "Veuillez sélectionner votre date d'inscription");
-      }else if(sympathisant == true && axes_id != 0){
+      }else if(sympathisant == true && selectedAxesId != 0){
         MessageAvertissement(context, "Etes-vous vraiment sympathisant ?");
+      }else if(sympathisant == false && selectedAxesId == 0){
+        MessageAvertissement(context, "Etes-vous sympathisant(e) ?");
       }else{
+        String? _images;
+        if(image == null){
+          _images = image_update!;
+        }else{
+          _images = imageFiles == null ? null : getStringImage(imageFiles);
+        }
+        ApiResponse apiResponse = await updateMembre(
+            membreIdUpdate: membres!.id,
+            image: _images,
+            numero_carte: numero_carte,
+            nom: nom,
+            prenom: prenom,
+            date_de_naissance: date_de_naissance,
+            lieu_de_naissance: lieu_de_naissance,
+            cin: cin == '' ? null : cin,
+            genre: genre,
+            fonctions_id: selectedFonctionsId,
+            filieres_id: selectedFilieresId,
+            sectionsId: selectedSecionsId,
+            niveau_id: selectedNiveauId,
+            axesId: selectedAxesId == 0 ? null : selectedAxesId,
+            adresse: adresse,
+            contact_personnel: contact_personnel,
+            contact_tuteur: contact_tuteur,
+            facebook: facebook,
+            sympathisant: sympathisant,
+            date_inscription: date_inscription
+        );
 
-        String? _images = imageFiles == null ? null : getStringImage(imageFiles);
-
-        // ApiResponse apiResponse = await updateMembre(
-        //     image: _images,
-        //     numero_carte: numero_carte,
-        //     nom: nom,
-        //     prenom: prenom,
-        //     date_de_naissance: date_de_naissance,
-        //     lieu_de_naissance: lieu_de_naissance,
-        //     cin: cin,
-        //     genre: genre,
-        //     fonctions_id: selectedFonctionsId,
-        //     filieres_id: selectedFilieresId,
-        //     sectionsId: selectedSecionsId,
-        //     niveau_id: selectedNiveauId,
-        //     axesId: selectedAxesId,
-        //     adresse: adresse,
-        //     contact_personnel: contact_personnel,
-        //     contact_tutaire: contact_tuteur,
-        //     facebook: facebook,
-        //     sympathisant: sympathisant,
-        //     date_inscription: date_inscription
-        // );
-
-        // if(apiResponse.error == null){
-        //   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => MembresScreen(user: user!)), (route) => false);
-        //   MessageReussi(context, "${apiResponse.data}");
-        // }else if(apiResponse.error == avertissement){
-        //   MessageAvertissement(context, "${apiResponse.data}");
-        // }else if(apiResponse.error == unauthorized){
-        //   MessageErreurs(context, apiResponse.error);
-        // }else{
-        //   MessageErreurs(context, "${apiResponse.error}");
-        // }
+        if(apiResponse.error == null){
+          setState(() {
+            loading = false;
+          });
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => MembresScreen(user: user!)), (route) => false);
+          MessageReussi(context, "${apiResponse.data}");
+        }else if(apiResponse.error == avertissement){
+          MessageAvertissement(context, "${apiResponse.data}");
+        }else if(apiResponse.error == unauthorized){
+          MessageErreurs(context, apiResponse.error);
+        }else{
+          MessageErreurs(context, "${apiResponse.error}");
+        }
       }
     }else{
       print("Non");
@@ -862,6 +888,8 @@ class _ModifierMembresState extends State<ModifierMembres> {
         croppedImage = croppedFile;
         image = croppedFile.path;
         imageFiles = File(croppedFile!.path);
+        image_existe = true;
+        image_update = null;
       });
     }
   }
