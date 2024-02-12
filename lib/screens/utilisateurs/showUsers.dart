@@ -1,6 +1,10 @@
+import 'package:aeutna/api/api_response.dart';
+import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/users.dart';
 import 'package:aeutna/screens/utilisateurs/approuverUtilisateurs.dart';
+import 'package:aeutna/screens/utilisateurs/users.dart';
+import 'package:aeutna/services/user_services.dart';
 import 'package:flutter/material.dart';
 
 class ShowUsers extends StatefulWidget {
@@ -13,11 +17,117 @@ class ShowUsers extends StatefulWidget {
 
 class _ShowUsersState extends State<ShowUsers> {
   Users? data;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String? roles;
 
   @override
   void initState() {
     data = widget.user;
+    roles = data!.roles;
     super.initState();
+  }
+
+
+  Dialog userForm(BuildContext context){
+    return Dialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16)
+      ),
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(2),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 10.0,
+                  offset: Offset(0.0, 10.0)
+              ),
+            ]
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Changer son rôle", style: style_google.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(4),
+                    alignment: Alignment.centerRight,
+                    child: Icon(Icons.close, color: Colors.blueGrey,),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15,),
+            Form(
+              key: _formKey,
+              child: DropdownButton<String>(
+                elevation: 0,
+                hint: Text("Veuillez sélectionner votre rôle"),
+                value: roles,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    roles = newValue!;
+                  });
+                },
+                items: <String>['Administrateurs', 'Utilisateurs']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Center(child: Text(value, style: style_google.copyWith(color: Colors.grey),))
+                  );
+                }).toList(),
+              ),
+            ),
+            SizedBox(height: 15,),
+            GestureDetector(
+              onTap: () async {
+                if(_formKey.currentState!.validate()){
+                  ApiResponse apiResponse = await updateRolesUser(roles: roles, userId: data!.id!);
+                  if(apiResponse.error == null){
+                    Navigator.push(context, MaterialPageRoute(builder: (ctx) => UsersScreen()));
+                    MessageReussi(context,"${apiResponse.data}");
+                  }else if(apiResponse.error == avertissement){
+                    Navigator.pop(context);
+                    MessageAvertissement(context, "${apiResponse.data}");
+                  }else if(apiResponse.error == info){
+                    Navigator.pop(context);
+                    MessageInformation(context, "${apiResponse.data}");
+                  }else if(apiResponse.error == unauthorized){
+                    ErreurLogin(context);
+                  }else {
+                    Navigator.pop(context);
+                    MessageErreurs(context, apiResponse.error);
+                  }
+                }
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+                padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
+                child: Center(
+                  child: Text("Modifier", style:style_google.copyWith(color: Colors.white)),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -38,8 +148,8 @@ class _ShowUsersState extends State<ShowUsers> {
         child: Column(
           children: [
             ProfileHeader(
-              coverImage: AssetImage("assets/photo.png"),
-              avatar: AssetImage("assets/photo.png"),
+              coverImage: data!.image == null ? AssetImage("assets/photo.png") : NetworkImage(data!.image!) as ImageProvider,
+              avatar: data!.image == null ? AssetImage("assets/photo.png") : NetworkImage(data!.image!) as ImageProvider,
               title: data!.pseudo!,
               actions: [
                 MaterialButton(
@@ -47,7 +157,8 @@ class _ShowUsersState extends State<ShowUsers> {
                     shape: CircleBorder(),
                     elevation: 0,
                     child: Icon(Icons.edit),
-                    onPressed: (){})
+                    onPressed: () =>   showDialog(context: context, builder: (BuildContext context) => userForm(context))
+                )
               ],),
             SizedBox(height: 10,),
             UserInfo(users: data,),
@@ -83,7 +194,7 @@ class ProfileHeader extends StatelessWidget{
           height: 200,
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage("assets/logo.jpeg",),
+                  image: coverImage as ImageProvider,
                   fit: BoxFit.cover
               )
           ),
@@ -111,7 +222,7 @@ class ProfileHeader extends StatelessWidget{
           child: Column(
             children: [
               Avatar(
-                  image: AssetImage("assets/photo.png"),
+                  image: avatar as ImageProvider,
                   radius: 60,
                   backgroundColor: Colors.white,
                   borderColor: Colors.grey.shade300,

@@ -1,6 +1,7 @@
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/models/users.dart';
+import 'package:aeutna/screens/profiles/updateProfile.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
@@ -38,8 +39,8 @@ class _ProfileState extends State<Profile> {
         child: Column(
           children: [
             ProfileHeader(
-              coverImage: AssetImage("assets/photo.png"),
-              avatar: AssetImage("assets/photo.png"),
+              coverImage: data!.image == null ? AssetImage("assets/photo.png") : NetworkImage(data!.image!) as ImageProvider,
+              avatar: data!.image == null ? AssetImage("assets/photo.png") : NetworkImage(data!.image!) as ImageProvider,
               title: data!.pseudo!,
               actions: [
                 MaterialButton(
@@ -47,7 +48,7 @@ class _ProfileState extends State<Profile> {
                     shape: CircleBorder(),
                     elevation: 0,
                     child: Icon(Icons.edit),
-                    onPressed: (){})
+                    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => UpdateProfile(user: data))))
               ],),
             SizedBox(height: 10,),
             UserInfo(users: data,)
@@ -83,7 +84,7 @@ class ProfileHeader extends StatelessWidget{
           height: 200,
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage("assets/logo.jpeg",),
+                  image: coverImage as ImageProvider,
                   fit: BoxFit.cover
               )
           ),
@@ -111,7 +112,7 @@ class ProfileHeader extends StatelessWidget{
           child: Column(
             children: [
               Avatar(
-                  image: AssetImage("assets/photo.png"),
+                  image: avatar as ImageProvider,
                   radius: 60,
                   backgroundColor: Colors.white,
                   borderColor: Colors.grey.shade300,

@@ -16,7 +16,7 @@ import 'package:aeutna/screens/fonctions/fonctions.dart';
 import 'package:aeutna/screens/historiques/historiques.dart';
 import 'package:aeutna/screens/message%20groupe/message_groupe.dart';
 import 'package:aeutna/screens/niveau/niveau.dart';
-import 'package:aeutna/screens/profiles/apropos.dart';
+import 'package:aeutna/screens/profiles/updateProfile.dart';
 import 'package:aeutna/screens/utilisateurs/users.dart';
 import 'package:aeutna/services/axes_services.dart';
 import 'package:aeutna/services/filieres_services.dart';
@@ -27,6 +27,7 @@ import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/WidgetListTitle.dart';
 import 'package:aeutna/widgets/ligne_horizontale.dart';
 import 'package:aeutna/widgets/showDialog.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -151,6 +152,7 @@ class _ProfilesState extends State<Profiles> {
     adresse = data!.adresse;
     roles = data!.roles;
     status = data!.status;
+    image = data!.image;
     if(status == 1){
       getMembre();
     }
@@ -188,7 +190,23 @@ class _ProfilesState extends State<Profiles> {
                           backgroundColor: Colors.blueGrey,
                           child: CircleAvatar(
                             radius: 65,
-                            backgroundImage: AssetImage("assets/photo.png"),
+                            backgroundColor: Colors.grey, // Couleur de fond par défaut
+                            child: image != null
+                                ? CachedNetworkImage(
+                              imageUrl: image!,
+                              placeholder: (context, url) => CircularProgressIndicator(),
+                              errorWidget: (context, url, error) => Icon(Icons.error),
+                              imageBuilder: (context, imageProvider) => Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            )
+                                : Icon(Icons.person), // Widget par défaut si imageUrl est null
                           ),
                         ),
                       ),
@@ -226,7 +244,12 @@ class _ProfilesState extends State<Profiles> {
                   ),
                 ),
               ),
-              WidgetListTitle(title: "Apropos", leading: Icons.info_outlined, trailing: Icons.chevron_right, onTap: () => () => print("Apropos")),
+              WidgetListTitle(
+                  title: "Apropos",
+                  leading: Icons.info_outlined,
+                  trailing: Icons.chevron_right,
+                  onTap: () => () => showDialog(context: context, builder: (BuildContext context) => AboutApplication(context))
+              ),
               WidgetListTitle(title: "Contactez-nous", leading: Icons.help, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => NousContactez()))),
               WidgetListTitle(title: "Déconnections", leading: Icons.logout_outlined, trailing: Icons.chevron_right, onTap: () => () => deconnectionAlertDialog(context)),
             ],
@@ -396,20 +419,6 @@ class _ProfilesState extends State<Profiles> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Icon(Icons.info_outlined, color: Colors.white,),
-                        SizedBox(width: 10,),
-                        TextButton(onPressed: (){
-                          Navigator.pop(context);
-                          Apropos(context);
-                        }, child:  Text("Apropos", style: style_google.copyWith(color: Colors.white)),)
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
                         Icon(Icons.password_sharp, color: Colors.white,),
                         SizedBox(width: 10,),
                         TextButton(onPressed: (){
@@ -441,6 +450,7 @@ class _ProfilesState extends State<Profiles> {
                         SizedBox(width: 10,),
                         TextButton(onPressed: (){
                           Navigator.pop(context);
+                          Navigator.push(context, MaterialPageRoute(builder: (ctx) => UpdateProfile(user: data!)));
                         }, child:  Text("Modifier le profil", style: style_google.copyWith(color: Colors.white),),)
                       ],
                     ),

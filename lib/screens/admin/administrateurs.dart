@@ -87,9 +87,25 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
             children: [
               UserAccountsDrawerHeader(
                 currentAccountPicture: CircleAvatar(
-                   radius: 20,
-                    backgroundImage: image == null ? AssetImage("assets/photo.png") : NetworkImage(image!) as ImageProvider,
-                  ),
+                  radius: 50,
+                  backgroundColor: Colors.grey, // Couleur de fond par défaut
+                  child: data!.image! != null
+                      ? CachedNetworkImage(
+                    imageUrl: data!.image!,
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  )
+                      : Icon(Icons.person), // Widget par défaut si imageUrl est null
+                ),
                   // backgroundImage: (userm!.image == null) ? Image.asset("assets/photo.png").image : Image.network(userm!.image!).image
                 accountName: Text("${data!.pseudo ?? "Aucun"}", style: style_google.copyWith(color: Colors.white)),
                 accountEmail: Text("${data!.email ?? "Aucun"}", overflow: TextOverflow.ellipsis, style: style_google.copyWith(color: Colors.white)),
@@ -117,7 +133,10 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
               ListTile(
                 leading: Icon(Icons.info_outlined, color: Colors.blueGrey,),
                 title: Text("Apropos", style: style_google,),
-                onTap: (){},
+                onTap: (){
+                  Navigator.pop(context);
+                  showDialog(context: context, builder: (BuildContext context) => AboutApplication(context));
+                },
               ),
               Ligne(color: Colors.grey,),
               ListTile(

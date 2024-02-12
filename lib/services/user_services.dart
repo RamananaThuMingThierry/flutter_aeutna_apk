@@ -198,24 +198,79 @@ Future<ApiResponse> ValideUser(int userId, int membreId) async{
   return apiResponse;
 }
 
-Future<ApiResponse> updateUser(String name, String? image) async{
+Future<ApiResponse> updateUser({String? image, String? pseudo, String? email, String? contact, String? adresse, int? userId}) async{
   ApiResponse apiResponse = ApiResponse();
+
+  print(
+      "pseudo : $pseudo \n"
+      "email : $email \n"
+      "adresse : $adresse \n"
+      "contact  : $contact \n"
+      "image : $image"
+  );
 
   try{
     String token = await getToken();
     final response = await http.put(
-      Uri.parse(userURL),
+      Uri.parse("$userURL/$userId"),
       headers: {
         'Accept': 'application/json',
         'Authorization': 'Bearer $token'
       },
-      body: image == null
-        ? {'name' : name}
-        : {
-        'name' : name,
-        'image' : image
+      body: {
+        'image' : image,
+        'pseudo' : pseudo,
+        'email' : email,
+        'adresse' : adresse,
+        'contact' : contact
       }
     );
+
+    switch(response.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 422:
+        final errors = jsonDecode(response.body)['errors'];
+        apiResponse.error = errors[errors.keys.elementAt(0)][0];
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+
+  return apiResponse;
+}
+
+
+Future<ApiResponse> updateRolesUser({String? roles, int? userId}) async{
+  ApiResponse apiResponse = ApiResponse();
+
+  print(
+      "rôles : $roles \n"
+  );
+
+  try{
+    String token = await getToken();
+    final response = await http.put(
+        Uri.parse("${userURL}_role_user/$userId"),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: {
+          'roles' : roles
+        }
+    );
+
+    print(" status : ${response.statusCode} et body : ${response.body}");
 
     switch(response.statusCode){
       case 200:
@@ -254,8 +309,6 @@ Future<ApiResponse> login({String? email, String? mot_de_passe}) async{
       }
     );
 
-    print(User.fromJson(jsonDecode(response.body)));
-
     switch(response.statusCode){
       case 200:
         apiResponse.data = User.fromJson(jsonDecode(response.body));
@@ -265,8 +318,13 @@ Future<ApiResponse> login({String? email, String? mot_de_passe}) async{
         apiResponse.data = jsonDecode(response.body)['message'];
         break;
       case 422:
+        apiResponse.error = avertissement;
+        String errorMessages = "";
         final errors = jsonDecode(response.body)['errors'];
-        apiResponse.error = errors[errors.key.elementAt(0)][0];
+        errors.forEach((field, message) {
+          errorMessages += "* ${message.join(', ')}\n";
+        });
+        apiResponse.data = errorMessages;
         break;
       default:
         apiResponse.error = somethingWentWrong;

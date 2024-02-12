@@ -1,5 +1,6 @@
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/user.dart';
+import 'package:aeutna/screens/splash_screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -27,6 +28,9 @@ class _EnAttenteState extends State<EnAttente> {
         elevation: 0,
         actions: [
           IconButton(onPressed: (){
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => SplashScreen()), (route) => false);
+          }, icon: Icon(Icons.cached, color: Colors.blueGrey,)),
+          IconButton(onPressed: (){
             deconnectionAlertDialog(context);
           }, icon: Icon(Icons.logout, color: Colors.blueGrey,))
         ],
@@ -37,7 +41,7 @@ class _EnAttenteState extends State<EnAttente> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 100,),
+            SizedBox(height: 60,),
             CircleAvatar(
               radius: 100,
               backgroundImage: AssetImage("assets/logo.jpeg"),

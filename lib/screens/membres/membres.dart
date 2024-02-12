@@ -70,12 +70,12 @@ class _MembresState extends State<MembresScreen> {
         ],
         title: Text("Membres", style: style_google.copyWith(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
-        leading: IconButton(
+        leading: user!.roles == "Administrateurs" ?  IconButton(
           onPressed: (){
-            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => AdministrateursScreen(user: user!,)), (route) => false);
+             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => AdministrateursScreen(user: user!,)), (route) => false);
           },
           icon: Icon(Icons.keyboard_backspace, color: Colors.blueGrey,),
-        ),
+        ) : IconButton(onPressed: (){}, icon: Icon(Icons.people_alt_outlined, color: Colors.blueGrey,)),
       ),
       body: Column(
         children: [
@@ -147,9 +147,25 @@ class _MembresState extends State<MembresScreen> {
                                 child: CircleAvatar(
                                   radius: 25,
                                   backgroundColor: Colors.blueGrey,
-                                  child: CircleAvatar(
+                                  child:  CircleAvatar(
                                     radius: 21,
-                                    backgroundImage: membres.image == null ? AssetImage("assets/photo.png") : NetworkImage(membres!.image!) as ImageProvider,
+                                    backgroundColor: Colors.grey, // Couleur de fond par défaut
+                                    child: membres!.image != null
+                                        ? CachedNetworkImage(
+                                      imageUrl: membres!.image!,
+                                      placeholder: (context, url) => CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) => Icon(Icons.error),
+                                      imageBuilder: (context, imageProvider) => Container(
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                        : Icon(Icons.person), // Widget par défaut si imageUrl est null
                                   ),
                                 ),
                               ),

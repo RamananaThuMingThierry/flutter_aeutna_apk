@@ -13,6 +13,54 @@ import 'package:aeutna/widgets/myTextFieldForm.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+bool validatePassword(String password) {
+  String pattern =
+      r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$';
+  RegExp regex = RegExp(pattern);
+  return regex.hasMatch(password);
+}
+
+double calculatePasswordStrength(String password) {
+  double strength = 0;
+  // Augmentez la force en fonction de la longueur du mot de passe
+  strength += password.length / 20.0;
+
+  // Augmentez la force si le mot de passe contient des chiffres
+  if (RegExp(r'[0-9]').hasMatch(password)) {
+    strength += 0.2;
+  }
+
+  // Augmentez la force si le mot de passe contient des lettres majuscules et minuscules
+  if (RegExp(r'[A-Z]').hasMatch(password) && RegExp(r'[a-z]').hasMatch(password)) {
+    strength += 0.3;
+  }
+
+  // Augmentez la force si le mot de passe contient des caractères spéciaux
+  if (RegExp(r'[@$!%*?&]').hasMatch(password)) {
+    strength += 0.3;
+  }
+
+  return strength.clamp(0.0, 1.0);
+}
+
+class PasswordStrengthIndicator extends StatelessWidget {
+  final String password;
+
+  const PasswordStrengthIndicator({Key? key, required this.password}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    double strength = calculatePasswordStrength(password);
+    return LinearProgressIndicator(
+      value: strength,
+      backgroundColor: Colors.grey,
+      valueColor: AlwaysStoppedAnimation<Color>(
+        strength > 0.5 ? Colors.green : Colors.red,
+      ),
+    );
+  }
+}
+
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
 
@@ -21,6 +69,7 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+
   // Déclarations des variables
   bool visibilite = true;
   bool visibilite_confirmation = true;
@@ -38,13 +87,20 @@ class _RegisterState extends State<Register> {
 
   void _registerUser() async{
     if(_key.currentState!.validate()){
-      ApiResponse apiResponse = await register(pseudo: pseudo, email: email, adresse: adresse, contact: contact, mot_de_passe: mot_de_passe);
-      if(apiResponse.error == null){
-        _saveAndRedirectToHome(apiResponse.data as User);
-      }else if(apiResponse.error == avertissement){
-        MessageAvertissement(context, "${apiResponse.data}");
+
+      double strength = calculatePasswordStrength(mot_de_passe!);
+
+      if(strength > .5){
+        ApiResponse apiResponse = await register(pseudo: pseudo, email: email, adresse: adresse, contact: contact, mot_de_passe: mot_de_passe);
+        if(apiResponse.error == null){
+          _saveAndRedirectToHome(apiResponse.data as User);
+        }else if(apiResponse.error == avertissement){
+          MessageAvertissement(context, "${apiResponse.data}");
+        }else{
+          MessageErreurs(context, "${apiResponse.error}");
+        }
       }else{
-        MessageErreurs(context, "${apiResponse.error}");
+        MessageAvertissement(context, "Votre mot de passe n'est pas assez fort!");
       }
     }
   }
@@ -237,6 +293,11 @@ class _RegisterState extends State<Register> {
                     ),
                   ),
                   SizedBox(height: 5,),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: PasswordStrengthIndicator(password: "${mot_de_passe ?? ''}"),
+                  ),
+                  SizedBox(height: 10,),
                   //Button
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:aeutna/api/api_response.dart';
+import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/Acceuil.dart';
@@ -44,15 +45,12 @@ class _LoginState extends State<Login> {
 
       ApiResponse apiResponse = await login(email: email!,mot_de_passe: mot_de_passe!);
 
-      print(apiResponse.error);
-
       if(apiResponse.error == null){
         _saveAndRedirectToHome(apiResponse.data as User);
+      }else if(apiResponse.error == avertissement){
+        MessageAvertissement(context, "${apiResponse.data}");
       }else{
-        setState(() {
-          loading = false;
-        });
-        MessageErreurs(context, apiResponse.error);
+        MessageErreurs(context, "${apiResponse.error}");
       }
     }
   }

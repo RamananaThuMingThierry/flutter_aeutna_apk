@@ -71,7 +71,12 @@ class _UsersScreenState extends State<UsersScreen> {
       body: loading
           ? OnLoadingMembreShimmer()
           : RefreshIndicator(
-              child: ListView.builder(
+              child: _usersList.length == 0
+                      ?
+                  Center(
+                    child: Text("Aucun résultat", style: style_google.copyWith(fontSize: 18, color: Colors.white),),
+                  )
+                  :ListView.builder(
                   itemCount: _usersList.length,
                   itemBuilder: (BuildContext context, int index){
                     Users users = _usersList[index];
@@ -89,7 +94,7 @@ class _UsersScreenState extends State<UsersScreen> {
                         leading: Padding(
                           padding: EdgeInsets.all(10),
                           child: CircleAvatar(
-                            backgroundImage: AssetImage("assets/photo.png"),
+                            backgroundImage: users.image == null ? AssetImage("assets/photo.png"): NetworkImage(users.image!) as ImageProvider,
                           ),
                         ),
                         title: Text("${users.pseudo}", style: style_google.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),

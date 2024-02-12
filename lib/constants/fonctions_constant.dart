@@ -1,10 +1,12 @@
 import 'dart:ui';
+import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/Acceuil.dart';
 import 'package:aeutna/screens/admin/administrateurs.dart';
 import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/screens/enattente.dart';
 import 'package:aeutna/services/user_services.dart';
+import 'package:aeutna/widgets/ligne_horizontale.dart';
 import 'package:aeutna/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -177,6 +179,87 @@ void onLoading(BuildContext context){
           ),
         );
       });
+}
+
+Dialog AboutApplication(BuildContext context){
+  return Dialog(
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16)
+    ),
+    elevation: 0,
+    backgroundColor: Colors.transparent,
+    child: Container(
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(2),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black26,
+                blurRadius: 10.0,
+                offset: Offset(0.0, 10.0)
+            ),
+          ]
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: Text("Apropos", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold, fontSize: 15),),
+              ),
+              GestureDetector(
+                onTap: (){
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  padding: EdgeInsets.all(4),
+                  alignment: Alignment.centerRight,
+                  child: Icon(Icons.close, color: Colors.blueGrey,),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 15,),
+          Center(
+            child: CircleAvatar(
+              radius: 50,
+              backgroundImage: AssetImage("assets/logo.jpeg"),
+            ),
+          ),
+          SizedBox(height: 15,),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Text("Cette application a pour but de faciliter la communication et les partages des informations entre les membres!", textAlign: TextAlign.justify, style: style_google.copyWith(fontSize: 15, color: Colors.black38),),
+          ),
+          Ligne(color: Colors.grey),
+          infoAuteur(context, title: "Auteur", subtitle: "RAMANANA Thu Ming Thierry", iconData: Icons.person_2_outlined),
+          infoAuteur(context,title: "Adresse email", subtitle: "ramananathumingthierry@gmail.com", iconData: Icons.attach_email_outlined),
+          infoAuteur(context,title: "Contact", subtitle: "032 75 637 70", iconData: Icons.phone_outlined),
+          infoAuteur(context,title: "Adresse", subtitle: "VT 29 RAI bis Ampahateza", iconData: Icons.local_library_outlined),
+          Ligne(color: Colors.grey),
+         infoAuteur(context,title: "Version : 1.03.22", subtitle: "copyright @ 2024", iconData: Icons.verified_user),
+        ],
+      ),
+    ),
+  );
+}
+ListTile infoAuteur(BuildContext context, {String? title, String? subtitle, IconData? iconData}){
+  return ListTile(
+    onTap: (){
+      if(title == "Contact"){
+        ActionsCallOrMessage(context, subtitle);
+      }
+    },
+    leading: Icon(iconData, color: Colors.blueGrey,),
+    title: Text(title!, style: style_google.copyWith(fontWeight: FontWeight.bold),),
+    subtitle: Text(subtitle!, style: style_google.copyWith(color: Colors.grey),),
+  );
 }
 
 void onLoadingLogin(BuildContext context, User user){

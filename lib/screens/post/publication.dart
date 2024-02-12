@@ -114,9 +114,28 @@ class _PublicationState extends State<Publication> {
           ):
           Padding(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 7),
-              child: CircleAvatar(
-                radius: 20,
-                backgroundImage: AssetImage("assets/photo.png"),
+              child:   Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 7),
+                  child:  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.grey, // Couleur de fond par défaut
+                    child: widget.user.image != null
+                        ? CachedNetworkImage(
+                      imageUrl: widget.user.image!,
+                      placeholder: (context, url) => CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                      imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    )
+                        : Icon(Icons.person), // Widget par défaut si imageUrl est null
+                  )
               )
           ),
         ],
