@@ -12,6 +12,7 @@ import 'package:aeutna/widgets/btnLikeOrDisLike.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:google_fonts/google_fonts.dart';
 
 class Publication extends StatefulWidget {
@@ -158,116 +159,91 @@ class _PublicationState extends State<Publication> {
                     Post post = _postList![index];
                     return Card(
                         shape: Border(),
-                        margin: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                        margin: EdgeInsets.symmetric(vertical: 2),
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 38,
-                                          height: 38,
-                                          decoration: BoxDecoration(
-                                              image: post.user!.image != null
-                                                  ? DecorationImage(
-                                                  image: NetworkImage('${post.user!.image}'),
-                                                  fit: BoxFit.cover
-                                              ) : DecorationImage(
-                                                  image: AssetImage("assets/photo.png"),
-                                                  fit: BoxFit.cover
-                                              ),
-                                              borderRadius: BorderRadius.circular(25),
-                                              color: Colors.amber
-                                          ),
-                                        ),
-                                        SizedBox(width: 10,),
-                                        Text(
-                                          "${post.user!.pseudo}",
-                                          style: style_google.copyWith(fontWeight: FontWeight.bold, color: Colors.black87, fontSize: 14),
-                                        )
-                                      ],
-                                    ),
+                              ListTile(
+                                leading: CircleAvatar(
+                                  radius: 20,
+                                  backgroundImage: AssetImage("assets/photo.png"),
+                                ),
+                                title: Text("${post.user!.pseudo}"),
+                                subtitle: Text(formatTimeAgo(DateTime.parse(post.created_at!)), // Vous pouvez spécifier votre locale ici
+                                  style: style_google.copyWith(color: Colors.grey),),
+                                trailing: post.user!.id == userId
+                                    ?
+                                PopupMenuButton(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(right: 10),
+                                    child: Icon(Icons.more_vert, color: Colors.black,),
                                   ),
-                                  post.user!.id == userId
-                                      ?
-                                  PopupMenuButton(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(right: 10),
-                                      child: Icon(Icons.more_vert, color: Colors.black,),
-                                    ),
-                                    onSelected: (valeur){
-                                      if(valeur == "Modifier"){
-                                        // Modifier
-                                      }else{
-                                        // Supprimer
-                                        showDialog(
-                                            context: context!,
-                                            barrierDismissible: true,
-                                            builder: (BuildContext buildContext){
-                                              return AlertDialog(
-                                                backgroundColor: Colors.white,
-                                                content: SizedBox(
-                                                  height: 65,
-                                                  child: Column(
-                                                    children: [
-                                                      SizedBox(height: 20,),
-                                                      Text("Voulez-vous vraiment supprimer cette publication ?", textAlign: TextAlign.center,style: style_google.copyWith(fontSize: 17),),
-                                                    ],
-                                                  ),
+                                  onSelected: (valeur){
+                                    if(valeur == "Modifier"){
+                                      // Modifier
+                                    }else{
+                                      // Supprimer
+                                      showDialog(
+                                          context: context!,
+                                          barrierDismissible: true,
+                                          builder: (BuildContext buildContext){
+                                            return AlertDialog(
+                                              backgroundColor: Colors.white,
+                                              content: SizedBox(
+                                                height: 65,
+                                                child: Column(
+                                                  children: [
+                                                    SizedBox(height: 20,),
+                                                    Text("Voulez-vous vraiment supprimer cette publication ?", textAlign: TextAlign.center,style: style_google.copyWith(fontSize: 17),),
+                                                  ],
                                                 ),
-                                                contentPadding: EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0),
-                                                actions: [
-                                                  TextButton(
-                                                      onPressed: (){
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Text("Non", style: style_google.copyWith(color: Colors.red),)
-                                                  ),
-                                                  TextButton(
-                                                      onPressed: () => handleDeletePost(post.id ?? 0),
-                                                      child: Text("Oui",style: style_google.copyWith(color: Colors.lightBlue))),
-                                                ],
-                                              );
-                                            });
-                                      }
-                                    },
-                                    itemBuilder: (ctx) => [
-                                      PopupMenuItem(
-                                        child: RichText(
-                                          text: TextSpan(
+                                              ),
+                                              contentPadding: EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: (){
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text("Non", style: style_google.copyWith(color: Colors.red),)
+                                                ),
+                                                TextButton(
+                                                    onPressed: () => handleDeletePost(post.id ?? 0),
+                                                    child: Text("Oui",style: style_google.copyWith(color: Colors.lightBlue))),
+                                              ],
+                                            );
+                                          });
+                                    }
+                                  },
+                                  itemBuilder: (ctx) => [
+                                    PopupMenuItem(
+                                      child: RichText(
+                                        text: TextSpan(
                                             style: style_google.copyWith(color: Colors.lightBlue),
                                             children: [
                                               WidgetSpan(child: Padding(padding: EdgeInsets.only(right: 10), child: Icon(Icons.edit, color: Colors.lightBlue,),),),
                                               TextSpan(text: "Modifier", style: style_google.copyWith(fontSize: 16, color: Colors.lightBlue))
                                             ]
-                                          ),
                                         ),
-                                        value: "Modifier",
                                       ),
-                                      PopupMenuItem(
-                                        child: RichText(
-                                          text: TextSpan(
-                                              style: style_google.copyWith(color: Colors.red),
-                                              children: [
-                                                WidgetSpan(child: Padding(padding: EdgeInsets.only(right: 10), child: Icon(Icons.delete, color: Colors.red,),),),
-                                                TextSpan(text: "Supprimer", style: style_google.copyWith(fontSize: 16, color: Colors.red))
-                                              ]
-                                          ),
+                                      value: "Modifier",
+                                    ),
+                                    PopupMenuItem(
+                                      child: RichText(
+                                        text: TextSpan(
+                                            style: style_google.copyWith(color: Colors.red),
+                                            children: [
+                                              WidgetSpan(child: Padding(padding: EdgeInsets.only(right: 10), child: Icon(Icons.delete, color: Colors.red,),),),
+                                              TextSpan(text: "Supprimer", style: style_google.copyWith(fontSize: 16, color: Colors.red))
+                                            ]
                                         ),
-                                        value: "Supprimer",
-                                      )
-                                    ],
-                                  )
-                                      :
-                                  SizedBox()
-                                ],
+                                      ),
+                                      value: "Supprimer",
+                                    )
+                                  ],
+                                )
+                                    :
+                                SizedBox(),
                               ),
-                              SizedBox(height: 12,),
                               post.images!.length != 0
                                   ?
                               Column(

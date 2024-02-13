@@ -11,6 +11,7 @@ import 'package:aeutna/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 TextStyle style_google = GoogleFonts.k2d(color: Colors.blueGrey);
 Text TitreText(String titre){
@@ -135,7 +136,6 @@ String separerParEspace(String texte){
   return texte.replaceAllMapped(RegExp(r".{3}"), (match) => "${match.group(0)} ");
 }
 
-
 void redirectToFacebook({String? nom}) async {
   String url = 'https://www.facebook.com/$nom';
   if (await canLaunch(url)) {
@@ -153,7 +153,6 @@ String ajouterTroisPointSiTextTropLong({String? texte, int? longueur}){
     return texte.substring(0, dernierEspace) + '...';
   }
 }
-
 
 void onLoading(BuildContext context){
   showDialog(
@@ -249,6 +248,7 @@ Dialog AboutApplication(BuildContext context){
     ),
   );
 }
+
 ListTile infoAuteur(BuildContext context, {String? title, String? subtitle, IconData? iconData}){
   return ListTile(
     onTap: (){
@@ -260,6 +260,27 @@ ListTile infoAuteur(BuildContext context, {String? title, String? subtitle, Icon
     title: Text(title!, style: style_google.copyWith(fontWeight: FontWeight.bold),),
     subtitle: Text(subtitle!, style: style_google.copyWith(color: Colors.grey),),
   );
+}
+
+String formatTimeAgo(DateTime dateTime) {
+  final now = DateTime.now();
+  final difference = now.difference(dateTime);
+
+  if (difference.inMinutes < 1) {
+    return 'A l\'instant';
+  } else if (difference.inMinutes < 60) {
+    return '${difference.inMinutes} minute${difference.inMinutes != 1 ? 's' : ''}';
+  } else if (difference.inHours < 24) {
+    return '${difference.inHours} heure${difference.inHours != 1 ? 's' : ''}';
+  } else if (difference.inDays < 7) {
+    return '${difference.inDays} jour${difference.inDays != 1 ? 's' : ''}';
+  } else if (difference.inDays < 30) {
+    return '${(difference.inDays / 7).floor()} semaine${((difference.inDays / 7).floor()) != 1 ? 's' : ''}';
+  } else if (difference.inDays < 365) {
+    return '${(difference.inDays / 30).floor()} mois${((difference.inDays / 30).floor()) != 1 ? 's' : ''}';
+  } else {
+    return timeago.format(dateTime, locale: 'fr'); // Utilisation de timeago pour les durées plus longues
+  }
 }
 
 void onLoadingLogin(BuildContext context, User user){

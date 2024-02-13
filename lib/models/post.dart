@@ -8,6 +8,7 @@ class Post{
   String? description;
   List<PostImage>? images;
   int? likesCount;
+  String? created_at;
   int? commentairesCount;
   User? user;
   bool? selfLiked;
@@ -17,6 +18,7 @@ class Post{
     this.description,
     this.images,
     this.likesCount,
+    this.created_at,
     this.commentairesCount,
     this.user,
     this.selfLiked
@@ -24,7 +26,6 @@ class Post{
 
   // Map json to post model
   factory Post.fromJson(Map<String, dynamic> p){
-    print(p);
     List<PostImage> images = [];
     if (p['images'] != null) {
       images = List<PostImage>.from(
@@ -36,6 +37,7 @@ class Post{
       id: p['id'],
       description: p['description'],
       images: images,
+      created_at: p['created_at'],
       likesCount: p['likes_count'],
       commentairesCount: p['commentaires_count'],
       user: User(
