@@ -188,25 +188,32 @@ class _ProfilesState extends State<Profiles> {
                         child: CircleAvatar(
                           radius: 70,
                           backgroundColor: Colors.blueGrey,
-                          child: CircleAvatar(
-                            radius: 65,
-                            backgroundColor: Colors.grey, // Couleur de fond par défaut
-                            child: image != null
-                                ? CachedNetworkImage(
-                              imageUrl: image!,
-                              placeholder: (context, url) => CircularProgressIndicator(),
-                              errorWidget: (context, url, error) => Icon(Icons.error),
-                              imageBuilder: (context, imageProvider) => Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                    image: imageProvider,
-                                    fit: BoxFit.cover,
+                          child: GestureDetector(
+                            onTap: () {
+                              if(image != null){
+                                showDialog(context: context, builder: (BuildContext context) => ShowImages(context, image!));
+                              }
+                            },
+                            child: CircleAvatar(
+                              radius: 65,
+                              backgroundColor: Colors.grey, // Couleur de fond par défaut
+                              child: image != null
+                                  ? CachedNetworkImage(
+                                imageUrl: image!,
+                                placeholder: (context, url) => CircularProgressIndicator(),
+                                errorWidget: (context, url, error) => Icon(Icons.error),
+                                imageBuilder: (context, imageProvider) => Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            )
-                                : Icon(Icons.person), // Widget par défaut si imageUrl est null
+                              )
+                                  : Icon(Icons.person), // Widget par défaut si imageUrl est null
+                            ),
                           ),
                         ),
                       ),

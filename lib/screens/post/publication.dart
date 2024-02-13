@@ -65,6 +65,7 @@ class _PublicationState extends State<Publication> {
     ApiResponse response = await deletePost(postId);
     if(response.error == null){
       retreivePosts();
+      MessageReussi(context, "${response.data}");
     }else if(response.error == unauthorized){
       ErreurLogin(context);
     }else{
@@ -166,9 +167,9 @@ class _PublicationState extends State<Publication> {
                               ListTile(
                                 leading: CircleAvatar(
                                   radius: 20,
-                                  backgroundImage: AssetImage("assets/photo.png"),
+                                  backgroundImage: post.user!.image == null ? AssetImage("assets/photo.png") : NetworkImage(post.user!.image!) as ImageProvider,
                                 ),
-                                title: Text("${post.user!.pseudo}"),
+                                title: Text("${post.user!.pseudo}", style: style_google.copyWith(color: Colors.black87),),
                                 subtitle: Text(formatTimeAgo(DateTime.parse(post.created_at!)), // Vous pouvez spécifier votre locale ici
                                   style: style_google.copyWith(color: Colors.grey),),
                                 trailing: post.user!.id == userId
@@ -207,7 +208,10 @@ class _PublicationState extends State<Publication> {
                                                     child: Text("Non", style: style_google.copyWith(color: Colors.red),)
                                                 ),
                                                 TextButton(
-                                                    onPressed: () => handleDeletePost(post.id ?? 0),
+                                                    onPressed: (){
+                                                    Navigator.pop(context);
+                                                    handleDeletePost(post.id ?? 0);
+                                                    },
                                                     child: Text("Oui",style: style_google.copyWith(color: Colors.lightBlue))),
                                               ],
                                             );

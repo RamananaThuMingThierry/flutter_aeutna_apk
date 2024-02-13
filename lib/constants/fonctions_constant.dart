@@ -8,6 +8,7 @@ import 'package:aeutna/screens/enattente.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/ligne_horizontale.dart';
 import 'package:aeutna/widgets/showDialog.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -271,13 +272,13 @@ String formatTimeAgo(DateTime dateTime) {
   } else if (difference.inMinutes < 60) {
     return '${difference.inMinutes} minute${difference.inMinutes != 1 ? 's' : ''}';
   } else if (difference.inHours < 24) {
-    return '${difference.inHours} heure${difference.inHours != 1 ? 's' : ''}';
+    return 'Il y a ${difference.inHours} heure${difference.inHours != 1 ? 's' : ''}';
   } else if (difference.inDays < 7) {
-    return '${difference.inDays} jour${difference.inDays != 1 ? 's' : ''}';
+    return 'Il y a ${difference.inDays} jour${difference.inDays != 1 ? 's' : ''}';
   } else if (difference.inDays < 30) {
-    return '${(difference.inDays / 7).floor()} semaine${((difference.inDays / 7).floor()) != 1 ? 's' : ''}';
+    return 'Il y a ${(difference.inDays / 7).floor()} semaine${((difference.inDays / 7).floor()) != 1 ? 's' : ''}';
   } else if (difference.inDays < 365) {
-    return '${(difference.inDays / 30).floor()} mois${((difference.inDays / 30).floor()) != 1 ? 's' : ''}';
+    return 'Il y a ${(difference.inDays / 30).floor()} mois${((difference.inDays / 30).floor()) != 1 ? 's' : ''}';
   } else {
     return timeago.format(dateTime, locale: 'fr'); // Utilisation de timeago pour les durées plus longues
   }
@@ -389,4 +390,68 @@ void ActionsCallOrMessage(BuildContext context, String? numero){
           ),
         );
       });
+}
+
+Dialog ShowImages(BuildContext context, String? images){
+  return Dialog(
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16)
+    ),
+    elevation: 0,
+    backgroundColor: Colors.transparent,
+    child: Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(2),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black26,
+                blurRadius: 10.0,
+                offset: Offset(0.0, 10.0)
+            ),
+          ]
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: Text("Images", style: TextStyle(color: Colors.blueGrey, fontSize: 15),),
+              ),
+              GestureDetector(
+                onTap: (){
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  alignment: Alignment.centerRight,
+                  child: Icon(Icons.close, color: Colors.blueGrey,),
+                ),
+              ),
+            ],
+          ),
+          ClipRRect(// rayon des coins arrondis
+            child:  Stack(
+              children: [
+                CachedNetworkImage(
+                  imageUrl: images!, // URL de l'image
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  width: double.infinity, // Largeur de l'image
+                  height: 350, // Hauteur de l'image
+                  fit: BoxFit.cover, // Ajustement de l'image
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }

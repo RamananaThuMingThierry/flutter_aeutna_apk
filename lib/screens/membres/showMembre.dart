@@ -212,25 +212,32 @@ class _ShowMembresState extends State<ShowMembres> {
                 CircleAvatar(
                 radius: 65,
                 backgroundColor: Colors.grey.shade500,
-                child:CircleAvatar(
-                  radius: 65,
-                  backgroundColor: Colors.grey, // Couleur de fond par défaut
-                  child: membre!.image != null
-                      ? CachedNetworkImage(
-                    imageUrl: membre!.image!,
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                    imageBuilder: (context, imageProvider) => Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.cover,
+                child:GestureDetector(
+                  onTap: () {
+                    if(membre!.image != null){
+                      showDialog(context: context, builder: (BuildContext context) => ShowImages(context, membre!.image));
+                    }
+                  },
+                  child: CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Colors.grey, // Couleur de fond par défaut
+                    child: membre!.image != null
+                        ? CachedNetworkImage(
+                      imageUrl: membre!.image!,
+                      placeholder: (context, url) => CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => Icon(Icons.error),
+                      imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                    ),
-                  )
-                      : Icon(Icons.person), // Widget par défaut si imageUrl est null
+                    )
+                        : Icon(Icons.person), // Widget par défaut si imageUrl est null
+                  ),
                 )
                 ),
                   Column(
