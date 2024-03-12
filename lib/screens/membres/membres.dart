@@ -27,10 +27,30 @@ class _MembresState extends State<MembresScreen> {
   String? recherche;
   bool loading = true;
   List<Membres> _membresList = [];
+  TextEditingController search = TextEditingController();
+
+  Future _searchMembres(String? search) async{
+    ApiResponse apiResponse = await searchMembres(search);
+    loading = false;
+    if(apiResponse.error == null){
+      List<dynamic> membresList = apiResponse.data as List<dynamic>;
+      List<Membres> membres = membresList.map((p) => Membres.fromJson(p)).toList();
+      setState(() {
+        _membresList = membres;
+        loading = loading ? !loading : loading;
+      });
+    }else if(apiResponse.error == unauthorized){
+      ErreurLogin(context);
+    }else{
+      MessageErreurs(context, apiResponse.error);
+    }
+  }
 
   Future _getallMembres() async{
     ApiResponse apiResponse = await getAllMembres();
-
+    setState(() {
+      search.clear();
+    });
     if(apiResponse.error == null){
       List<dynamic> membresList = apiResponse.data as List<dynamic>;
       List<Membres> membres = membresList.map((p) => Membres.fromJson(p)).toList();
@@ -51,7 +71,6 @@ class _MembresState extends State<MembresScreen> {
     _getallMembres();
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -84,41 +103,58 @@ class _MembresState extends State<MembresScreen> {
             shape: Border(
                 bottom: BorderSide(color: Colors.grey, width: .5)),
             margin: EdgeInsets.all(0),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal:3, vertical: 5),
-              height: 50,
-              child: TextFormField(
-                style: TextStyle(color: Colors.blueGrey),
-                onChanged: (value){
-                  setState(() {
-                    recherche = value;
-                  });
-                },
-                validator:(value){
-                  if(value == ""){
-                    return "Veuillez saisir le nom à recherche";
-                  }
-                },
-                decoration: InputDecoration(
-                  filled: true,
-                  hintText: "Recherche",
-                  hintStyle: TextStyle(color: Colors.blueGrey),
-                  fillColor: Colors.white,
-                  suffixIcon: Icon(Icons.search),
-                  suffixIconColor: Colors.grey,
-                  enabledBorder : UnderlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Colors.grey
-                    ),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.blueGrey,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal:3, vertical: 5),
+                    height: 50,
+                    child: TextFormField(
+                      controller: search,
+                      style: TextStyle(color: Colors.blueGrey),
+                      onChanged: (value){
+                        setState(() {
+                          recherche = value;
+                        });
+                        if(recherche!.isEmpty){
+                          _getallMembres();
+                        }else{
+                          _searchMembres(recherche);
+                        }
+                      },
+                      validator:(value){
+                        if(value == ""){
+                          return "Veuillez saisir le nom à recherche";
+                        }
+                      },
+                      decoration: InputDecoration(
+                        filled: true,
+                        hintText: "Recherche",
+                        hintStyle: TextStyle(color: Colors.blueGrey),
+                        fillColor: Colors.white,
+                        enabledBorder : UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.grey
+                          ),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.blueGrey,
+                          ),
+                        ),
+                      ),
+                      keyboardType: TextInputType.text,
                     ),
                   ),
                 ),
-                keyboardType: TextInputType.text,
-              ),
+                recherche == null ?
+                IconButton(
+                    onPressed: (){}, icon: Icon(Icons.search_outlined, color: Colors.grey,))
+                    :
+                IconButton(onPressed: (){
+                  _getallMembres();
+                }, icon: Icon(Icons.close, color: Colors.grey,)),
+              ],
             ),
           ),
           Expanded(child: loading

@@ -153,7 +153,6 @@ Future<ApiResponse> searchAxes(String? nom_axes) async{
   return apiResponse;
 }
 
-
 /** --------------- Modifier un axes ----------------- **/
 Future<ApiResponse> updateAxes({int? axesId, String? nom_axes}) async{
   ApiResponse apiResponse = ApiResponse();

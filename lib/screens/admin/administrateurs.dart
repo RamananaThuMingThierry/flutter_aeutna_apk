@@ -178,7 +178,7 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
                             }else if(page.nom == "Publications"){
                               Navigator.push(context, MaterialPageRoute(builder: (ctx) => Publication(user: data!,)));
                             }else if(page.nom == "Axes"){
-                              Navigator.push(context, MaterialPageRoute(builder: (ctx) => AxesScreen()));
+                              Navigator.push(context, MaterialPageRoute(builder: (ctx) => AxesScreen(user: data!,)));
                             }else if(page.nom == "Niveau"){
                               Navigator.push(context, MaterialPageRoute(builder: (ctx) => NiveauScreen()));
                             }else if(page.nom == "Filières"){

@@ -83,9 +83,9 @@ class _HistoriquesScreenState extends State<HistoriquesScreen> {
             ),
           ),
           listeDesPrisidents(image_path: "assets/logo.jpeg", nom: "Hyacinte", date_mandat: "2013 - 2018"),
-          listeDesPrisidents(image_path: "assets/logo.jpeg", nom: "JAO Flerio", date_mandat: "2018 - 2021"),
-          listeDesPrisidents(image_path: "assets/logo.jpeg", nom: "KOMODY ROMAIN", date_mandat: "2021 - 2023"),
-          listeDesPrisidents(image_path: "assets/logo.jpeg", nom: "Keini Morrodon", date_mandat: "2023 - à nos jours"),
+          listeDesPrisidents(image_path: "assets/flerio.jpg", nom: "JAO Flerio", date_mandat: "2018 - 2021"),
+          listeDesPrisidents(image_path: "assets/romain.jpg", nom: "KOMODY ROMAIN", date_mandat: "2021 - 2023"),
+          listeDesPrisidents(image_path: "assets/keini.jpg", nom: "Keini Morrodon", date_mandat: "2023 - à nos jours"),
         ],
       ),
     );
