@@ -9,6 +9,7 @@ import 'package:aeutna/screens/axes/axes.dart';
 import 'package:aeutna/screens/filieres/filieres.dart';
 import 'package:aeutna/screens/fonctions/fonctions.dart';
 import 'package:aeutna/screens/historiques/historiques.dart';
+import 'package:aeutna/screens/membres/filtre_membres.dart';
 import 'package:aeutna/screens/membres/membres.dart';
 import 'package:aeutna/screens/message%20groupe/message_groupe.dart';
 import 'package:aeutna/screens/niveau/niveau.dart';
@@ -37,7 +38,7 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
 
  List<Pages> pages = [
    Pages("Avis", Icons.question_mark_outlined),
-   Pages("Publications", Icons.post_add),
+   Pages("Filtre", Icons.search_outlined),
    Pages("Axes", Icons.local_library_sharp),
    Pages("Niveau", Icons.stacked_bar_chart),
    Pages("Filières", Icons.card_travel),
@@ -182,8 +183,8 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
                           onTap: (){
                             if(page.nom == "Avis"){
                               Navigator.push(context, MaterialPageRoute(builder: (ctx) => AvisScreen()));
-                            }else if(page.nom == "Publications"){
-                              Navigator.push(context, MaterialPageRoute(builder: (ctx) => Publication(user: data!,)));
+                            }else if(page.nom == "Filtre"){
+                              Navigator.push(context, MaterialPageRoute(builder: (ctx) => Filtre(user: data!,)));
                             }else if(page.nom == "Axes"){
                               Navigator.push(context, MaterialPageRoute(builder: (ctx) => AxesScreen(user: data!,)));
                             }else if(page.nom == "Niveau"){

@@ -45,7 +45,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
   bool? loading = false;
   final _key = GlobalKey<FormState>();
 
-  /** -------------------------- Axes ----------------------------------------- **/
+  /** -------------------------- Sections ----------------------------------------- **/
   int selectedSecionsId = 0;
   List<SectionsModel> _sectionsList = [];
   Future _getallSections() async{
