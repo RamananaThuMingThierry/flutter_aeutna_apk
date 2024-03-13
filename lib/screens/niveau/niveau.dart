@@ -3,13 +3,16 @@ import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/niveau.dart';
 import 'package:aeutna/constants/loadingShimmer.dart';
+import 'package:aeutna/models/user.dart';
+import 'package:aeutna/screens/membres/niveau_membres.dart';
 import 'package:aeutna/services/niveau_services.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/myTextFieldForm.dart';
 import 'package:flutter/material.dart';
 
 class NiveauScreen extends StatefulWidget {
-  const NiveauScreen({Key? key}) : super(key: key);
+  User? user;
+  NiveauScreen({required this.user});
 
   @override
   State<NiveauScreen> createState() => _NiveauScreenState();
@@ -17,6 +20,7 @@ class NiveauScreen extends StatefulWidget {
 
 class _NiveauScreenState extends State<NiveauScreen> {
   // Déclarations des variables
+  User? user;
   List<Niveau> _niveauList = [];
   int userId = 0;
   bool loading = true;
@@ -133,6 +137,7 @@ class _NiveauScreenState extends State<NiveauScreen> {
 
   @override
   void initState() {
+    user = widget.user;
     _getallNiveau();
     super.initState();
   }
@@ -229,65 +234,70 @@ class _NiveauScreenState extends State<NiveauScreen> {
                   itemCount: _niveauList.length,
                   itemBuilder: (BuildContext context, int index){
                     Niveau niveau = _niveauList![index];
-                    return Card(
-                      margin: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                      color: Colors.white,
-                      child: ListTile(
-                        leading:  Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          decoration: BoxDecoration(
-                            color: Colors.blueGrey,
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                          child: Text("${niveau.niveau!.substring(0, 1).toUpperCase()}", style: TextStyle(color: Colors.white),),
-                        ),
-                        title: Text("${niveau.niveau}", style: style_google.copyWith(color: Colors.black87),),
-                        trailing: PopupMenuButton(
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 10),
-                            child: Icon(Icons.more_vert, color: Colors.black,),
-                          ),
-                          onSelected: (valeur){
-                            if(valeur == "Modifier"){
-                              // Modifier
-                              print("Modifier");
-                              setState(() {
-                                editNiveau = niveau.id;
-                                nom_niveau.text = niveau.niveau! ?? "";
-                              });
-                              showDialog(context: context, builder: (BuildContext context) => niveauForm(context, editNiveau));
-                            }else{
-                              // Supprimer
-                              print("Supprimer");
-                              showDialog(context: context, builder: (BuildContext context){
-                                return confirmationSuppresion(niveau.id!);
-                              });
-                            }
-                          },
-                          itemBuilder: (ctx) => [
-                            PopupMenuItem(
-                              value: "Modifier",
-                              child: Row(
-                                children: [
-                                  Icon(Icons.edit, color: Colors.lightBlue,),
-                                  SizedBox(width: 10,),
-                                  Text("Modifier", style: style_google.copyWith(color: Colors.lightBlue)),
-                                ]
-                                ,
-                              ),
+                    return GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (ctx) => NiveauMembres(niveau_id: niveau.id, user: user)));
+                      },
+                      child: Card(
+                        margin: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                        color: Colors.white,
+                        child: ListTile(
+                          leading:  Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.blueGrey,
+                              borderRadius: BorderRadius.circular(100),
                             ),
-                            PopupMenuItem(
-                              child: Row(
-                                children: [
-                                  Icon(Icons.delete, color: Colors.red,),
-                                  SizedBox(width: 10,),
-                                  Text("Supprimer", style: style_google.copyWith(color: Colors.red)),
-                                ]
-                                ,
+                            child: Text("${niveau.niveau!.substring(0, 1).toUpperCase()}", style: TextStyle(color: Colors.white),),
+                          ),
+                          title: Text("${niveau.niveau}", style: style_google.copyWith(color: Colors.black87),),
+                          trailing: PopupMenuButton(
+                            child: Padding(
+                              padding: EdgeInsets.only(right: 10),
+                              child: Icon(Icons.more_vert, color: Colors.black,),
+                            ),
+                            onSelected: (valeur){
+                              if(valeur == "Modifier"){
+                                // Modifier
+                                print("Modifier");
+                                setState(() {
+                                  editNiveau = niveau.id;
+                                  nom_niveau.text = niveau.niveau! ?? "";
+                                });
+                                showDialog(context: context, builder: (BuildContext context) => niveauForm(context, editNiveau));
+                              }else{
+                                // Supprimer
+                                print("Supprimer");
+                                showDialog(context: context, builder: (BuildContext context){
+                                  return confirmationSuppresion(niveau.id!);
+                                });
+                              }
+                            },
+                            itemBuilder: (ctx) => [
+                              PopupMenuItem(
+                                value: "Modifier",
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.edit, color: Colors.lightBlue,),
+                                    SizedBox(width: 10,),
+                                    Text("Modifier", style: style_google.copyWith(color: Colors.lightBlue)),
+                                  ]
+                                  ,
+                                ),
                               ),
-                              value: "Supprimer",
-                            )
-                          ],
+                              PopupMenuItem(
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.delete, color: Colors.red,),
+                                    SizedBox(width: 10,),
+                                    Text("Supprimer", style: style_google.copyWith(color: Colors.red)),
+                                  ]
+                                  ,
+                                ),
+                                value: "Supprimer",
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     );

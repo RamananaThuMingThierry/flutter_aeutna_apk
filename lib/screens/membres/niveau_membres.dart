@@ -9,17 +9,17 @@ import 'package:aeutna/services/membres_services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-class AxesMembres extends StatefulWidget {
-  int? axes_id;
+class NiveauMembres extends StatefulWidget {
+  int? niveau_id;
   User? user;
-  AxesMembres({required this.axes_id, required this.user});
+  NiveauMembres({required this.niveau_id, required this.user});
 
   @override
-  State<AxesMembres> createState() => _AxesMembresState();
+  State<NiveauMembres> createState() => _NiveauMembresState();
 }
 
-class _AxesMembresState extends State<AxesMembres> {
-  int? axes_id;
+class _NiveauMembresState extends State<NiveauMembres> {
+  int? niveau_id;
   User? user;
   int totalMembre = 0;
   String? recherche;
@@ -27,8 +27,8 @@ class _AxesMembresState extends State<AxesMembres> {
   List<Membres> _membresList = [];
   TextEditingController search = TextEditingController();
 
-  Future _getallAxesMembres() async{
-    ApiResponse apiResponse = await filtreMembresParAxes(axes_id);
+  Future _getallNiveauMembres() async{
+    ApiResponse apiResponse = await filtreMembresParNiveau(niveau_id);
     setState(() {
       search.clear();
     });
@@ -48,7 +48,7 @@ class _AxesMembresState extends State<AxesMembres> {
   }
 
   Future _searchMembres(String? search) async{
-    ApiResponse apiResponse = await searchMembresAxes(search, axes_id);
+    ApiResponse apiResponse = await searchMembresNiveau(search, niveau_id);
     loading = false;
     if(apiResponse.error == null){
       List<dynamic> membresList = apiResponse.data as List<dynamic>;
@@ -68,8 +68,8 @@ class _AxesMembresState extends State<AxesMembres> {
   @override
   void initState() {
     user = widget.user;
-    axes_id = widget.axes_id;
-    _getallAxesMembres();
+    niveau_id = widget.niveau_id;
+    _getallNiveauMembres();
     super.initState();
   }
 
@@ -78,24 +78,24 @@ class _AxesMembresState extends State<AxesMembres> {
     return Scaffold(
       backgroundColor: Colors.grey,
       appBar: AppBar(
-        elevation: 0,
-        actions: [
-          Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-              child: CircleAvatar(
-                radius: 15,
-                backgroundImage: AssetImage("assets/logo.jpeg"),
-              )
+          elevation: 0,
+          actions: [
+            Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                child: CircleAvatar(
+                  radius: 15,
+                  backgroundImage: AssetImage("assets/logo.jpeg"),
+                )
+            )
+          ],
+          title: Text("(${totalMembre}) ${totalMembre <= 2 ? 'Membre' : 'Membres'}", style: style_google.copyWith(fontWeight: FontWeight.bold)),
+          backgroundColor: Colors.white,
+          leading: IconButton(
+            onPressed: (){
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.keyboard_backspace, color: Colors.blueGrey,),
           )
-        ],
-        title: Text("(${totalMembre}) ${totalMembre <= 2 ? 'Membre' : 'Membres'}", style: style_google.copyWith(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: (){
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.keyboard_backspace, color: Colors.blueGrey,),
-        )
       ),
       body: Column(
         children: [
@@ -118,7 +118,7 @@ class _AxesMembresState extends State<AxesMembres> {
                           recherche = value;
                         });
                         if(recherche!.isEmpty){
-                          _getallAxesMembres();
+                          _getallNiveauMembres();
                         }else{
                           _searchMembres(recherche);
                         }
@@ -153,7 +153,7 @@ class _AxesMembresState extends State<AxesMembres> {
                     onPressed: (){}, icon: Icon(Icons.search_outlined, color: Colors.grey,))
                     :
                 IconButton(onPressed: (){
-                  _getallAxesMembres();
+                  _getallNiveauMembres();
                 }, icon: Icon(Icons.close, color: Colors.grey,)),
               ],
             ),
@@ -164,7 +164,7 @@ class _AxesMembresState extends State<AxesMembres> {
               :
           RefreshIndicator(
               onRefresh: (){
-                return _getallAxesMembres();
+                return _getallNiveauMembres();
               },
               child: _membresList.length == 0
                   ? Center(child: Text("Aucun membre", style: style_google.copyWith(color: Colors.white),),)

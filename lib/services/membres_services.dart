@@ -323,6 +323,76 @@ Future<ApiResponse> filtreMembresParAxes(int? axesId) async{
   return apiResponse;
 }
 
+/*** ------------- Recherche un membre ---------------- **/
+Future<ApiResponse> searchMembresNiveau(String? value, int? niveauId) async{
+
+  ApiResponse apiResponse = ApiResponse();
+  try{
+
+    String token = await getToken();
+    var url = Uri.parse("${membresURL}_search_niveau/${value}/${niveauId}");
+
+    final rep = await http.get(url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+
+    switch(rep.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(rep.body)['membres'];
+        apiResponse.data as List<dynamic>;
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+/** --------------- Filtre par les membres par axes ------ **/
+Future<ApiResponse> filtreMembresParNiveau(int? niveauId) async{
+
+  ApiResponse apiResponse = ApiResponse();
+  try{
+
+    String token = await getToken();
+    var url = Uri.parse("${membresURL}_filtreNiveauMembre/${niveauId}");
+
+    final rep = await http.get(url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+
+    switch(rep.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(rep.body)['membres'];
+        apiResponse.data as List<dynamic>;
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
 /** --------------- Modifier un Membre ----------------- **/
 Future<ApiResponse> updateMembre({
   int? membreIdUpdate,

@@ -70,12 +70,19 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
             _key.currentState!.openDrawer();
           },
           icon: Icon(Icons.menu, color: Colors.black54,),),
-        title: Text("Administrations", style: style_google.copyWith(color: Colors.blueGrey, fontWeight: FontWeight.bold),),
+        title: Text("AEUTNA", style: style_google.copyWith(color: Colors.blueGrey, fontWeight: FontWeight.bold),),
         elevation: 1,
         backgroundColor: Colors.white,
         actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.dark_mode, color: Colors.blueGrey,)),
-          IconButton(onPressed: (){}, icon: Icon(Icons.notifications_none, color: Colors.blueGrey,)),
+          Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+              child: CircleAvatar(
+                radius: 15,
+                backgroundImage: AssetImage("assets/logo.jpeg"),
+              )
+          )
+          //IconButton(onPressed: (){}, icon: Icon(Icons.dark_mode, color: Colors.blueGrey,)),
+          //IconButton(onPressed: (){}, icon: Icon(Icons.notifications_none, color: Colors.blueGrey,)),
         ],
       ),
       drawer: ClipPath(
@@ -139,12 +146,12 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
                 },
               ),
               Ligne(color: Colors.grey,),
-              ListTile(
-                leading: Icon(Icons.settings_outlined, color: Colors.blueGrey,),
-                title: Text("Paramètre", style: style_google,),
-                onTap: (){},
-              ),
-              Ligne(color: Colors.grey,),
+              // ListTile(
+              //   leading: Icon(Icons.settings_outlined, color: Colors.blueGrey,),
+              //   title: Text("Paramètre", style: style_google,),
+              //   onTap: (){},
+              // ),
+              // Ligne(color: Colors.grey,),
               ListTile(
                 leading: Icon(Icons.logout, color: Colors.blueGrey,),
                 title: Text("Déconnection", style: style_google,),
@@ -180,7 +187,7 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
                             }else if(page.nom == "Axes"){
                               Navigator.push(context, MaterialPageRoute(builder: (ctx) => AxesScreen(user: data!,)));
                             }else if(page.nom == "Niveau"){
-                              Navigator.push(context, MaterialPageRoute(builder: (ctx) => NiveauScreen()));
+                              Navigator.push(context, MaterialPageRoute(builder: (ctx) => NiveauScreen(user: data!,)));
                             }else if(page.nom == "Filières"){
                               Navigator.push(context, MaterialPageRoute(builder: (ctx) => FilieresScreen()));
                             }else if(page.nom == "Fonctions"){
