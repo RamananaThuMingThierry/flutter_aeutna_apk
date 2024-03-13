@@ -47,7 +47,7 @@ class _AxesMembresState extends State<AxesMembres> {
   }
 
   Future _searchMembres(String? search) async{
-    ApiResponse apiResponse = await searchMembres(search);
+    ApiResponse apiResponse = await searchMembresAxes(search, axes_id);
     loading = false;
     if(apiResponse.error == null){
       List<dynamic> membresList = apiResponse.data as List<dynamic>;
