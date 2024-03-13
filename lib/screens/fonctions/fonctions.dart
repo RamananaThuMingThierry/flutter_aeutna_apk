@@ -2,6 +2,8 @@ import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/constants/loadingShimmer.dart';
 import 'package:aeutna/models/fonctions.dart';
+import 'package:aeutna/models/user.dart';
+import 'package:aeutna/screens/membres/fonction_membres.dart';
 import 'package:aeutna/services/fonctions_services.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:flutter/material.dart';
@@ -9,16 +11,16 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../api/api_response.dart';
 
 class FonctionsScreen extends StatefulWidget {
-
-  const FonctionsScreen({Key? key}) : super(key: key);
+  User? user;
+  FonctionsScreen({required this.user});
 
   @override
   State<FonctionsScreen> createState() => _FonctionsScreenState();
-
 }
 
 class _FonctionsScreenState extends State<FonctionsScreen> {
   // Déclarations des variables
+  User? user;
   List<FonctionModel> _fonctionsList = [];
   int userId = 0;
   bool loading = true;
@@ -122,6 +124,7 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
 
   @override
   void initState() {
+    user = widget.user;
     _getallFonctions();
     super.initState();
   }
@@ -218,65 +221,68 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
                   itemCount: _fonctionsList.length,
                   itemBuilder: (BuildContext context, int index){
                     FonctionModel fonctions = _fonctionsList![index];
-                    return Card(
-                      margin: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                      color: Colors.white,
-                      child: ListTile(
-                        leading: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          decoration: BoxDecoration(
-                          color: Colors.blueGrey,
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                          child: Text("${fonctions.fonctions!.substring(0, 1).toUpperCase()}", style: TextStyle(color: Colors.white),),
-                        ),
-                        title: Text("${fonctions.fonctions}", style: style_google.copyWith(color: Colors.black87,)),
-                        trailing: PopupMenuButton(
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 10),
-                            child: Icon(Icons.more_vert, color: Colors.black,),
+                    return GestureDetector(
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => FonctionMembres(fonction_id: fonctions.id, user: user))),
+                      child: Card(
+                        margin: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                        color: Colors.white,
+                        child: ListTile(
+                          leading: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                            color: Colors.blueGrey,
+                            borderRadius: BorderRadius.circular(100),
                           ),
-                          onSelected: (valeur){
-                            if(valeur == "Modifier"){
-                              // Modifier
-                              print("Modifier");
-                              setState(() {
-                                editFonctions = fonctions.id;
-                                nom_fonctions.text = fonctions.fonctions! ?? "";
-                              });
-                              showDialog(context: context, builder: (BuildContext context) => fonctionsForm(context, editFonctions));
-                            }else{
-                              // Supprimer
-                              print("Supprimer");
-                              showDialog(context: context, builder: (BuildContext context){
-                                return confirmationSuppresion(fonctions.id!);
-                              });
-                            }
-                          },
-                          itemBuilder: (ctx) => [
-                            PopupMenuItem(
-                              value: "Modifier",
-                              child: Row(
-                                children: [
-                                  Icon(Icons.edit, color: Colors.lightBlue,),
-                                  SizedBox(width: 10,),
-                                  Text("Modifier", style: style_google.copyWith(color: Colors.lightBlue)),
-                                ]
-                                ,
-                              ),
+                            child: Text("${fonctions.fonctions!.substring(0, 1).toUpperCase()}", style: TextStyle(color: Colors.white),),
+                          ),
+                          title: Text("${fonctions.fonctions}", style: style_google.copyWith(color: Colors.black87,)),
+                          trailing: PopupMenuButton(
+                            child: Padding(
+                              padding: EdgeInsets.only(right: 10),
+                              child: Icon(Icons.more_vert, color: Colors.black,),
                             ),
-                            PopupMenuItem(
-                              child: Row(
-                                children: [
-                                  Icon(Icons.delete, color: Colors.red,),
-                                  SizedBox(width: 10,),
-                                  Text("Supprimer", style: style_google.copyWith(color: Colors.red)),
-                                ]
-                                ,
+                            onSelected: (valeur){
+                              if(valeur == "Modifier"){
+                                // Modifier
+                                print("Modifier");
+                                setState(() {
+                                  editFonctions = fonctions.id;
+                                  nom_fonctions.text = fonctions.fonctions! ?? "";
+                                });
+                                showDialog(context: context, builder: (BuildContext context) => fonctionsForm(context, editFonctions));
+                              }else{
+                                // Supprimer
+                                print("Supprimer");
+                                showDialog(context: context, builder: (BuildContext context){
+                                  return confirmationSuppresion(fonctions.id!);
+                                });
+                              }
+                            },
+                            itemBuilder: (ctx) => [
+                              PopupMenuItem(
+                                value: "Modifier",
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.edit, color: Colors.lightBlue,),
+                                    SizedBox(width: 10,),
+                                    Text("Modifier", style: style_google.copyWith(color: Colors.lightBlue)),
+                                  ]
+                                  ,
+                                ),
                               ),
-                              value: "Supprimer",
-                            )
-                          ],
+                              PopupMenuItem(
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.delete, color: Colors.red,),
+                                    SizedBox(width: 10,),
+                                    Text("Supprimer", style: style_google.copyWith(color: Colors.red)),
+                                  ]
+                                  ,
+                                ),
+                                value: "Supprimer",
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     );

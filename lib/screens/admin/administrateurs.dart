@@ -189,9 +189,9 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
                             }else if(page.nom == "Niveau"){
                               Navigator.push(context, MaterialPageRoute(builder: (ctx) => NiveauScreen(user: data!,)));
                             }else if(page.nom == "Filières"){
-                              Navigator.push(context, MaterialPageRoute(builder: (ctx) => FilieresScreen()));
+                              Navigator.push(context, MaterialPageRoute(builder: (ctx) => FilieresScreen(user: data!,)));
                             }else if(page.nom == "Fonctions"){
-                              Navigator.push(context, MaterialPageRoute(builder: (ctx) => FonctionsScreen()));
+                              Navigator.push(context, MaterialPageRoute(builder: (ctx) => FonctionsScreen(user: data!,)));
                             }else if(page.nom == "Membres"){
                               Navigator.push(context, MaterialPageRoute(builder: (ctx) => MembresScreen(user: data!,)));
                             }else if(page.nom == "Message Groupes"){

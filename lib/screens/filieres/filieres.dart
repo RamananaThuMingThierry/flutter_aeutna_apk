@@ -2,8 +2,10 @@ import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/constants/loadingShimmer.dart';
 import 'package:aeutna/models/filieres.dart';
+import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/Acceuil.dart';
 import 'package:aeutna/screens/auth/login.dart';
+import 'package:aeutna/screens/membres/filiere_membres.dart';
 import 'package:aeutna/services/filieres_services.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/donnees_vide.dart';
@@ -15,8 +17,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../api/api_response.dart';
 
 class FilieresScreen extends StatefulWidget {
-
-  const FilieresScreen({Key? key}) : super(key: key);
+  User? user;
+  FilieresScreen({required this.user});
 
   @override
   State<FilieresScreen> createState() => _FilieresScreenState();
@@ -25,6 +27,7 @@ class FilieresScreen extends StatefulWidget {
 
 class _FilieresScreenState extends State<FilieresScreen> {
   // Déclarations des variables
+  User? user;
   List<Filieres> _filieresList = [];
   int userId = 0;
   bool loading = true;
@@ -134,6 +137,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
 
   @override
   void initState() {
+    user = widget.user;
     _getallFilieres();
     super.initState();
   }
@@ -230,66 +234,69 @@ class _FilieresScreenState extends State<FilieresScreen> {
                       itemCount: _filieresList.length,
                       itemBuilder: (BuildContext context, int index){
                         Filieres filieres = _filieresList![index];
-                        return Card(
-                          margin: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                          color: Colors.white,
-                          child: ListTile(
-                            leading: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                              decoration: BoxDecoration(
-                                color: Colors.blueGrey,
-                                borderRadius: BorderRadius.circular(100),
+                        return GestureDetector(
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => FiliereMembres(filiere_id: filieres.id, user: user))),
+                          child: Card(
+                            margin: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                            color: Colors.white,
+                            child: ListTile(
+                              leading: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.blueGrey,
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                child: Text("${filieres.nom_filieres!.substring(0, 1).toUpperCase()}", style: TextStyle(color: Colors.white),),
                               ),
-                              child: Text("${filieres.nom_filieres!.substring(0, 1).toUpperCase()}", style: TextStyle(color: Colors.white),),
-                            ),
-                            title: Text("${filieres.nom_filieres!}", style: TextStyle(color: Colors.blueGrey),),
-                            trailing: PopupMenuButton(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(right: 10),
-                                      child: Icon(Icons.more_vert, color: Colors.black,),
-                                    ),
-                                    onSelected: (valeur){
-                                      if(valeur == "Modifier"){
-                                        // Modifier
-                                        print("Modifier");
-                                        setState(() {
-                                          editFiliere = filieres.id;
-                                          nom_filieres.text = filieres.nom_filieres! ?? "";
-                                        });
-                                        showDialog(context: context, builder: (BuildContext context) => filiereForm(context, editFiliere));
-                                      }else{
-                                        // Supprimer
-                                        print("Supprimer");
-                                        showDialog(context: context, builder: (BuildContext context){
-                                          return confirmationSuppresion(filieres.id!);
-                                        });
-                                      }
-                                    },
-                                    itemBuilder: (ctx) => [
-                                      PopupMenuItem(
-                                        value: "Modifier",
-                                        child: Row(
-                                          children: [
-                                              Icon(Icons.edit, color: Colors.lightBlue,),
-                                              SizedBox(width: 10,),
-                                              Text("Modifier", style: GoogleFonts.roboto(color: Colors.lightBlue)),
-                                            ]
-                                         ,
+                              title: Text("${filieres.nom_filieres!}", style: TextStyle(color: Colors.blueGrey),),
+                              trailing: PopupMenuButton(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(right: 10),
+                                        child: Icon(Icons.more_vert, color: Colors.black,),
                                       ),
-                                      ),
-                                      PopupMenuItem(
-                                        child: Row(
-                                          children: [
-                                            Icon(Icons.delete, color: Colors.red,),
-                                            SizedBox(width: 10,),
-                                            Text("Supprimer", style: GoogleFonts.roboto(color: Colors.red)),
-                                          ]
-                                          ,
+                                      onSelected: (valeur){
+                                        if(valeur == "Modifier"){
+                                          // Modifier
+                                          print("Modifier");
+                                          setState(() {
+                                            editFiliere = filieres.id;
+                                            nom_filieres.text = filieres.nom_filieres! ?? "";
+                                          });
+                                          showDialog(context: context, builder: (BuildContext context) => filiereForm(context, editFiliere));
+                                        }else{
+                                          // Supprimer
+                                          print("Supprimer");
+                                          showDialog(context: context, builder: (BuildContext context){
+                                            return confirmationSuppresion(filieres.id!);
+                                          });
+                                        }
+                                      },
+                                      itemBuilder: (ctx) => [
+                                        PopupMenuItem(
+                                          value: "Modifier",
+                                          child: Row(
+                                            children: [
+                                                Icon(Icons.edit, color: Colors.lightBlue,),
+                                                SizedBox(width: 10,),
+                                                Text("Modifier", style: GoogleFonts.roboto(color: Colors.lightBlue)),
+                                              ]
+                                           ,
                                         ),
-                                        value: "Supprimer",
-                                      )
-                                    ],
-                                  )
+                                        ),
+                                        PopupMenuItem(
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.delete, color: Colors.red,),
+                                              SizedBox(width: 10,),
+                                              Text("Supprimer", style: GoogleFonts.roboto(color: Colors.red)),
+                                            ]
+                                            ,
+                                          ),
+                                          value: "Supprimer",
+                                        )
+                                      ],
+                                    )
+                            ),
                           ),
                         );
                       }),

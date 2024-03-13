@@ -323,7 +323,7 @@ Future<ApiResponse> filtreMembresParAxes(int? axesId) async{
   return apiResponse;
 }
 
-/*** ------------- Recherche un membre ---------------- **/
+/*** ------------- Recherche un membre filtre par niveau ---------------- **/
 Future<ApiResponse> searchMembresNiveau(String? value, int? niveauId) async{
 
   ApiResponse apiResponse = ApiResponse();
@@ -358,7 +358,7 @@ Future<ApiResponse> searchMembresNiveau(String? value, int? niveauId) async{
   return apiResponse;
 }
 
-/** --------------- Filtre par les membres par axes ------ **/
+/** --------------- Filtre par les membres par niveau ------ **/
 Future<ApiResponse> filtreMembresParNiveau(int? niveauId) async{
 
   ApiResponse apiResponse = ApiResponse();
@@ -366,6 +366,146 @@ Future<ApiResponse> filtreMembresParNiveau(int? niveauId) async{
 
     String token = await getToken();
     var url = Uri.parse("${membresURL}_filtreNiveauMembre/${niveauId}");
+
+    final rep = await http.get(url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+
+    switch(rep.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(rep.body)['membres'];
+        apiResponse.data as List<dynamic>;
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+/*** ------------- Recherche un membre filtre par filière ---------------- **/
+Future<ApiResponse> searchMembresFiliere(String? value, int? filiereId) async{
+
+  ApiResponse apiResponse = ApiResponse();
+  try{
+
+    String token = await getToken();
+    var url = Uri.parse("${membresURL}_search_filiere/${value}/${filiereId}");
+
+    final rep = await http.get(url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+
+    switch(rep.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(rep.body)['membres'];
+        apiResponse.data as List<dynamic>;
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+/** --------------- Filtre par les membres par filière ------ **/
+Future<ApiResponse> filtreMembresParFiliere(int? filiereId) async{
+
+  ApiResponse apiResponse = ApiResponse();
+  try{
+
+    String token = await getToken();
+    var url = Uri.parse("${membresURL}_filtreFiliereMembre/${filiereId}");
+
+    final rep = await http.get(url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+
+    switch(rep.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(rep.body)['membres'];
+        apiResponse.data as List<dynamic>;
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+/*** ------------- Recherche un membre filtre par fonction ---------------- **/
+Future<ApiResponse> searchMembresFonction(String? value, int? fonctionId) async{
+
+  ApiResponse apiResponse = ApiResponse();
+  try{
+
+    String token = await getToken();
+    var url = Uri.parse("${membresURL}_search_fonction/${value}/${fonctionId}");
+
+    final rep = await http.get(url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+
+    switch(rep.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(rep.body)['membres'];
+        apiResponse.data as List<dynamic>;
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+/** --------------- Filtre par les membres par fonction ------ **/
+Future<ApiResponse> filtreMembresParFonction(int? fonctionId) async{
+
+  ApiResponse apiResponse = ApiResponse();
+  try{
+
+    String token = await getToken();
+    var url = Uri.parse("${membresURL}_filtreFonctionMembre/${fonctionId}");
 
     final rep = await http.get(url,
         headers: {

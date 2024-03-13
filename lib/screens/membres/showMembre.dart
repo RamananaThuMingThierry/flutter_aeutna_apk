@@ -251,31 +251,31 @@ class _ShowMembresState extends State<ShowMembres> {
               ),
             ),
             SizedBox(height: 10,),
-            membre!.lien_membre_id == 0
-                ? SizedBox()
-                : membre!.lien_membre_id != user!.id
-                          ?  Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 350,
-                      child: TextButton.icon(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(Colors.blue),
-                          ),
-                          onPressed: (){},
-                          icon: Icon(
-                            Icons.message,
-                            color: Colors.white,
-                          ),
-                          label: Text("Envoyer un message", style: TextStyle(color: Colors.white),),
-                    ),
-                    ),
-                  ],
-                ),
-            )
-                          : SizedBox(),
+            // membre!.lien_membre_id == 0
+            //     ? SizedBox()
+            //     : membre!.lien_membre_id != user!.id
+            //               ?  Padding(
+            //     padding: EdgeInsets.symmetric(horizontal: 5),
+            //     child: Row(
+            //       children: [
+            //         Container(
+            //           width: 350,
+            //           child: TextButton.icon(
+            //               style: ButtonStyle(
+            //                 backgroundColor: MaterialStateProperty.all(Colors.blue),
+            //               ),
+            //               onPressed: (){},
+            //               icon: Icon(
+            //                 Icons.message,
+            //                 color: Colors.white,
+            //               ),
+            //               label: Text("Envoyer un message", style: TextStyle(color: Colors.white),),
+            //         ),
+            //         ),
+            //       ],
+            //     ),
+            // )
+            //               : SizedBox(),
             SizedBox(height: 15,),
             TextTitre(name: "Nom"),
             CardText(context, iconData: Icons.account_box_rounded, value: "${membre!.nom}"),
