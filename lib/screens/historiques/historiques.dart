@@ -35,31 +35,44 @@ class _HistoriquesScreenState extends State<HistoriquesScreen> {
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  SizedBox(height: 100,),
+                  SizedBox(height: 50,),
                   CircleAvatar(
                     radius: 50,
                     backgroundImage: AssetImage("assets/logo.jpeg"),
                   ),
                   SizedBox(height: 50,),
+
+                  Text("PREAMUBLE", style: style_google.copyWith(fontWeight: FontWeight.bold, fontSize: 18),),
+                  SizedBox(height: 2,),
+                  Container(
+                    height: 2,
+                    width: 100,
+                    color: Colors.blueGrey,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Expanded(
                         child: Center(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                             child: RichText(
                               textAlign: TextAlign.justify,
                               text: TextSpan(
                                 children: [
                                   WidgetSpan(
                                     child: Text(
-                                      "A.E.U.T.N.A",
+                                      "L'Association des Etudiants de l'Université de Tananarive Natifs d'Antalaha (AEUTNA)",
+                                      textAlign: TextAlign.justify,
                                       style: style_google.copyWith(fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                   TextSpan(
-                                    text: " est une Association des Etudiants Universitaires Natifs d'Antalaha fondé en 1999.",
+                                    text: " est une association à but non lucratif, régie par l'ordonnance 75-017 du 13 août 1975"
+                                          " réglementant le régime général des associations à Madagascar. Elle a été créée en 1998"
+                                          " par un groupe d'étudiants originaires d'Antalaha, afin de promouvoir la culture et le"
+                                          " développement de leur ville natale. Cependant, elle est légalisée le 13 mars 1999 par"
+                                          " les fondateurs",
                                     style: style_google,
                                   ),
                                 ],
@@ -70,7 +83,93 @@ class _HistoriquesScreenState extends State<HistoriquesScreen> {
                       ),
                     ],
                   ),
+                  SizedBox(height: 10,),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(
+                            "L'association est dirigée par un bureau composé d'un président, d'un trésorier(e) et d'un commissaire aux comptes.",
+                            textAlign: TextAlign.justify,
+                            style: style_google.copyWith(fontWeight: FontWeight.bold),),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10,),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(
+                            "Les objectifs de l'association sont les suivants :",
+                            textAlign: TextAlign.justify,
+                            style: style_google,),
+                        ),
+                      ),
+                    ],
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.send, color: Colors.blueGrey),
+                    title: Text("Produire à son compte ainsi qu'à celui de ses membres toutes les activités,", style: style_google,),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.send, color: Colors.blueGrey),
+                    title: Text("Au Renforcement de l'amitié, l'entraide, et de la concorde des membres,", style: style_google,),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.send, color: Colors.blueGrey),
+                    title: Text("A la consolidation de l'entraide entre les originaires d'Antalaha,", style: style_google,),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.send, color: Colors.blueGrey),
+                    title: Text("A la promotion des activités et manifestations à caractères sociale, culturelle, et économique par le développement de la région d'Antalaha.", style: style_google,),
+                  ),
+
+                  SizedBox(height: 10,),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(
+                            "L'association organise différentes activités pour atteindre ses objectifs, notamment :",
+                            textAlign: TextAlign.justify,
+                            style: style_google,),
+                        ),
+                      ),
+                    ],
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.send, color: Colors.blueGrey),
+                    title: Text("Des événements, tels que des exploitations et des conférences, etc...,", style: style_google,),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.send, color: Colors.blueGrey),
+                    title: Text("Des actions de solidarité, telles que des campagnes de sensibilisation, dons des livres, guide d'orientation aux lycées et aux collèges, etc...,", style: style_google,),
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.send, color: Colors.blueGrey),
+                    title: Text("Des événements festifs, tels que des soirées étudiantes, sorties( pique-niques), etc..,", style: style_google,),
+                  ),
+                  SizedBox(height: 10,),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(
+                            "L'association est ouverte à tous les étudiants originaires d'Antalaha ni sympathisant, quel que soit leur cursus ou leur année d'études.",
+                            textAlign: TextAlign.justify,
+                            style: style_google.copyWith(fontWeight: FontWeight.bold),),
+                        ),
+                      ),
+                    ],
+                  ),
                   SizedBox(height: 30,),
+
                   Text("Les présidents en successions", style: style_google.copyWith(fontWeight: FontWeight.bold, fontSize: 18),),
                   SizedBox(height: 2,),
                   Container(

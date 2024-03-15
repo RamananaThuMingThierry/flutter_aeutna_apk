@@ -7,6 +7,7 @@ import 'package:aeutna/models/fonctions.dart';
 import 'package:aeutna/models/niveau.dart';
 import 'package:aeutna/models/sections.dart';
 import 'package:aeutna/models/user.dart';
+import 'package:aeutna/screens/membres/result_filitre_membres.dart';
 import 'package:aeutna/services/axes_services.dart';
 import 'package:aeutna/services/filieres_services.dart';
 import 'package:aeutna/services/fonctions_services.dart';
@@ -481,10 +482,25 @@ class _FiltreState extends State<Filtre> {
 
   Future<void> _validation() async{
       if(_key.currentState!.validate()){
-        setState(() {
-          loading = false;
-        });
-        print("Nous sommes là");
+        if(selectedAxesId != 0 && sympathisant == true){
+          MessageAvertissement(context, "Avertissement");
+        }else{
+          setState(() {
+            loading = false;
+          });
+          print("sympathisant : $sympathisant");
+
+          Navigator.push(context, MaterialPageRoute(builder: (ctx) => ResultFiltreMembres(
+              fonctionId: selectedFonctionsId,
+              filiereId: selectedFilieresId,
+              niveauId: selectedNiveauId,
+              sectionId: selectedSecionsId,
+              axesId: selectedAxesId,
+              genre: genre,
+              sympathisant: sympathisant,
+              user: user)
+          ));
+        }
       }
   }
 

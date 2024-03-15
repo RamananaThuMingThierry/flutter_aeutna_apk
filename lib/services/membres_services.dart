@@ -533,6 +533,76 @@ Future<ApiResponse> filtreMembresParFonction(int? fonctionId) async{
   return apiResponse;
 }
 
+/** --------------- Filtre par les membres par fonction ------ **/
+Future<ApiResponse> filtreAll(int? fonctionId, int? filiereId, int? niveauId, int? sectionId, int? axesId, String? genre, bool? sympathisant ) async{
+
+  ApiResponse apiResponse = ApiResponse();
+  try{
+
+    String token = await getToken();
+    var url = Uri.parse("${membresURL}_filtreAll/${fonctionId}/${filiereId}/${niveauId}/${sectionId}/${axesId}/${genre}/${sympathisant == true ? 1 : 0}");
+
+    final rep = await http.get(url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+
+    switch(rep.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(rep.body)['membres'];
+        apiResponse.data as List<dynamic>;
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+/** --------------- Recherche les membres par FiltreAll ------ **/
+Future<ApiResponse> searchfiltreAll(String? value,int? fonctionId, int? filiereId, int? niveauId, int? sectionId, int? axesId, String? genre, bool? sympathisant ) async{
+
+  ApiResponse apiResponse = ApiResponse();
+  try{
+
+    String token = await getToken();
+    var url = Uri.parse("${membresURL}_searchInfiltreAll/${fonctionId}/${filiereId}/${niveauId}/${sectionId}/${axesId}/${genre}/${sympathisant == true ? 1 : 0}");
+
+    final rep = await http.get(url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization' : 'Bearer $token'
+        }
+    );
+
+    switch(rep.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(rep.body)['membres'];
+        apiResponse.data as List<dynamic>;
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(rep.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
 /** --------------- Modifier un Membre ----------------- **/
 Future<ApiResponse> updateMembre({
   int? membreIdUpdate,
