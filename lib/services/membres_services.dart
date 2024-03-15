@@ -575,7 +575,7 @@ Future<ApiResponse> searchfiltreAll(String? value,int? fonctionId, int? filiereI
   try{
 
     String token = await getToken();
-    var url = Uri.parse("${membresURL}_searchInfiltreAll/${fonctionId}/${filiereId}/${niveauId}/${sectionId}/${axesId}/${genre}/${sympathisant == true ? 1 : 0}");
+    var url = Uri.parse("${membresURL}_searchInfiltreAll/${value}/${fonctionId}/${filiereId}/${niveauId}/${sectionId}/${axesId}/${genre}/${sympathisant == true ? 1 : 0}");
 
     final rep = await http.get(url,
         headers: {
