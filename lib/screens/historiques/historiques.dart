@@ -1,4 +1,5 @@
 import 'package:aeutna/constants/fonctions_constant.dart';
+import 'package:aeutna/widgets/itemHistoriques.dart';
 import 'package:flutter/material.dart';
 
 class HistoriquesScreen extends StatefulWidget {
@@ -23,7 +24,7 @@ class _HistoriquesScreenState extends State<HistoriquesScreen> {
         elevation: 1,
         title: TitreText("Historiques"),
         actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.location_history_rounded, color: Colors.blueGrey,))
+          IconButton(onPressed: (){}, icon: Icon(Icons.history_edu_rounded, color: Colors.blueGrey,))
         ],
       ),
       body: ListView(
@@ -111,23 +112,10 @@ class _HistoriquesScreenState extends State<HistoriquesScreen> {
                       ),
                     ],
                   ),
-                  ListTile(
-                    leading: Icon(Icons.send, color: Colors.blueGrey),
-                    title: Text("Produire à son compte ainsi qu'à celui de ses membres toutes les activités,", style: style_google,),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.send, color: Colors.blueGrey),
-                    title: Text("Au Renforcement de l'amitié, l'entraide, et de la concorde des membres,", style: style_google,),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.send, color: Colors.blueGrey),
-                    title: Text("A la consolidation de l'entraide entre les originaires d'Antalaha,", style: style_google,),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.send, color: Colors.blueGrey),
-                    title: Text("A la promotion des activités et manifestations à caractères sociale, culturelle, et économique par le développement de la région d'Antalaha.", style: style_google,),
-                  ),
-
+                  ItemListTitleHistoriques(text: "Produire à son compte ainsi qu'à celui de ses membres toutes les activités,"),
+                  ItemListTitleHistoriques(text: "Au Renforcement de l'amitié, l'entraide, et de la concorde des membres,"),
+                  ItemListTitleHistoriques(text: "A la consolidation de l'entraide entre les originaires d'Antalaha,"),
+                  ItemListTitleHistoriques(text: "A la promotion des activités et manifestations à caractères sociale, culturelle, et économique par le développement de la région d'Antalaha."),
                   SizedBox(height: 10,),
                   Row(
                     children: [
@@ -142,18 +130,9 @@ class _HistoriquesScreenState extends State<HistoriquesScreen> {
                       ),
                     ],
                   ),
-                  ListTile(
-                    leading: Icon(Icons.send, color: Colors.blueGrey),
-                    title: Text("Des événements, tels que des exploitations et des conférences, etc...,", style: style_google,),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.send, color: Colors.blueGrey),
-                    title: Text("Des actions de solidarité, telles que des campagnes de sensibilisation, dons des livres, guide d'orientation aux lycées et aux collèges, etc...,", style: style_google,),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.send, color: Colors.blueGrey),
-                    title: Text("Des événements festifs, tels que des soirées étudiantes, sorties( pique-niques), etc..,", style: style_google,),
-                  ),
+                  ItemListTitleHistoriques(text: "Des événements, tels que des exploitations et des conférences, etc...,"),
+                  ItemListTitleHistoriques(text: "Des actions de solidarité, telles que des campagnes de sensibilisation, dons des livres, guide d'orientation aux lycées et aux collèges, etc...,"),
+                  ItemListTitleHistoriques(text: "Des événements festifs, tels que des soirées étudiantes, sorties( pique-niques), etc..,"),
                   SizedBox(height: 10,),
                   Row(
                     children: [

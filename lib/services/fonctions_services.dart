@@ -21,6 +21,8 @@ Future<ApiResponse> getAllFonctions() async{
         }
     );
 
+    print("------------------------------------------ fonctions : ${response.body} ---------------");
+
     switch(response.statusCode){
       case 200:
         apiResponse.data = jsonDecode(response.body)['fonctions'];

@@ -20,6 +20,7 @@ Future<ApiResponse> getAllMembres() async{
           'Authorization' : 'Bearer $token'
         }
     );
+
     switch(response.statusCode){
       case 200:
         apiResponse.data = jsonDecode(response.body)['membres'];

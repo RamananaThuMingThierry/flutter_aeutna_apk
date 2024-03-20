@@ -59,7 +59,7 @@ class _ProfilesState extends State<Profiles> {
   int? status;
 
   void getAxes() async{
-    ApiResponse apiResponse = await showAxes(membres!.axes_id!);
+    ApiResponse apiResponse = await showAxes(int.parse(membres!.axes_id!));
     if(apiResponse.error == null){
       setState(() {
         axes = apiResponse.data as Axes?;
@@ -73,7 +73,7 @@ class _ProfilesState extends State<Profiles> {
 
   void getFilieres() async{
 
-    ApiResponse apiResponse = await showFilieres(membres!.filieres_id!);
+    ApiResponse apiResponse = await showFilieres(int.parse(membres!.filieres_id!));
 
     if(apiResponse.error == null){
 
@@ -90,7 +90,7 @@ class _ProfilesState extends State<Profiles> {
 
   void getNiveau() async{
 
-    ApiResponse apiResponse = await showNiveau(membres!.levels_id!);
+    ApiResponse apiResponse = await showNiveau(int.parse(membres!.levels_id!));
 
     if(apiResponse.error == null){
       setState(() {
@@ -105,7 +105,7 @@ class _ProfilesState extends State<Profiles> {
   }
 
   void getFonctions() async{
-    ApiResponse apiResponse = await showFonctions(membres!.fonctions_id!);
+    ApiResponse apiResponse = await showFonctions(int.parse(membres!.fonctions_id!));
     if(apiResponse.error == null){
       setState(() {
         fonctionModel = apiResponse.data as FonctionModel?;
@@ -151,7 +151,7 @@ class _ProfilesState extends State<Profiles> {
     contact_personnel = data!.contact;
     adresse = data!.adresse;
     roles = data!.roles;
-    status = data!.status;
+    status = int.parse(data!.status!);
     image = data!.image;
     if(status == 1){
       getMembre();
@@ -235,7 +235,7 @@ class _ProfilesState extends State<Profiles> {
                         ) : SizedBox(),
                         status == 1 ? showInformationsAEUTNA(
                             contact_tutaire: membres == null ? "" : membres!.contact_tuteur,
-                            numero_carte_aeutna: membres == null ? 0 : membres!.numero_carte ,
+                            numero_carte_aeutna: membres == null ? 0 : int.parse(membres!.numero_carte!),
                             email: email,
                             filiere: filieres == null ? "" : filieres!.nom_filieres,
                             facebook: membres == null ? "" : membres!.facebook,
@@ -244,7 +244,7 @@ class _ProfilesState extends State<Profiles> {
                             fonction: fonctionModel == null ? "" : fonctionModel!.fonctions,
                             niveau: niveau == null ? "" : niveau!.niveau,
                             axes: axes == null ? "" : axes!.nom_axes,
-                            sympathisant: membres == null ? 0 : membres!.symapthisant,
+                            sympathisant: membres == null ? 0 : int.parse(membres!.symapthisant!),
                             date_inscription: membres == null ? "" : membres!.date_inscription,
                         ) : SizedBox()
                     ],

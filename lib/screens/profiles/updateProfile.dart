@@ -177,14 +177,15 @@ class _UpdateProfileState extends State<UpdateProfile> {
                                 width: double.infinity,
                                 child: TextButton(
                                   style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(Colors.lightBlue)
+                                    backgroundColor: MaterialStateProperty.all(Colors.blueGrey)
                                   ),
                                   onPressed: () {
                                     _validation();
                                   },
                                   child: Text("Modifier", style: style_google.copyWith(color: Colors.white),),
                                 )
-                              )
+                              ),
+                              SizedBox(height: 20,)
                         ],
                       ),
                     )

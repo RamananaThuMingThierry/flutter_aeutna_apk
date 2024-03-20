@@ -8,6 +8,7 @@ import 'package:aeutna/screens/membres/niveau_membres.dart';
 import 'package:aeutna/services/niveau_services.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/myTextFieldForm.dart';
+import 'package:aeutna/widgets/noResult.dart';
 import 'package:flutter/material.dart';
 
 class NiveauScreen extends StatefulWidget {
@@ -226,9 +227,7 @@ class _NiveauScreenState extends State<NiveauScreen> {
               },
               child: _niveauList.length == 0
                   ?
-              Center(
-                child: Text("Aucun résultat", style: style_google.copyWith(fontSize: 18, color: Colors.white),),
-              )
+              NoResult()
                   :
               ListView.builder(
                   itemCount: _niveauList.length,

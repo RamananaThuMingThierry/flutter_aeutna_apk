@@ -6,6 +6,7 @@ import 'package:aeutna/models/avis.dart';
 import 'package:aeutna/screens/avis/showAvis.dart';
 import 'package:aeutna/services/avis_services.dart';
 import 'package:aeutna/services/user_services.dart';
+import 'package:aeutna/widgets/noResult.dart';
 import 'package:flutter/material.dart';
 
 class AvisScreen extends StatefulWidget {
@@ -153,9 +154,7 @@ class _AvisScreenState extends State<AvisScreen> {
               },
               child: _avisList.length == 0
                   ?
-              Center(
-                child: Text("Aucun résultat", style: style_google.copyWith(fontSize: 18, color: Colors.white),),
-              )
+              NoResult()
                   :
               ListView.builder(
                   itemCount: _avisList.length,

@@ -8,15 +8,12 @@ import 'package:aeutna/models/membres.dart';
 import 'package:aeutna/models/niveau.dart';
 import 'package:aeutna/models/sections.dart';
 import 'package:aeutna/models/user.dart';
-import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/screens/membres/updateMembres.dart';
 import 'package:aeutna/services/axes_services.dart';
 import 'package:aeutna/services/filieres_services.dart';
 import 'package:aeutna/services/fonctions_services.dart';
 import 'package:aeutna/services/niveau_services.dart';
 import 'package:aeutna/services/sections_services.dart';
-import 'package:aeutna/services/user_services.dart';
-import 'package:aeutna/widgets/showDialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -34,6 +31,7 @@ class ShowMembres extends StatefulWidget {
 }
 
 class _ShowMembresState extends State<ShowMembres> {
+
   User? user;
   Membres? membre;
   Axes? axes;
@@ -49,9 +47,12 @@ class _ShowMembresState extends State<ShowMembres> {
     membre = widget.membres;
     user = widget.user;
 
+    print(user);
+
     if(membre!.axes_id == null){
       axes_null = null;
     }
+
     getAxes();
     getFilieres();
     getNiveau();
@@ -61,7 +62,7 @@ class _ShowMembresState extends State<ShowMembres> {
   }
 
   void getSections() async{
-    ApiResponse apiResponse = await showSections(membre!.sections_id!);
+    ApiResponse apiResponse = await showSections(int.parse(membre!.sections_id!));
     if(apiResponse.error == null){
       setState(() {
         compte = compte! + 1;
@@ -76,7 +77,7 @@ class _ShowMembresState extends State<ShowMembres> {
 
   void getAxes() async{
     if(membre!.axes_id != null){
-      ApiResponse apiResponse = await showAxes(membre!.axes_id!);
+      ApiResponse apiResponse = await showAxes(int.parse(membre!.axes_id!));
       if (apiResponse.error == null) {
         setState(() {
           compte = compte! + 1;
@@ -97,7 +98,7 @@ class _ShowMembresState extends State<ShowMembres> {
 
   void getFilieres() async{
 
-    ApiResponse apiResponse = await showFilieres(membre!.filieres_id!);
+    ApiResponse apiResponse = await showFilieres(int.parse(membre!.filieres_id!));
 
     if(apiResponse.error == null){
 
@@ -115,7 +116,7 @@ class _ShowMembresState extends State<ShowMembres> {
 
   void getNiveau() async{
 
-    ApiResponse apiResponse = await showNiveau(membre!.levels_id!);
+    ApiResponse apiResponse = await showNiveau(int.parse(membre!.levels_id!));
 
     if(apiResponse.error == null){
       setState(() {
@@ -131,7 +132,7 @@ class _ShowMembresState extends State<ShowMembres> {
   }
 
   void getFonctions() async{
-    ApiResponse apiResponse = await showFonctions(membre!.fonctions_id!);
+    ApiResponse apiResponse = await showFonctions(int.parse(membre!.fonctions_id!));
     if(apiResponse.error == null){
       setState(() {
         compte = compte! + 1;
@@ -310,7 +311,7 @@ class _ShowMembresState extends State<ShowMembres> {
                 ? TextTitre(name: "C.I.N")
                 : SizedBox(),
             user!.roles == "Administrateurs"
-                ? CardText(context, iconData: Icons.credit_card_rounded, value: membre!.cin == null ? '-' : separerParEspace("${membre!.cin}"))
+                ? CardText(context, iconData: Icons.credit_card_rounded, value: membre!.cin == "null" ? '-' : separerParEspace("${membre!.cin}"))
                 : SizedBox(),
             SizedBox(height: 10,),
             TextTitre(name: "Fonctions"),
@@ -351,7 +352,7 @@ class _ShowMembresState extends State<ShowMembres> {
                 ? TextTitre(name: "Sympathisant(e)")
                 : SizedBox(),
             user!.roles == "Administrateurs"
-                ? CardText(context, iconData: Icons.account_tree, value: "${membre!.symapthisant == 0 ? "Non" : "Oui"}")
+                ? CardText(context, iconData: Icons.account_tree, value: "${membre!.symapthisant == "0" ? "Non" : "Oui"}")
                 : SizedBox(),
             user!.roles == "Administrateurs"
                 ? SizedBox(height: 10,)

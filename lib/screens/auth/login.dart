@@ -5,6 +5,7 @@ import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/Acceuil.dart';
+import 'package:aeutna/screens/auth/mot_de_passe_oublier.dart';
 import 'package:aeutna/screens/auth/register.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/PasswordFiledForm.dart';
@@ -152,9 +153,11 @@ class _LoginState extends State<Login> {
                 ),
                 Padding(padding: EdgeInsets.symmetric(horizontal: 10),
                   child:  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text("Mot de passe oublie!", style: TextStyle(color: Colors.blueAccent),),
+                      InkWell(
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => MotDePasseOublier())),
+                          child: Text("Mot de passe oublie!", style: TextStyle(color: Colors.blueAccent),)),
                     ],
                   ),),
                 SizedBox(height: 10,),
@@ -164,7 +167,7 @@ class _LoginState extends State<Login> {
                     width: double.infinity,
                     child: Button(
                       color: Colors.blueGrey,
-                      name: "Login",
+                      name: "Se connecter",
                       onPressed: () => loginUser,
                     ),
                   ),

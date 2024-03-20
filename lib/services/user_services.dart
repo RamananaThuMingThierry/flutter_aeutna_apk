@@ -297,17 +297,25 @@ Future<ApiResponse> updateRolesUser({String? roles, int? userId}) async{
 
 Future<ApiResponse> login({String? email, String? mot_de_passe}) async{
   ApiResponse apiResponse = ApiResponse();
+
+
   try{
     var url = Uri.parse(loginURL);
+    print("Email : $email et Mot de passe : $mot_de_passe");
     print(url);
+
     final response = await http.post(
       url,
-      headers: {'Accept': 'application/json'},
+      headers: {
+        'Accept': 'application/json',
+      },
       body: {
         'email':email,
         'mot_de_passe': mot_de_passe
       }
     );
+
+    print(" ********************* body : ${response.body}");
 
     switch(response.statusCode){
       case 200:
@@ -331,6 +339,9 @@ Future<ApiResponse> login({String? email, String? mot_de_passe}) async{
         break;
     }
   }catch(e){
+
+    print(e);
+
     apiResponse.error = serverError;
   }
 
@@ -341,6 +352,8 @@ Future<ApiResponse> register({String? pseudo, String? email, String? mot_de_pass
   ApiResponse apiResponse = ApiResponse();
 
   try{
+
+
 
     final response = await http.post(
         Uri.parse(registerURL),
@@ -373,6 +386,7 @@ Future<ApiResponse> register({String? pseudo, String? email, String? mot_de_pass
         break;
     }
   }catch(e){
+    print(e);
     apiResponse.error = serverError;
   }
 

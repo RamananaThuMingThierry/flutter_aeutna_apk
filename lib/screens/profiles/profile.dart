@@ -1,6 +1,7 @@
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/models/users.dart';
+import 'package:aeutna/screens/auth/modifier_mot_de_passe.dart';
 import 'package:aeutna/screens/profiles/updateProfile.dart';
 import 'package:flutter/material.dart';
 
@@ -51,7 +52,24 @@ class _ProfileState extends State<Profile> {
                     onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => UpdateProfile(user: data))))
               ],),
             SizedBox(height: 10,),
-            UserInfo(users: data,)
+            UserInfo(users: data,),
+            SizedBox(height: 10,),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => ModifierMotDePasse())),
+                child: Container(
+                  width: double.infinity,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey,
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text("Modifier votre mot de passe", style: style_google.copyWith(color: Colors.white, fontSize: 15),),
+                ),
+              ),
+            )
           ],
         ),
       ),
@@ -224,13 +242,8 @@ class UserInfo extends StatelessWidget{
                           leading: Icon(Icons.person_2_outlined, color: Colors.blueGrey,),
                           title: Text("Rôles", style: style_google.copyWith(fontWeight: FontWeight.w500),),
                           subtitle: Text("${users!.roles}"),
-                        ),
-                        ListTile(
-                          leading: Icon(users!.status == 0 ? Icons.disabled_by_default_outlined :  Icons.check_box, color: Colors.blueGrey,),
-                          title: Text("Status", style: style_google.copyWith(fontWeight: FontWeight.w500),),
-                          subtitle: Text("${users!.status == 0 ? "En attente" : "Membre"}"),
                         )
-                      ])
+                      ]),
                 ],
               ),
             ),

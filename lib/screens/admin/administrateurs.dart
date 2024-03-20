@@ -19,6 +19,7 @@ import 'package:aeutna/screens/statistiques/statistiques.dart';
 import 'package:aeutna/screens/utilisateurs/showUsers.dart';
 import 'package:aeutna/screens/utilisateurs/users.dart';
 import 'package:aeutna/screens/utilisateurs/utilisateurs_en_attentes.dart';
+import 'package:aeutna/widgets/itemDrawer.dart';
 import 'package:aeutna/widgets/ligne_horizontale.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -37,8 +38,6 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
  GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
  List<Pages> pages = [
-   Pages("Avis", Icons.question_mark_outlined),
-   Pages("Filtre", Icons.search_outlined),
    Pages("Axes", Icons.local_library_sharp),
    Pages("Niveau", Icons.stacked_bar_chart),
    Pages("Filières", Icons.card_travel),
@@ -47,8 +46,8 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
    Pages("Message Groupes", Icons.message_outlined),
    Pages("Utilisateurs En attente", Icons.people_alt_outlined),
    Pages("Utilisateurs", Icons.people),
+   Pages("Filtre", Icons.search_outlined),
    Pages("Statistiques", Icons.area_chart),
-   Pages("Historiques", Icons.location_history_rounded),
  ];
 
  @override
@@ -75,12 +74,15 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
         elevation: 1,
         backgroundColor: Colors.white,
         actions: [
-          Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-              child: CircleAvatar(
-                radius: 15,
-                backgroundImage: AssetImage("assets/logo.jpeg"),
-              )
+          InkWell(
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => HistoriquesScreen())),
+            child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                child: CircleAvatar(
+                  radius: 15,
+                  backgroundImage: AssetImage("assets/logo.jpeg"),
+                )
+            ),
           )
           //IconButton(onPressed: (){}, icon: Icon(Icons.dark_mode, color: Colors.blueGrey,)),
           //IconButton(onPressed: (){}, icon: Icon(Icons.notifications_none, color: Colors.blueGrey,)),
@@ -97,7 +99,7 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
                 currentAccountPicture: CircleAvatar(
                   radius: 50,
                   backgroundColor: Colors.grey, // Couleur de fond par défaut
-                  child: data!.image! != null
+                  child: image != null
                       ? CachedNetworkImage(
                     imageUrl: data!.image!,
                     placeholder: (context, url) => CircularProgressIndicator(),
@@ -124,43 +126,37 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
                     )
                 ),
               ),
-              ListTile(
-                leading: Icon(Icons.home_outlined, color: Colors.blueGrey,),
-                title: Text("Accueil", style: style_google,),
-                onTap: () => Navigator.pop(context),
+              ItemDrawer(
+                  titre: "Acceuil",
+                  onTap: () => () => Navigator.pop(context),
+                  iconData: Icons.home_outlined),
+              Ligne(color: Colors.grey,),
+              ItemDrawer(
+                titre: "Profiles",
+                iconData: Icons.person_2_outlined,
+                onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => Profile(user: data!))),
               ),
               Ligne(color: Colors.grey,),
-              ListTile(
-                leading: Icon(Icons.person_2_outlined, color: Colors.blueGrey,),
-                title: Text("Profiles", style: style_google,),
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (ctx) => Profile(user: data!)));
-                },
-              ),
+              ItemDrawer(
+                  titre: "Apropos",
+                  onTap: () => (){
+                    Navigator.pop(context);
+                    showDialog(context: context, builder: (BuildContext context) => AboutApplication(context));
+                  },
+                  iconData: Icons.info_outlined),
               Ligne(color: Colors.grey,),
-              ListTile(
-                leading: Icon(Icons.info_outlined, color: Colors.blueGrey,),
-                title: Text("Apropos", style: style_google,),
-                onTap: (){
-                  Navigator.pop(context);
-                  showDialog(context: context, builder: (BuildContext context) => AboutApplication(context));
-                },
-              ),
+              ItemDrawer(
+                  titre: "Historiques",
+                  onTap: () => () =>  Navigator.push(context, MaterialPageRoute(builder: (ctx) => HistoriquesScreen())),
+                  iconData: Icons.history_edu_rounded),
               Ligne(color: Colors.grey,),
-              // ListTile(
-              //   leading: Icon(Icons.settings_outlined, color: Colors.blueGrey,),
-              //   title: Text("Paramètre", style: style_google,),
-              //   onTap: (){},
-              // ),
-              // Ligne(color: Colors.grey,),
-              ListTile(
-                leading: Icon(Icons.logout, color: Colors.blueGrey,),
-                title: Text("Déconnection", style: style_google,),
-                onTap: (){
-                  Navigator.pop(context);
-                  deconnectionAlertDialog(context);
-                },
-              ),
+              ItemDrawer(
+                  titre: "Déconnection",
+                  onTap: () => (){
+                    Navigator.pop(context);
+                    deconnectionAlertDialog(context);
+                  },
+                  iconData: Icons.logout),
               Ligne(color: Colors.grey,),
             ],
           ),
@@ -181,9 +177,7 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
                         elevation: 1,
                         child: InkWell(
                           onTap: (){
-                            if(page.nom == "Avis"){
-                              Navigator.push(context, MaterialPageRoute(builder: (ctx) => AvisScreen()));
-                            }else if(page.nom == "Filtre"){
+                            if(page.nom == "Filtre"){
                               Navigator.push(context, MaterialPageRoute(builder: (ctx) => Filtre(user: data!,)));
                             }else if(page.nom == "Axes"){
                               Navigator.push(context, MaterialPageRoute(builder: (ctx) => AxesScreen(user: data!,)));
@@ -203,8 +197,6 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
                               Navigator.push(context, MaterialPageRoute(builder: (ctx) => UsersScreen()));
                             }else if(page.nom == "Statistiques"){
                               Navigator.push(context, MaterialPageRoute(builder: (ctx) => StatistiquesScreen()));
-                            }else if(page.nom == "Historiques"){
-                              Navigator.push(context, MaterialPageRoute(builder: (ctx) => HistoriquesScreen()));
                             }
                           },
                           child: Column(

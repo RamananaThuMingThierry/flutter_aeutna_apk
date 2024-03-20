@@ -11,9 +11,7 @@ import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/screens/membres/axes_membres.dart';
 import 'package:aeutna/services/axes_services.dart';
 import 'package:aeutna/services/user_services.dart';
-import 'package:aeutna/widgets/donnees_vide.dart';
-import 'package:aeutna/widgets/myTextFieldForm.dart';
-import 'package:aeutna/widgets/showDialog.dart';
+import 'package:aeutna/widgets/noResult.dart';
 import 'package:aeutna/models/axes.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -237,9 +235,7 @@ class _AxesState extends State<AxesScreen> {
               },
               child: _axesList.length == 0
                   ?
-              Center(
-                child: Text("Aucun résultat", style: style_google.copyWith(fontSize: 18, color: Colors.white),),
-              )
+              NoResult()
                   :
               ListView.builder(
                   itemCount: _axesList.length,

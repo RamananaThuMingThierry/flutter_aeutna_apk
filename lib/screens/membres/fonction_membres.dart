@@ -6,6 +6,7 @@ import 'package:aeutna/models/membres.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/membres/showMembre.dart';
 import 'package:aeutna/services/membres_services.dart';
+import 'package:aeutna/widgets/noResult.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -167,7 +168,7 @@ class _FonctionMembresState extends State<FonctionMembres> {
                 return _getallFonctionMembres();
               },
               child: _membresList.length == 0
-                  ? Center(child: Text("Aucun membre", style: style_google.copyWith(color: Colors.white),),)
+                  ? NoResult()
                   : ListView.builder(
                   itemCount: _membresList.length,
                   itemBuilder: (BuildContext context, int index){

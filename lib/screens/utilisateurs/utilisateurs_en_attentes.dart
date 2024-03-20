@@ -6,6 +6,7 @@ import 'package:aeutna/models/users.dart';
 import 'package:aeutna/screens/Acceuil.dart';
 import 'package:aeutna/screens/utilisateurs/showUsers.dart';
 import 'package:aeutna/services/user_services.dart';
+import 'package:aeutna/widgets/noResult.dart';
 import 'package:flutter/material.dart';
 
 class UtilisateursEnAttentes extends StatefulWidget {
@@ -73,9 +74,7 @@ class _UtilisateursEnAttentesState extends State<UtilisateursEnAttentes> {
             ? OnLoadingMembreShimmer()
             : RefreshIndicator(
                 child: _usersList.length == 0
-                    ?  Center(
-                  child: Text("Aucun résultat", style: style_google.copyWith(fontSize: 18, color: Colors.white),),
-                )
+                    ?  NoResult()
                 : ListView.builder(
                 itemCount: _usersList.length,
                 itemBuilder: (BuildContext context, int index){

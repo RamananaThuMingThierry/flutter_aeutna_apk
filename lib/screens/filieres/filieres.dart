@@ -10,6 +10,7 @@ import 'package:aeutna/services/filieres_services.dart';
 import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/donnees_vide.dart';
 import 'package:aeutna/widgets/myTextFieldForm.dart';
+import 'package:aeutna/widgets/noResult.dart';
 import 'package:aeutna/widgets/showDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -226,10 +227,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
                     return _getallFilieres();
                   },
                   child: _filieresList.length == 0
-                      ?
-                      Center(
-                        child: Text("Aucun résultat", style: style_google.copyWith(fontSize: 18, color: Colors.white),),
-                      )
+                      ?NoResult()
                       :ListView.builder(
                       itemCount: _filieresList.length,
                       itemBuilder: (BuildContext context, int index){

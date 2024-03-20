@@ -6,6 +6,7 @@ import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/membres/fonction_membres.dart';
 import 'package:aeutna/services/fonctions_services.dart';
 import 'package:aeutna/services/user_services.dart';
+import 'package:aeutna/widgets/noResult.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../api/api_response.dart';
@@ -213,9 +214,7 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
               },
               child: _fonctionsList.length == 0
                       ?
-                  Center(
-                    child: Text("Aucun résultat", style: style_google.copyWith(color: Colors.white, fontSize: 18),),
-                  )
+              NoResult()
                       :
               ListView.builder(
                   itemCount: _fonctionsList.length,

@@ -1,6 +1,8 @@
 import 'package:aeutna/screens/message%20groupe/airtel.dart';
 import 'package:aeutna/screens/message%20groupe/orange.dart';
 import 'package:aeutna/screens/message%20groupe/telma.dart';
+import 'package:aeutna/screens/message%20groupe/tout.dart';
+import 'package:aeutna/widgets/ItemChoixOperateurs.dart';
 import 'package:flutter/material.dart';
 
 class MessagesGroupes extends StatefulWidget {
@@ -33,51 +35,21 @@ class _MessagesGroupesState extends State<MessagesGroupes> {
       body: Column(
         children: [
           SizedBox(height: 5,),
-          Row(
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: 5),
-                child: MaterialButton(
-                    onPressed: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (ctx) => Airtel()));
-                    },
-                    child: Text("Airtel", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
-                    color: Colors.red,
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: 5),
-                child: MaterialButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (ctx) => Orange()));
-                  },
-                  child: Text("Orange", style: TextStyle(fontWeight: FontWeight.bold),),
-                  color: Colors.orange,
-                ),
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: 5),
-                child: MaterialButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (ctx) => Telma()));
-                  },
-                  child: Text("Telma", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
-                  color: Colors.green,
-                ),
-              ),
-            ],
-          ),
+          ItemOperateurs(
+              titre: "Airtel",
+              onPressed: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => Airtel())), color: Colors.red),
+          ItemOperateurs(
+              titre: "Orange",
+              onPressed: () => () =>  Navigator.push(context, MaterialPageRoute(builder: (ctx) => Orange())),
+              color: Colors.orange),
+          ItemOperateurs(
+              titre: "Telma",
+              onPressed: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => Telma())),
+              color: Colors.green),
+          ItemOperateurs(
+              titre: "Toutes opérateurs",
+              onPressed: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => ToutesOperateurs())),
+              color: Colors.indigo),
         ],
       ),
     );

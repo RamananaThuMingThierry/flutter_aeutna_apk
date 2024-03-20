@@ -10,6 +10,7 @@ import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/screens/membres/addMembres.dart';
 import 'package:aeutna/screens/membres/showMembre.dart';
 import 'package:aeutna/services/membres_services.dart';
+import 'package:aeutna/widgets/noResult.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -87,7 +88,7 @@ class _MembresState extends State<MembresScreen> {
             )
           )
         ],
-        title: Text("Membres", style: style_google.copyWith(fontWeight: FontWeight.bold)),
+        title: Text("${_membresList.length < 2 ? '${_membresList.length} - Membre' : '${_membresList.length} - Membres'}", style: style_google.copyWith(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
         leading: user!.roles == "Administrateurs" ?  IconButton(
           onPressed: (){
@@ -166,7 +167,7 @@ class _MembresState extends State<MembresScreen> {
                   return _getallMembres();
                 },
                   child: _membresList.length == 0
-                      ? Center(child: Text("Aucun membre", style: style_google.copyWith(color: Colors.white),),)
+                      ? NoResult()
                       : ListView.builder(
                       itemCount: _membresList.length,
                       itemBuilder: (BuildContext context, int index){

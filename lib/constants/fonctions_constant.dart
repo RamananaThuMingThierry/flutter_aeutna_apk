@@ -238,12 +238,7 @@ Dialog AboutApplication(BuildContext context){
             child: Text("Cette application a pour but de faciliter la communication et les partages des informations entre les membres!", textAlign: TextAlign.justify, style: style_google.copyWith(fontSize: 15, color: Colors.black38),),
           ),
           Ligne(color: Colors.grey),
-          infoAuteur(context, title: "Auteur", subtitle: "RAMANANA Thu Ming Thierry", iconData: Icons.person_2_outlined),
-          infoAuteur(context,title: "Adresse email", subtitle: "ramananathumingthierry@gmail.com", iconData: Icons.attach_email_outlined),
-          infoAuteur(context,title: "Contact", subtitle: "032 75 637 70", iconData: Icons.phone_outlined),
-          infoAuteur(context,title: "Adresse", subtitle: "VT 29 RAI bis Ampahateza", iconData: Icons.local_library_outlined),
-          Ligne(color: Colors.grey),
-         infoAuteur(context,title: "Version : 1.03.22", subtitle: "copyright @ 2024", iconData: Icons.verified_user),
+         infoAuteur(context,title: "Version : 2.19.24", subtitle: "copyright @ 2024", iconData: Icons.verified_user),
         ],
       ),
     ),
@@ -285,11 +280,14 @@ String formatTimeAgo(DateTime dateTime) {
 }
 
 void onLoadingLogin(BuildContext context, User user){
+
+  print("************* $user");
+
   showDialog(
       context: context,
       builder: (BuildContext context){
         Future.delayed(Duration(seconds: 3), () async {
-          if(user.status == 0){
+          if(int.parse(user.status.toString()) == 0){
             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => EnAttente(user: user)), (route) => false);
           }else{
             if(user.roles == "Administrateurs"){

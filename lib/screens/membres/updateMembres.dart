@@ -67,7 +67,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
           selectedSecionsId = 0;
         });
       }else{
-        selectedSecionsId = membres!.sections_id!;
+        selectedSecionsId = int.parse(membres!.sections_id!);
       }
 
     }else if(apiResponse.error == unauthorized){
@@ -95,7 +95,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
         });
       }else{
         setState(() {
-          selectedAxesId = membres!.axes_id ?? 0;
+          selectedAxesId = int.parse(membres!.axes_id!) ?? 0;
         });
       }
 
@@ -124,7 +124,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
         });
       }else{
         setState(() {
-          selectedFonctionsId = membres!.fonctions_id!;
+          selectedFonctionsId = int.parse(membres!.fonctions_id!);
         });
       }
 
@@ -152,7 +152,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
         });
       }else{
         setState(() {
-          selectedFilieresId = membres!.filieres_id!;
+          selectedFilieresId = int.parse(membres!.filieres_id!);
         });
       }
     }else if(apiResponse.error == unauthorized){
@@ -178,9 +178,9 @@ class _ModifierMembresState extends State<ModifierMembres> {
         setState(() {
           selectedNiveauId = 0;
         });
-      }else if(!_listNiveau.any((element) => element.id == selectedNiveauId)){
+      }else{
         setState(() {
-          selectedNiveauId = _listNiveau.first.id!;
+          selectedNiveauId = int.parse(membres!.levels_id!);
         });
       }
 
@@ -204,7 +204,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
     _getAllFilieres();
     _getAllNiveau();
     _getallSections();
-    numero_carte = membres!.numero_carte;
+    numero_carte = int.parse(membres!.numero_carte!);
     nom = membres!.nom;
     prenom = membres!.prenom ?? '';
     lieu_de_naissance = membres!.lieu_de_naissance;
@@ -214,7 +214,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
     cin = membres!.cin ?? '';
     contact_personnel = membres!.contact_personnel;
     contact_tuteur = membres!.contact_tuteur;
-    sympathisant = membres!.symapthisant == 0 ? false : true;
+    sympathisant = membres!.symapthisant == "0" ? false : true;
     image_update = membres!.image;
     image_existe = membres!.image == null ? false : true;
     setState(() {
@@ -223,7 +223,6 @@ class _ModifierMembresState extends State<ModifierMembres> {
       date_de_naissance = formatageDate(selectedDateDeNaissance!);
       date_inscription = formatageDate(selectedDateDInscription!);
     });
-
     super.initState();
   }
 
@@ -867,9 +866,9 @@ class _ModifierMembresState extends State<ModifierMembres> {
       uiSettings: [
         AndroidUiSettings(
             toolbarTitle: 'Recadrez l\'image',
-            toolbarColor: Colors.green,
+            toolbarColor: Colors.blueGrey,
             toolbarWidgetColor: Colors.white,
-            activeControlsWidgetColor: Colors.green,
+            activeControlsWidgetColor: Colors.blueGrey,
             hideBottomControls: false,
             cropGridColumnCount: 3,
             cropGridRowCount: 3,
