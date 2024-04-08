@@ -1,8 +1,5 @@
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/membres/membres.dart';
-import 'package:aeutna/screens/messages/messages.dart';
-import 'package:aeutna/screens/post/ajouter_publication.dart';
-import 'package:aeutna/screens/post/publication.dart';
 import 'package:aeutna/screens/profiles/profiles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -32,7 +29,6 @@ class _AcceuilState extends State<Acceuil> {
   Widget build(BuildContext context) {
 
     List<Widget> page = [
-      Publication(user: users!,),
       Container(),
       Container(),
       MembresScreen(user: users!),
@@ -63,13 +59,11 @@ class _AcceuilState extends State<Acceuil> {
               currentIndex = index;
             });
             if(index == 1){
-              Navigator.push(context, MaterialPageRoute(builder: (ctx) => Messages(user: users,)));
               setState(() {
                 currentIndex = 0;
               });
             }
             if(index == 2){
-              Navigator.push(context, MaterialPageRoute(builder: (ctx) => AjouterPublication(user: users!)));
               setState(() {
                 currentIndex = 0;
               });

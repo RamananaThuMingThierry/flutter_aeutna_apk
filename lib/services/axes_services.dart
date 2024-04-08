@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/models/axes.dart';

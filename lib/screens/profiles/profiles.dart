@@ -7,29 +7,17 @@ import 'package:aeutna/models/fonctions.dart';
 import 'package:aeutna/models/membres.dart';
 import 'package:aeutna/models/niveau.dart';
 import 'package:aeutna/models/user.dart';
-import 'package:aeutna/screens/auth/login.dart';
-import 'package:aeutna/screens/avis/avis.dart';
-import 'package:aeutna/screens/avis/nous_contactez.dart';
-import 'package:aeutna/screens/axes/axes.dart';
-import 'package:aeutna/screens/filieres/filieres.dart';
-import 'package:aeutna/screens/fonctions/fonctions.dart';
 import 'package:aeutna/screens/historiques/historiques.dart';
-import 'package:aeutna/screens/message%20groupe/message_groupe.dart';
-import 'package:aeutna/screens/niveau/niveau.dart';
 import 'package:aeutna/screens/profiles/updateProfile.dart';
-import 'package:aeutna/screens/utilisateurs/users.dart';
 import 'package:aeutna/services/axes_services.dart';
 import 'package:aeutna/services/filieres_services.dart';
 import 'package:aeutna/services/fonctions_services.dart';
 import 'package:aeutna/services/membres_services.dart';
 import 'package:aeutna/services/niveau_services.dart';
-import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/WidgetListTitle.dart';
 import 'package:aeutna/widgets/ligne_horizontale.dart';
-import 'package:aeutna/widgets/showDialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class Profiles extends StatefulWidget {
@@ -151,7 +139,8 @@ class _ProfilesState extends State<Profiles> {
     contact_personnel = data!.contact;
     adresse = data!.adresse;
     roles = data!.roles;
-    status = int.parse(data!.status!);
+    // status = int.parse(data!.status!);
+    status = data!.status!;
     image = data!.image;
     if(status == 1){
       getMembre();
@@ -257,7 +246,7 @@ class _ProfilesState extends State<Profiles> {
                   trailing: Icons.chevron_right,
                   onTap: () => () => showDialog(context: context, builder: (BuildContext context) => AboutApplication(context))
               ),
-              WidgetListTitle(title: "Contactez-nous", leading: Icons.help, trailing: Icons.chevron_right, onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => NousContactez()))),
+              WidgetListTitle(title: "Contactez-nous", leading: Icons.help, trailing: Icons.chevron_right, onTap: () => (){}),
               WidgetListTitle(title: "Déconnections", leading: Icons.logout_outlined, trailing: Icons.chevron_right, onTap: () => () => deconnectionAlertDialog(context)),
             ],
           ),

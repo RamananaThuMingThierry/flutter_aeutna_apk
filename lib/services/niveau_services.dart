@@ -53,7 +53,7 @@ Future<ApiResponse> createNiveau({String? niveau}) async{
           'Authorization' : 'Bearer $token'
         },
         body: {
-          'niveau': niveau,
+          'nom_niveau': niveau,
         }
     );
 
@@ -130,8 +130,6 @@ Future<ApiResponse> searchNiveau(String? niveau) async{
     String token = await getToken();
     var url = Uri.parse("${niveauURL}_search/${niveau}");
 
-
-
     final rep = await http.get(url,
         headers: {
           'Accept': 'application/json',
@@ -169,7 +167,7 @@ Future<ApiResponse> updateNiveau({int? niveauId, String? niveau}) async{
           'Authorization' : 'Bearer $token'
         },
         body: {
-          'niveau': niveau
+          'nom_niveau': niveau
         }
     );
 

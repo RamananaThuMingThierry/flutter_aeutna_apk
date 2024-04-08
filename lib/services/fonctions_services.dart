@@ -56,7 +56,7 @@ Future<ApiResponse> createFonctions({String? fonctions}) async{
           'Authorization' : 'Bearer $token'
         },
         body: {
-          'fonctions': fonctions,
+          'nom_fonctions': fonctions,
         }
     );
 
@@ -167,7 +167,7 @@ Future<ApiResponse> updateFonctions({int? fonctionId, String? fonctions}) async{
           'Authorization' : 'Bearer $token'
         },
         body: {
-          'fonctions': fonctions
+          'nom_fonctions': fonctions
         }
     );
 

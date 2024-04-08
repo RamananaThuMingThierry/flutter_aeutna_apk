@@ -803,6 +803,8 @@ Future<ApiResponse> statistiquesMembres() async{
         }
     );
 
+    print(" ---------- body : ${rep.body} et status : ${rep.statusCode}");
+
     switch(rep.statusCode){
       case 200:
       // Convertir la réponse JSON en une carte

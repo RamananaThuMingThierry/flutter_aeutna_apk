@@ -68,6 +68,7 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
   }
 
   void _createFonctions() async {
+    onLoading(context);
     ApiResponse apiResponse = await createFonctions(fonctions: nom_fonctions.text);
     setState(() {
       editFonctions = 0;
@@ -86,6 +87,7 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
   }
 
   void _updateFonctions() async{
+    onLoading(context);
     ApiResponse apiResponse = await updateFonctions(fonctionId: editFonctions, fonctions: nom_fonctions.text);
     setState(() {
       editFonctions = 0;
@@ -110,6 +112,7 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
   }
 
   void _deleteFonctions(int fonctionId) async{
+    onLoading(context);
     ApiResponse apiResponse = await deleteFonctions(fonctionId);
     if(apiResponse.error == null){
       Navigator.pop(context);
@@ -314,6 +317,7 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
           Navigator.pop(context);
         }, child: Text("Annuler", style: style_google,)),
         TextButton(onPressed: (){
+          Navigator.pop(context);
           _deleteFonctions(fonctionId!);
         }, child: Text("Supprimer", style: style_google.copyWith(color: Colors.red),)),
       ],
@@ -398,6 +402,7 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
             GestureDetector(
               onTap: (){
                 if(_formKey.currentState!.validate()){
+                  Navigator.pop(context);
                   editFonctions == 0
                   ? _createFonctions()
                   : _updateFonctions();

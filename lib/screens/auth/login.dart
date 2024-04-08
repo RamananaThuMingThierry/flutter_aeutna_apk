@@ -43,14 +43,16 @@ class _LoginState extends State<Login> {
 
   void loginUser() async{
     if(_key.currentState!.validate()){
-
+      onLoading(context);
       ApiResponse apiResponse = await login(email: email!,mot_de_passe: mot_de_passe!);
-
       if(apiResponse.error == null){
+        Navigator.pop(context);
         _saveAndRedirectToHome(apiResponse.data as User);
       }else if(apiResponse.error == avertissement){
+        Navigator.pop(context);
         MessageAvertissement(context, "${apiResponse.data}");
       }else{
+        Navigator.pop(context);
         MessageErreurs(context, "${apiResponse.error}");
       }
     }

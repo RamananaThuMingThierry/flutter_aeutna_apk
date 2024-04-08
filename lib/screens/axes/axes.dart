@@ -1,13 +1,9 @@
 import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/constants/loadingShimmer.dart';
 import 'package:aeutna/models/user.dart';
-import 'package:aeutna/screens/Acceuil.dart';
-import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/screens/membres/axes_membres.dart';
 import 'package:aeutna/services/axes_services.dart';
 import 'package:aeutna/services/user_services.dart';
@@ -77,6 +73,7 @@ class _AxesState extends State<AxesScreen> {
 
 
   void _createAxes() async {
+    onLoading(context);
     ApiResponse apiResponse = await createAxes(nom_axes: nom_axes.text);
     setState(() {
       nom_axes.clear();
@@ -98,8 +95,8 @@ class _AxesState extends State<AxesScreen> {
   }
 
   void _updateAxes() async{
+    onLoading(context);
     ApiResponse apiResponse = await updateAxes(axesId: editAxes, nom_axes: nom_axes.text);
-
     setState(() {
       editAxes = 0;
       nom_axes.clear();
@@ -123,6 +120,7 @@ class _AxesState extends State<AxesScreen> {
   }
 
   void _deleteAxes(int axesId) async{
+    onLoading(context);
     ApiResponse apiResponse = await deleteAxes(axesId);
     if(apiResponse.error == null){
       Navigator.pop(context);
@@ -354,6 +352,7 @@ class _AxesState extends State<AxesScreen> {
           Navigator.pop(context);
         }, child: Text("Annuler", style: style_google,)),
         TextButton(onPressed: (){
+          Navigator.pop(context);
           _deleteAxes(axesId!);
         }, child: Text("Supprimer", style: style_google.copyWith(color: Colors.red),)),
       ],
@@ -438,6 +437,7 @@ class _AxesState extends State<AxesScreen> {
             GestureDetector(
               onTap: (){
                 if(_formKey.currentState!.validate()){
+                  Navigator.pop(context);
                   editAxes == 0
                   ? _createAxes()
                   : _updateAxes();

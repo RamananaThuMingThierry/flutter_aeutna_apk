@@ -75,28 +75,33 @@ class _NiveauScreenState extends State<NiveauScreen> {
   }
 
   void _createNiveau() async {
+    onLoading(context);
     ApiResponse apiResponse = await createNiveau(niveau: nom_niveau.text);
     if(apiResponse.error == null){
-      Navigator.pop(context);
       setState(() {
         nom_niveau.clear();
       });
+      Navigator.pop(context);
+      MessageReussi(context, "${apiResponse.data}");
       _getallNiveau();
     }else if(apiResponse.error == avertissement){
       Navigator.pop(context);
+      Navigator.pop(context);
       MessageAvertissement(context, "${apiResponse.data}");
     }else if(apiResponse.error == unauthorized){
+      Navigator.pop(context);
       MessageErreurs(context, apiResponse.error);
       ErreurLogin(context);
     }else{
+      Navigator.pop(context);
       Navigator.pop(context);
       MessageErreurs(context, apiResponse.error);
     }
   }
 
   void _updateNiveau() async{
+    onLoading(context);
     ApiResponse apiResponse = await updateNiveau(niveauId: editNiveau, niveau: nom_niveau.text);
-
     setState(() {
       editNiveau = 0;
       nom_niveau.clear();
@@ -120,6 +125,7 @@ class _NiveauScreenState extends State<NiveauScreen> {
   }
 
   void _deleteNiveau(int niveauId) async{
+    onLoading(context);
     ApiResponse apiResponse = await deleteNiveau(niveauId);
     if(apiResponse.error == null){
       Navigator.pop(context);
@@ -326,6 +332,7 @@ class _NiveauScreenState extends State<NiveauScreen> {
           Navigator.pop(context);
         }, child: Text("Annuler", style: style_google,)),
         TextButton(onPressed: (){
+          Navigator.pop(context);
           _deleteNiveau(niveauId!);
         }, child: Text("Supprimer", style: style_google.copyWith(color: Colors.red),)),
       ],
@@ -404,6 +411,7 @@ class _NiveauScreenState extends State<NiveauScreen> {
             GestureDetector(
               onTap: (){
                 if(_formKey.currentState!.validate()){
+                  Navigator.pop(context);
                   editNiveau == 0
                   ?_createNiveau()
                   :_updateNiveau();

@@ -165,7 +165,7 @@ class _ShowMembresState extends State<ShowMembres> {
           compte != 5 ? SizedBox() :IconButton(onPressed: (){
             ContactezNous(numero: "${membre!.contact_personnel}", action: "sms");
           }, icon: Icon(Icons.sms, color: Colors.blueGrey,)),
-          compte != 5 ? SizedBox() : membre!.lien_membre_id == 0 ? SizedBox() : IconButton(onPressed: (){
+          compte != 5 ? SizedBox() : IconButton(onPressed: (){
           }, icon: Icon(Icons.email, color: Colors.blueGrey,)),
         ],
       ),

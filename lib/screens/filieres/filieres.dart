@@ -38,7 +38,6 @@ class _FilieresScreenState extends State<FilieresScreen> {
   TextEditingController search = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-
   Future _getallFilieres() async{
     userId = await getUserId();
     ApiResponse apiResponse = await getAllFilieres();
@@ -75,6 +74,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
   }
 
   void _createFiliere() async {
+    onLoading(context);
     ApiResponse apiResponse = await createFilieres(nom_filieres: nom_filieres.text);
     if(apiResponse.error == null){
       Navigator.pop(context);
@@ -96,6 +96,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
   }
 
   void _updateFilieres() async{
+    onLoading(context);
     ApiResponse apiResponse = await updateFilieres(filiereId: editFiliere, nom_filieres: nom_filieres.text);
     setState(() {
       editFiliere = 0;
@@ -120,6 +121,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
   }
 
   void _deleteFilieres(int filiereId) async{
+    onLoading(context);
     ApiResponse apiResponse = await deleteFilieres(filiereId);
     if(apiResponse.error == null){
       Navigator.pop(context);
@@ -322,6 +324,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
           Navigator.pop(context);
         }, child: Text("Annuler")),
         TextButton(onPressed: (){
+          Navigator.pop(context);
           _deleteFilieres(filiereId!);
         }, child: Text("Supprimer", style: TextStyle(color: Colors.red),)),
       ],
@@ -400,6 +403,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
             GestureDetector(
               onTap: (){
                 if(_formKey.currentState!.validate()){
+                  Navigator.pop(context);
                   editFiliere == 0
                   ? _createFiliere()
                   : _updateFilieres();

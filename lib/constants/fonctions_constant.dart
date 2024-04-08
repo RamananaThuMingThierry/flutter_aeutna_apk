@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/Acceuil.dart';
 import 'package:aeutna/screens/admin/administrateurs.dart';
@@ -211,7 +210,7 @@ Dialog AboutApplication(BuildContext context){
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 15),
-                child: Text("Apropos", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold, fontSize: 15),),
+                child: Text("A propos", style: TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold, fontSize: 15),),
               ),
               GestureDetector(
                 onTap: (){

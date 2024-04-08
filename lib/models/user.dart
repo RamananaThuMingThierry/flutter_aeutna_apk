@@ -7,7 +7,7 @@ class User{
   String? image;
   String? roles;
   String? adresse;
-  String? status;
+  int? status;
   String? token;
 
   User({

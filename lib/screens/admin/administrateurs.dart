@@ -1,10 +1,8 @@
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/user.dart';
-import 'package:aeutna/models/users.dart';
 import 'package:aeutna/screens/admin/adminPageLoading.dart';
 import 'package:aeutna/screens/admin/class/Drawer.dart';
 import 'package:aeutna/screens/admin/class/Pages.dart';
-import 'package:aeutna/screens/avis/avis.dart';
 import 'package:aeutna/screens/axes/axes.dart';
 import 'package:aeutna/screens/filieres/filieres.dart';
 import 'package:aeutna/screens/fonctions/fonctions.dart';
@@ -13,10 +11,8 @@ import 'package:aeutna/screens/membres/filtre_membres.dart';
 import 'package:aeutna/screens/membres/membres.dart';
 import 'package:aeutna/screens/message%20groupe/message_groupe.dart';
 import 'package:aeutna/screens/niveau/niveau.dart';
-import 'package:aeutna/screens/post/publication.dart';
 import 'package:aeutna/screens/profiles/profile.dart';
 import 'package:aeutna/screens/statistiques/statistiques.dart';
-import 'package:aeutna/screens/utilisateurs/showUsers.dart';
 import 'package:aeutna/screens/utilisateurs/users.dart';
 import 'package:aeutna/screens/utilisateurs/utilisateurs_en_attentes.dart';
 import 'package:aeutna/widgets/itemDrawer.dart';
@@ -114,7 +110,7 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
                       ),
                     ),
                   )
-                      : Icon(Icons.person), // Widget par défaut si imageUrl est null
+                      : Icon(Icons.person, color: Colors.black, size: 50,), // Widget par défaut si imageUrl est null
                 ),
                   // backgroundImage: (userm!.image == null) ? Image.asset("assets/photo.png").image : Image.network(userm!.image!).image
                 accountName: Text("${data!.pseudo ?? "Aucun"}", style: style_google.copyWith(color: Colors.white)),
@@ -138,7 +134,7 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
               ),
               Ligne(color: Colors.grey,),
               ItemDrawer(
-                  titre: "Apropos",
+                  titre: "A propos",
                   onTap: () => (){
                     Navigator.pop(context);
                     showDialog(context: context, builder: (BuildContext context) => AboutApplication(context));

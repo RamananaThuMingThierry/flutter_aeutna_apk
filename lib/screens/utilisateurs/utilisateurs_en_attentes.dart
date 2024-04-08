@@ -80,7 +80,7 @@ class _UtilisateursEnAttentesState extends State<UtilisateursEnAttentes> {
                 itemBuilder: (BuildContext context, int index){
                   Users users = _usersList[index];
                   return Card(
-                    margin: EdgeInsets.symmetric(horizontal: 2,vertical: 2),
+                    margin: EdgeInsets.symmetric(horizontal: 2,vertical: 1),
                     shape: Border(
                         left: BorderSide(
                             color: Colors.blueGrey,
@@ -90,15 +90,12 @@ class _UtilisateursEnAttentesState extends State<UtilisateursEnAttentes> {
                     elevation: 1,
                     child: ListTile(
                       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => ShowUsers(user: users))),
-                      leading: Padding(
-                        padding: EdgeInsets.all(10),
-                        child: CircleAvatar(
-                          backgroundImage: AssetImage("assets/photo.png"),
-                        ),
+                      leading: CircleAvatar(
+                        backgroundImage: AssetImage("assets/photo.png"),
                       ),
-                      title: Text("${users.pseudo}", style: style_google.copyWith(fontWeight: FontWeight.bold),),
-                      subtitle: Text("${users.email}",style: style_google.copyWith(fontSize: 14),),
-                      trailing: Icon(Icons.chevron_right, color: Colors.blueGrey,),
+                      title: Text("${users.pseudo}", style: style_google.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
+                      subtitle: Text("${users.email}",style: style_google.copyWith(fontSize: 12, color: Colors.grey),),
+                      trailing: Icon(Icons.chevron_right, color: Colors.grey,),
                     ),
                   );
                 }), onRefresh: (){
