@@ -500,6 +500,9 @@ Future<ApiResponse> mot_de_passe_oublier({String? email}) async{
           'email' : email
         }
     );
+
+    print("----------------- body : ${response.body}");
+
     switch(response.statusCode){
       case 200:
         apiResponse.data = jsonDecode(response.body)['token'];

@@ -41,11 +41,11 @@ class _ComfirmationState extends State<Comfirmation> {
                 width: 120,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(15),
-                  child: Image.asset("assets/logo.jpg"),
+                  child: Image.asset("assets/logo.jpeg"),
                 ),
               ),
               SizedBox(height: 100,),
-              SizedBox(child: Text("Veuillez confirmer par le numéro envoyé dans votre Gmail.", style: style_google.copyWith(color: Colors.indigo),)),
+              SizedBox(child: Text("Veuillez confirmer par le numéro envoyé dans votre Gmail.", style: style_google,)),
               SizedBox(height: 10,),
               MyTextFieldForm(name: "Numéro", onChanged: () => (value){
                 setState(() {
@@ -62,7 +62,21 @@ class _ComfirmationState extends State<Comfirmation> {
                 textInputType: TextInputType.number,
                 edit: false, value: "",),
               SizedBox(height: 10,),
-             // ButtonWidget(btnText: "Comfirmer",onClick: () => _valider,),
+              InkWell(
+                onTap: (){
+                  _valider();
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey,
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text("Confirmer", style: style_google.copyWith(color: Colors.white, fontSize: 15),),
+                ),
+              )
             ],
           ),
         ),
@@ -81,7 +95,7 @@ class _ComfirmationState extends State<Comfirmation> {
                   }));
                 },
                 child: Text("connexion", style: TextStyle(
-                  color: Colors.yellow,
+                  color:  Color(0xffE2C222),
                 ),),
               ),
             ]),

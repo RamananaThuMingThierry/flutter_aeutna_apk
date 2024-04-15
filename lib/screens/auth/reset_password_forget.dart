@@ -120,7 +120,21 @@ class _ReinitialiserMotDePasseOublierState extends State<ReinitialiserMotDePasse
                     })
                   }),
               SizedBox(height: 10,),
-             // ButtonWidget(btnText: "Réinitialiser le mot de passe",onClick: () => _valider,),
+              InkWell(
+                onTap: (){
+                  _valider();
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.blueGrey,
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text("Réinitialiser", style: style_google.copyWith(color: Colors.white, fontSize: 15),),
+                ),
+              )
             ],
           ),
         ),
@@ -130,7 +144,7 @@ class _ReinitialiserMotDePasseOublierState extends State<ReinitialiserMotDePasse
         child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Retour à la ", style: TextStyle(color: Colors.grey),),
+              Text("Retour à la ", style: style_google.copyWith(color: Colors.grey),),
               SizedBox(width: 5,),
               GestureDetector(
                 onTap: (){
@@ -138,8 +152,8 @@ class _ReinitialiserMotDePasseOublierState extends State<ReinitialiserMotDePasse
                     return Login();
                   }));
                 },
-                child: Text("connexion", style: TextStyle(
-                  color: Colors.blueGrey,
+                child: Text("connexion", style: style_google.copyWith(
+                  color:  Color(0xffE2C222),
                 ),),
               ),
             ]),
