@@ -482,3 +482,142 @@ String? getStringImage(File? file){
   if(file == null) return null;
   return base64Encode(file.readAsBytesSync());
 }
+
+// Mot de passe oublier
+Future<ApiResponse> mot_de_passe_oublier({String? email}) async{
+
+  ApiResponse apiResponse = ApiResponse();
+
+  try{
+    var url = Uri.parse(forgetpasswordURL);
+
+    final response = await http.post(
+        url,
+        headers: {
+          'Accept': 'application/json'
+        },
+        body: {
+          'email' : email
+        }
+    );
+    switch(response.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['token'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 422:
+        apiResponse.error = avertissement;
+        String errorMessages = "";
+        final errors = jsonDecode(response.body)['errors'];
+        errors.forEach((field, message) {
+          errorMessages += "* ${message.join(', ')}\n";
+        });
+        apiResponse.data = errorMessages;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+// Comfirmation
+Future<ApiResponse> comfirmationEmail({String? nombre}) async{
+
+  ApiResponse apiResponse = ApiResponse();
+
+  try{
+
+    print(nombre);
+
+    var url = Uri.parse(comfirmationURL);
+
+    final response = await http.post(
+        url,
+        headers: {
+          'Accept': 'application/json'
+        },
+        body: {
+          'verification' : nombre
+        }
+    );
+
+    switch(response.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 422:
+        apiResponse.error = avertissement;
+        String errorMessages = "";
+        final errors = jsonDecode(response.body)['errors'];
+        errors.forEach((field, message) {
+          errorMessages += "* ${message.join(', ')}\n";
+        });
+        apiResponse.data = errorMessages;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+// Comfirmation
+Future<ApiResponse> ReinitialiserMotDePasse({String? email, String? mot_de_passe, String? token}) async{
+
+  ApiResponse apiResponse = ApiResponse();
+
+  try{
+    var url = Uri.parse(reinitialiser_mot_de_passeURL);
+
+    final response = await http.post(
+        url,
+        headers: {
+          'Accept': 'application/json'
+        },
+        body: {
+          'email' : email,
+          'mot_de_passe' : mot_de_passe,
+          'token' : token
+        }
+    );
+
+    switch(response.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 422:
+        apiResponse.error = avertissement;
+        String errorMessages = "";
+        final errors = jsonDecode(response.body)['errors'];
+        errors.forEach((field, message) {
+          errorMessages += "* ${message.join(', ')}\n";
+        });
+        apiResponse.data = errorMessages;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}

@@ -150,8 +150,8 @@ class _RegisterState extends State<Register> {
                         SizedBox(height: 10,),
                         Text(
                           "Inscription",
-                          style: TextStyle(
-                              fontSize: 50,
+                          style: style_google.copyWith(
+                              fontSize: 45,
                               color:Color(0xffE2C222),
                               fontWeight: FontWeight.bold
                           ),
@@ -323,7 +323,7 @@ class _RegisterState extends State<Register> {
         child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("J'ai déjà un compte!", style: TextStyle(color: Colors.grey),),
+              Text("J'ai déjà un compte!", style: style_google.copyWith(color: Colors.grey),),
               SizedBox(width: 5,),
               GestureDetector(
                 onTap: (){
@@ -331,10 +331,7 @@ class _RegisterState extends State<Register> {
                     return Login();
                   }));
                 },
-                child: Text("se connecte", style: TextStyle(
-                  color: Color(0xffE2C222),
-                  fontWeight: FontWeight.bold,
-                ),),
+                child: Text("se connecter", style: style_google.copyWith( color: Color(0xffE2C222),),),
               )
             ]),
       ),

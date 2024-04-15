@@ -86,7 +86,7 @@ class _LoginState extends State<Login> {
                         ),
                       ),
                       SizedBox(height: 10,),
-                      Text("Connexion", style: TextStyle(
+                      Text("Connexion", style: style_google.copyWith(
                         fontSize: 40,
                         fontWeight: FontWeight.bold,
                         color: Color(0xffE2C222),
@@ -194,7 +194,6 @@ class _LoginState extends State<Login> {
                 },
                 child: Text("s'inscrire", style: TextStyle(
                   color: Color(0xffE2C222),
-                  fontWeight: FontWeight.bold,
                 ),),
               ),
             ]),

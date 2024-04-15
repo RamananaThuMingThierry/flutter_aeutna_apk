@@ -23,7 +23,7 @@ class _ToutesOperateursState extends State<ToutesOperateurs> {
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
 
   Future _getAllListPuceTelma() async{
-    ApiResponse apiResponse = await getAllNumero("034");
+    ApiResponse apiResponse = await getAllNumero("tout");
     if(apiResponse.error == null){
       setState(() {
         List<dynamic> numeroList = apiResponse.data as List<dynamic>;

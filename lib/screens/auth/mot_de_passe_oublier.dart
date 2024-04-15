@@ -1,5 +1,9 @@
+import 'package:aeutna/api/api_response.dart';
+import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
+import 'package:aeutna/screens/auth/comfirmation.dart';
 import 'package:aeutna/screens/auth/register.dart';
+import 'package:aeutna/services/user_services.dart';
 import 'package:aeutna/widgets/inputText.dart';
 import 'package:flutter/material.dart';
 
@@ -51,7 +55,9 @@ class _MotDePasseOublierState extends State<MotDePasseOublier> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: InkWell(
-                  onTap: () => (){},
+                  onTap: (){
+                    _valider();
+                  },
                   child: Container(
                     width: double.infinity,
                     height: 40,
@@ -82,7 +88,7 @@ class _MotDePasseOublierState extends State<MotDePasseOublier> {
                   }));
                 },
                 child: Text("Inscrivez-vous", style: TextStyle(
-                  color: Colors.blueGrey,
+                  color: Color(0xffE2C222),
                 ),),
               ),
             ]),
@@ -90,11 +96,21 @@ class _MotDePasseOublierState extends State<MotDePasseOublier> {
     );
   }
 
-  void _valider(){
+  Future<void> _valider() async {
     if(_key.currentState!.validate()){
-      print("Reset password");
-    }else{
-      print("Erreur");
+      onLoading(context);
+      ApiResponse apiResponse = await mot_de_passe_oublier(email: email);
+      if(apiResponse.error == null){
+        Navigator.pop(context);
+        Navigator.push(context, MaterialPageRoute(builder: (ctx) => Comfirmation(token: apiResponse.data.toString(),)));
+        MessageReussi(context, "Vérifier votre Gmail");
+      }else if(apiResponse.error == avertissement){
+        Navigator.pop(context);
+        MessageAvertissement(context, "${apiResponse.data}");
+      }else{
+        Navigator.pop(context);
+        MessageErreurs(context, "${apiResponse.error}");
+      }
     }
   }
 }

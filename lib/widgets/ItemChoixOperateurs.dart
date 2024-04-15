@@ -12,7 +12,7 @@ class ItemOperateurs extends StatelessWidget {
       children: [
         Container(
           width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.symmetric(horizontal: 5),
+          padding: EdgeInsets.symmetric(horizontal: 5, vertical: 0),
           child: MaterialButton(
             onPressed: onPressed(),
             child: Text(titre, style: TextStyle(fontWeight: FontWeight.bold, color: titre == "Orange" ? Colors.black : Colors.white ),),
