@@ -320,9 +320,9 @@ class _ShowMembresState extends State<ShowMembres> {
             TextTitre(name: "Facebook"),
             GestureDetector(
                 onTap: (){
-                  membre!.facebook != null ? redirectToFacebook(nom: "${membre!.facebook}"): print("Aucun facebook");
+                  membre!.facebook != null ? redirectToFacebook(nom: "${membre!.facebook == "null" ? null : membre!.facebook}"): print("Aucun facebook");
                 },
-                child: CardText(context, iconData: Icons.facebook_outlined, value: "${membre!.facebook}")),
+                child: CardText(context, iconData: Icons.facebook_outlined, value: "${membre!.facebook == "null" ? "-" : membre!.facebook}")),
             user!.roles == "Administrateurs"
                 ? SizedBox(height: 10,)
                 : SizedBox(),

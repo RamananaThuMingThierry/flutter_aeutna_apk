@@ -1,3 +1,4 @@
+import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/screens/message%20groupe/airtel.dart';
 import 'package:aeutna/screens/message%20groupe/orange.dart';
 import 'package:aeutna/screens/message%20groupe/telma.dart';
@@ -25,8 +26,8 @@ class _MessagesGroupesState extends State<MessagesGroupes> {
           },
           icon: Icon(Icons.keyboard_backspace,color: Colors.blueGrey,),
         ),
-        elevation: 0,
-        title: Text("Choisir la carte SIM", style: TextStyle(color: Colors.blueGrey),),
+        elevation: 0.5,
+        title: Text("Choisir la carte SIM", style: style_google,),
         centerTitle: true,
         actions: [
           IconButton(onPressed: (){}, icon: Icon(Icons.sim_card_outlined, color: Colors.blueGrey,))
@@ -34,7 +35,7 @@ class _MessagesGroupesState extends State<MessagesGroupes> {
       ),
       body: Column(
         children: [
-          SizedBox(height: 5,),
+          SizedBox(height: 3,),
           ItemOperateurs(
               titre: "Airtel",
               onPressed: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => Airtel())), color: Colors.red),

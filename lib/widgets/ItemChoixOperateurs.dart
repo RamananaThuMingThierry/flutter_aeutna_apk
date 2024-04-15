@@ -1,3 +1,4 @@
+import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:flutter/material.dart';
 
 class ItemOperateurs extends StatelessWidget {
@@ -8,18 +9,18 @@ class ItemOperateurs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Row(
-      children: [
-        Container(
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.symmetric(horizontal: 5, vertical: 0),
-          child: MaterialButton(
-            onPressed: onPressed(),
-            child: Text(titre, style: TextStyle(fontWeight: FontWeight.bold, color: titre == "Orange" ? Colors.black : Colors.white ),),
-            color: color,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      child:
+        InkWell(
+          onTap: onPressed(),
+          child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 40,
+              color: color,
+              child: Center(child: Text(titre, style: style_google.copyWith(fontWeight: FontWeight.bold, color: titre == "Orange" ? Colors.black : Colors.white ),),)
           ),
         ),
-      ],
     );
   }
 }

@@ -134,7 +134,7 @@ class _ReinitialiserMotDePasseOublierState extends State<ReinitialiserMotDePasse
                   alignment: Alignment.center,
                   child: Text("Réinitialiser", style: style_google.copyWith(color: Colors.white, fontSize: 15),),
                 ),
-              )
+              ),
             ],
           ),
         ),
