@@ -125,7 +125,7 @@ class _LoginState extends State<Login> {
                               return "Votre adresse email est invalide!";
                             }
                           },
-                          iconData: Icons.mail,
+                          iconData: Icons.mail_outline,
                           textInputType: TextInputType.emailAddress,
                           ),
                       // Password
@@ -184,7 +184,7 @@ class _LoginState extends State<Login> {
         child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Je n'ai pas de compte!", style: TextStyle(color: Colors.grey),),
+              Text("N'avez-vous pas de compte!", style: TextStyle(color: Colors.grey),),
               SizedBox(width: 5,),
               GestureDetector(
                 onTap: (){

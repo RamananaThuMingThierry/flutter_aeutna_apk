@@ -2,9 +2,9 @@ import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/models/users.dart';
-import 'package:aeutna/screens/utilisateurs/approuverUtilisateurs.dart';
 import 'package:aeutna/screens/utilisateurs/users.dart';
 import 'package:aeutna/services/user_services.dart';
+import 'package:aeutna/widgets/ItemShowUser.dart';
 import 'package:flutter/material.dart';
 
 class ShowUsers extends StatefulWidget {
@@ -27,6 +27,96 @@ class _ShowUsersState extends State<ShowUsers> {
     super.initState();
   }
 
+  Dialog approuvedUser(BuildContext context){
+    return Dialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16)
+      ),
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      child: Container(
+        padding: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(2),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 10.0,
+                  offset: Offset(0.0, 10.0)
+              ),
+            ]
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("", style: style_google.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(4),
+                    alignment: Alignment.centerRight,
+                    child: Icon(Icons.close, color: Colors.blueGrey,),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15,),
+            Text("Voulez-vous approuver cet utilisateur?",textAlign: TextAlign.center, style: style_google,),
+            SizedBox(height: 15,),
+            GestureDetector(
+              onTap: () => _approuverUser(context),
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: Colors.blueGrey,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+                padding: EdgeInsets.fromLTRB(16, 10, 16, 10),
+                child: Center(
+                  child: Text("Approuver", style:style_google.copyWith(color: Colors.white)),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _approuverUser(BuildContext context) async {
+    onLoading(context);
+    ApiResponse apiResponse = await ValideUser(data!.id!);
+    if(apiResponse.error == null){
+      Navigator.pop(context);
+      Navigator.pop(context);
+      Navigator.pop(context);
+      Navigator.pop(context);
+      MessageReussi(context,"${apiResponse.data}");
+    }else if(apiResponse.error == avertissement){
+      Navigator.pop(context);
+      Navigator.pop(context);
+      MessageAvertissement(context, "${apiResponse.data}");
+    }else if(apiResponse.error == info){
+      Navigator.pop(context);
+      Navigator.pop(context);
+      MessageInformation(context, "${apiResponse.data}");
+    }else if(apiResponse.error == unauthorized){
+      Navigator.pop(context);
+      ErreurLogin(context);
+    }else {
+      Navigator.pop(context);
+      Navigator.pop(context);
+      MessageErreurs(context, apiResponse.error);
+    }
+  }
 
   Dialog userForm(BuildContext context){
     return Dialog(
@@ -80,6 +170,8 @@ class _ShowUsersState extends State<ShowUsers> {
                   setState(() {
                     roles = newValue!;
                   });
+                  Navigator.pop(context);
+                  showDialog(context: context, builder: (BuildContext context) => userForm(context));
                 },
                 items: <String>['Administrateurs', 'Utilisateurs']
                     .map<DropdownMenuItem<String>>((String value) {
@@ -152,12 +244,22 @@ class _ShowUsersState extends State<ShowUsers> {
               avatar: data!.image == null ? AssetImage("assets/photo.png") : NetworkImage(data!.image!) as ImageProvider,
               title: data!.pseudo!,
               actions: [
+                data!.status == 0
+                    ?
+                MaterialButton(
+                    color: Colors.blueGrey,
+                    shape: CircleBorder(),
+                    elevation: 0,
+                    child: Icon(Icons.edit, color: Colors.white,),
+                    onPressed: () => showDialog(context: context, builder: (BuildContext context) => approuvedUser(context))
+                )
+                    :
                 MaterialButton(
                     color: Colors.white,
                     shape: CircleBorder(),
                     elevation: 0,
                     child: Icon(Icons.edit),
-                    onPressed: () =>   showDialog(context: context, builder: (BuildContext context) => userForm(context))
+                    onPressed: () => showDialog(context: context, builder: (BuildContext context) => userForm(context))
                 )
               ],),
             SizedBox(height: 10,),
@@ -228,17 +330,11 @@ class ProfileHeader extends StatelessWidget{
                   borderColor: Colors.grey.shade300,
                   borderWith: 4,
               ),
+              SizedBox(height: 10,),
               Text(
                 title,
-                style: style_google
+                style: style_google.copyWith(fontSize: 15, fontWeight: FontWeight.w600)
               ),
-              if(subtitle != null)...[
-                SizedBox(height: 5,),
-                Text(
-                  subtitle!,
-                  style: style_google,
-                ),
-              ]
             ],
           ),
         ),
@@ -306,46 +402,14 @@ class UserInfo extends StatelessWidget{
                   ...ListTile.divideTiles(
                       color: Colors.grey,
                       tiles: [
-                        ListTile(
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 2
-                          ),
-                          title: Text("Pseudo", style: style_google.copyWith(fontWeight: FontWeight.w500),),
-                          subtitle: Text("${users!.pseudo}"),
-                          leading: Icon(Icons.account_circle_outlined, color: Colors.blueGrey,),
-                        ),ListTile(
-                          leading: Icon(Icons.mail_outline, color: Colors.blueGrey,),
-                          title: Text("Adresse e-mail", style: style_google.copyWith(fontWeight: FontWeight.w500),),
-                          subtitle: Text("${users!.email}"),
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.add_location, color: Colors.blueGrey,),
-                          title: Text("Adresse", style: style_google.copyWith(fontWeight: FontWeight.w500),),
-                          subtitle: Text("${users!.adresse}"),
-                        ),
-                        ListTile(
-                          onTap: () => ActionsCallOrMessage(context, users!.contact),
-                          leading: Icon(Icons.call_outlined, color: Colors.blueGrey,),
-                          title: Text("Contact", style: style_google.copyWith(fontWeight: FontWeight.w500),),
-                          subtitle: Text("${users!.contact}"),
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.person_2_outlined, color: Colors.blueGrey,),
-                          title: Text("Rôles", style: style_google.copyWith(fontWeight: FontWeight.w500),),
-                          subtitle: Text("${users!.roles}"),
-                        ),
-                        ListTile(
-                          leading: Icon(users!.status == 0 ? Icons.disabled_by_default_outlined :  Icons.check_box, color: Colors.blueGrey,),
-                          title: Text("Status", style: style_google.copyWith(fontWeight: FontWeight.w500),),
-                          subtitle: Text("${users!.status == 0 ? "En attente" : "Membre"}"),
-                          trailing: users!.status == 0
-                              ? IconButton(
-                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => ApprouverUtilisateurs(users: users!)))
-                            ,
-                            icon: Icon(Icons.check_circle_outlined, color: Colors.blueGrey,),
-                          )
-                              : SizedBox()
-                        ),
+                        ItemShowUser(titre: "Pseudo", value: "${users!.pseudo}", iconData: Icons.account_circle_outlined),
+                        ItemShowUser(titre: "Adresse e-mail", value: "${users!.email}", iconData: Icons.email_outlined,),
+                        GestureDetector(
+                            onTap: () => ActionsCallOrMessage(context, users!.contact),
+                            child: ItemShowUser(titre: "Contact", value: "${users!.contact}", iconData: Icons.phone_outlined,)),
+                        ItemShowUser(titre: "Adresse", value: "${users!.adresse}", iconData: Icons.local_library_outlined,),
+                        ItemShowUser(titre: "Rôles", value: "${users!.roles}", iconData: Icons.account_tree_outlined,),
+                        ItemShowUser(titre: "Status", value: "${users!.status == 0 ? "En attente" : "Membre"}", iconData: users!.status == 0 ? Icons.disabled_by_default_outlined :  Icons.check_box_outlined,),
                       ])
                 ],
               ),

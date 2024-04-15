@@ -9,6 +9,7 @@ import 'package:aeutna/models/niveau.dart';
 import 'package:aeutna/models/user.dart';
 import 'package:aeutna/screens/historiques/historiques.dart';
 import 'package:aeutna/screens/profiles/updateProfile.dart';
+import 'package:aeutna/screens/statistiques/statistiques.dart';
 import 'package:aeutna/services/axes_services.dart';
 import 'package:aeutna/services/filieres_services.dart';
 import 'package:aeutna/services/fonctions_services.dart';
@@ -43,93 +44,8 @@ class _ProfilesState extends State<Profiles> {
   RegExp regExp = RegExp(r'''
 (([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$''');
 
-  String? id,pseudo,nom,prenom,roles, email, genre, facebook, adresse, contact,lieu_naissance, image,numero_carte, filiere, cin, sympathisant, date_naissance, contact_personnel, contact_parent;
+  String? id,pseudo,nom,prenom,roles, email, genre, facebook, adresse, etablissement, contact,lieu_naissance, image,numero_carte, filiere, cin, sympathisant, date_naissance, contact_personnel, contact_parent;
   int? status;
-
-  void getAxes() async{
-    ApiResponse apiResponse = await showAxes(int.parse(membres!.axes_id!));
-    if(apiResponse.error == null){
-      setState(() {
-        axes = apiResponse.data as Axes?;
-      });
-    }else if(apiResponse.error == unauthorized){
-      ErreurLogin(context);
-    }else{
-      MessageErreurs(context, "${apiResponse.error}");
-    }
-  }
-
-  void getFilieres() async{
-
-    ApiResponse apiResponse = await showFilieres(int.parse(membres!.filieres_id!));
-
-    if(apiResponse.error == null){
-
-      setState(() {
-        filieres = apiResponse.data as Filieres?;
-      });
-
-    }else if(apiResponse.error == unauthorized){
-      ErreurLogin(context);
-    }else{
-      MessageErreurs(context, "${apiResponse.error}");
-    }
-  }
-
-  void getNiveau() async{
-
-    ApiResponse apiResponse = await showNiveau(int.parse(membres!.levels_id!));
-
-    if(apiResponse.error == null){
-      setState(() {
-        niveau = apiResponse.data as Niveau?;
-      });
-
-    }else if(apiResponse.error == unauthorized){
-      ErreurLogin(context);
-    }else{
-      MessageErreurs(context, "${apiResponse.error}");
-    }
-  }
-
-  void getFonctions() async{
-    ApiResponse apiResponse = await showFonctions(int.parse(membres!.fonctions_id!));
-    if(apiResponse.error == null){
-      setState(() {
-        fonctionModel = apiResponse.data as FonctionModel?;
-      });
-
-    }else if(apiResponse.error == unauthorized){
-      ErreurLogin(context);
-    }else{
-      MessageErreurs(context, "${apiResponse.error}");
-    }
-  }
-
-  Future getMembre() async{
-
-    ApiResponse apiResponse = await getMembres(widget.user!.id!);
-
-    if(apiResponse.error == null){
-
-      print(apiResponse.data);
-      if(apiResponse.data == null){
-        membres == null;
-      }else{
-        setState(() {
-          membres = apiResponse.data as Membres;
-        });
-        getAxes();
-        getFilieres();
-        getFonctions();
-        getNiveau();
-      }
-    }else if(apiResponse.error == unauthorized){
-      ErreurLogin(context);
-    }else{
-      MessageErreurs(context, "${apiResponse.error}");
-    }
-  }
 
   @override
   void initState() {
@@ -142,9 +58,6 @@ class _ProfilesState extends State<Profiles> {
     // status = int.parse(data!.status!);
     status = data!.status!;
     image = data!.image;
-    if(status == 1){
-      getMembre();
-    }
     super.initState();
   }
 
@@ -201,7 +114,7 @@ class _ProfilesState extends State<Profiles> {
                                   ),
                                 ),
                               )
-                                  : Icon(Icons.person), // Widget par défaut si imageUrl est null
+                                  : Icon(Icons.person, size: 80,color: Colors.black54,), // Widget par défaut si imageUrl est null
                             ),
                           ),
                         ),
@@ -214,39 +127,29 @@ class _ProfilesState extends State<Profiles> {
                             contact: contact_personnel,
                             roles: roles,
                             status: status),
-                        status == 1 ? showInformationPersonnels(
-                            nom: membres == null ? "" : membres!.nom,
-                            prenom: membres == null ? "" : membres!.prenom,
-                            genre: membres == null ? "" : membres!.genre,
-                            cin: membres == null ? "" : membres!.cin,
-                            date_naissance: membres == null ? "" : membres!.date_de_naissance,
-                            lieu_naissance: membres == null ? "" : membres!.lieu_de_naissance
-                        ) : SizedBox(),
-                        status == 1 ? showInformationsAEUTNA(
-                            contact_tutaire: membres == null ? "" : membres!.contact_tuteur,
-                            numero_carte_aeutna: membres == null ? 0 : int.parse(membres!.numero_carte!),
-                            email: email,
-                            filiere: filieres == null ? "" : filieres!.nom_filieres,
-                            facebook: membres == null ? "" : membres!.facebook,
-                            contact: contact_personnel,
-                            adresse: adresse,
-                            fonction: fonctionModel == null ? "" : fonctionModel!.fonctions,
-                            niveau: niveau == null ? "" : niveau!.niveau,
-                            axes: axes == null ? "" : axes!.nom_axes,
-                            sympathisant: membres == null ? 0 : int.parse(membres!.symapthisant!),
-                            date_inscription: membres == null ? "" : membres!.date_inscription,
-                        ) : SizedBox()
                     ],
                   ),
                 ),
               ),
               WidgetListTitle(
-                  title: "Apropos",
+                  title: "A-propos",
                   leading: Icons.info_outlined,
                   trailing: Icons.chevron_right,
                   onTap: () => () => showDialog(context: context, builder: (BuildContext context) => AboutApplication(context))
               ),
-              WidgetListTitle(title: "Contactez-nous", leading: Icons.help, trailing: Icons.chevron_right, onTap: () => (){}),
+              WidgetListTitle(
+                  title: "Historiques",
+                  leading: Icons.history_edu_rounded,
+                  trailing: Icons.chevron_right,
+                  onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => HistoriquesScreen()))
+              ),
+              WidgetListTitle(
+                  title: "Statistiques",
+                  leading: Icons.area_chart_outlined,
+                  trailing: Icons.chevron_right,
+                  onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => StatistiquesScreen()))
+              ),
+              WidgetListTitle(title: "Contactez-nous", leading: Icons.help, trailing: Icons.chevron_right, onTap: () => (){ ActionsCallOrMessage(context, "0327563770");}),
               WidgetListTitle(title: "Déconnections", leading: Icons.logout_outlined, trailing: Icons.chevron_right, onTap: () => () => deconnectionAlertDialog(context)),
             ],
           ),
@@ -420,20 +323,6 @@ class _ProfilesState extends State<Profiles> {
                         TextButton(onPressed: (){
                           Navigator.pop(context);
                         }, child:  Text("Changer le mot de passe", style: style_google.copyWith(color: Colors.white)),)
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.location_history_rounded, color: Colors.white,),
-                        SizedBox(width: 10,),
-                        TextButton(onPressed: (){
-                          Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(builder: (ctx) => HistoriquesScreen()));
-                        }, child:  Text("Historiques", style: style_google.copyWith(color: Colors.white),),)
                       ],
                     ),
                   ),

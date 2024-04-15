@@ -87,19 +87,23 @@ class _RegisterState extends State<Register> {
 
   void _registerUser() async{
     if(_key.currentState!.validate()){
-
+       onLoading(context);
       double strength = calculatePasswordStrength(mot_de_passe!);
 
       if(strength > .5){
         ApiResponse apiResponse = await register(pseudo: pseudo, email: email, adresse: adresse, contact: contact, mot_de_passe: mot_de_passe);
         if(apiResponse.error == null){
+          Navigator.pop(context);
           _saveAndRedirectToHome(apiResponse.data as User);
         }else if(apiResponse.error == avertissement){
+          Navigator.pop(context);
           MessageAvertissement(context, "${apiResponse.data}");
         }else{
+          Navigator.pop(context);
           MessageErreurs(context, "${apiResponse.error}");
         }
       }else{
+        Navigator.pop(context);
         MessageAvertissement(context, "Votre mot de passe n'est pas assez fort!");
       }
     }

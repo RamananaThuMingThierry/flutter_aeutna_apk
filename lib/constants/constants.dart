@@ -15,6 +15,10 @@ const filieresURL = baseURL + '/filieres';
 const commentsURL = baseURL + '/comments';
 const niveauURL = baseURL + '/niveau';
 const membresURL = baseURL + '/membres';
+const changer_mot_de_passe = baseURL + '/profiles/changer_mot_de_passe';
+const forgetpasswordURL = baseURL + '/forget-password';
+const comfirmationURL = baseURL + '/comfirmation';
+const reinitialiser_mot_de_passeURL = baseURL + '/reinitialiser_mot_de_passe';
 
 /** -------------- Erreurs -------------- **/
 const serverError = 'Erreur du serveur \n Veuillez activez les données mobiles ou connectez-vous au Wi-Fi.';

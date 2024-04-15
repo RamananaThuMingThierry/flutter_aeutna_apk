@@ -4,9 +4,7 @@ import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/constants/onLoadingMembreShimmer.dart';
 import 'package:aeutna/models/membres.dart';
 import 'package:aeutna/models/user.dart';
-import 'package:aeutna/screens/Acceuil.dart';
 import 'package:aeutna/screens/admin/administrateurs.dart';
-import 'package:aeutna/screens/auth/login.dart';
 import 'package:aeutna/screens/membres/addMembres.dart';
 import 'package:aeutna/screens/membres/showMembre.dart';
 import 'package:aeutna/services/membres_services.dart';
@@ -177,15 +175,15 @@ class _MembresState extends State<MembresScreen> {
                             Navigator.push(context, MaterialPageRoute(builder: (ctx) => ShowMembres(membres: membres,user: user,)));
                           },
                           child: Card(
-                            margin: EdgeInsets.symmetric(horizontal: 3,vertical: 2),
+                            margin: EdgeInsets.symmetric(horizontal: 3,vertical: 1),
                             child: ListTile(
                               leading: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 7),
+                                padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 7),
                                 child: CircleAvatar(
                                   radius: 25,
                                   backgroundColor: Colors.blueGrey,
                                   child:  CircleAvatar(
-                                    radius: 21,
+                                    radius: 23,
                                     backgroundColor: Colors.grey, // Couleur de fond par défaut
                                     child: membres!.image != null
                                         ? CachedNetworkImage(
@@ -202,7 +200,7 @@ class _MembresState extends State<MembresScreen> {
                                         ),
                                       ),
                                     )
-                                        : Icon(Icons.person), // Widget par défaut si imageUrl est null
+                                        : Icon(Icons.person, size: 30,color: Colors.black,), // Widget par défaut si imageUrl est null
                                   ),
                                 ),
                               ),

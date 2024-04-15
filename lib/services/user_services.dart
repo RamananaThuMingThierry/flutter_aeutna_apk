@@ -140,8 +140,6 @@ Future<ApiResponse> getUserDetail() async{
         },
     );
 
-    print("********** status : ${response.statusCode} ----------------  body : ${response.body}");
-
     switch(response.statusCode){
       case 200:
         apiResponse.data = User.fromJson(jsonDecode(response.body));
@@ -160,12 +158,12 @@ Future<ApiResponse> getUserDetail() async{
   return apiResponse;
 }
 
-Future<ApiResponse> ValideUser(int userId, int membreId) async{
+Future<ApiResponse> ValideUser(int userId) async{
   ApiResponse apiResponse = ApiResponse();
 
   try{
     String token = await getToken();
-    var url = Uri.parse(userURL+"_valide/${userId}/${membreId}");
+    var url = Uri.parse(userURL+"_valide/${userId}");
    print(url);
     final response = await http.put(
         url,
@@ -197,6 +195,47 @@ Future<ApiResponse> ValideUser(int userId, int membreId) async{
 
   return apiResponse;
 }
+
+/** ============================================ Search User ========================================== **/
+Future<ApiResponse> searchUserValide(String? valeur) async{
+  ApiResponse apiResponse = ApiResponse();
+
+  try{
+    String token = await getToken();
+    var url = Uri.parse(userURL+"_valide_search/${valeur}");
+
+    final response = await http.get(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        }
+    );
+
+    switch(response.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['user'].map((p) => Users.fromJson(p)).toList();
+        apiResponse.data as List<dynamic>;
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 404:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
+    apiResponse.error = serverError;
+  }
+
+  return apiResponse;
+}
+
 
 Future<ApiResponse> updateUser({String? image, String? pseudo, String? email, String? contact, String? adresse, int? userId}) async{
   ApiResponse apiResponse = ApiResponse();
@@ -248,7 +287,6 @@ Future<ApiResponse> updateUser({String? image, String? pseudo, String? email, St
 
   return apiResponse;
 }
-
 
 Future<ApiResponse> updateRolesUser({String? roles, int? userId}) async{
   ApiResponse apiResponse = ApiResponse();
@@ -315,8 +353,6 @@ Future<ApiResponse> login({String? email, String? mot_de_passe}) async{
       }
     );
 
-    print(" ********************* body : ${response.body}");
-
     switch(response.statusCode){
       case 200:
         apiResponse.data = User.fromJson(jsonDecode(response.body));
@@ -352,9 +388,6 @@ Future<ApiResponse> register({String? pseudo, String? email, String? mot_de_pass
   ApiResponse apiResponse = ApiResponse();
 
   try{
-
-
-
     final response = await http.post(
         Uri.parse(registerURL),
         headers: {'Accept': 'application/json'},
@@ -387,6 +420,57 @@ Future<ApiResponse> register({String? pseudo, String? email, String? mot_de_pass
     }
   }catch(e){
     print(e);
+    apiResponse.error = serverError;
+  }
+
+  return apiResponse;
+}
+
+/** ----------------------- Changer le mot de passe ------------------------------------------------------------------------**/
+Future<ApiResponse> updatePasswordUser({String? password_old, String? password_new}) async{
+  ApiResponse apiResponse = ApiResponse();
+  try{
+    String token = await getToken();
+    var url = Uri.parse(changer_mot_de_passe);
+
+    final response = await http.put(
+        url,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: {
+          'ancien_mot_de_passe' : password_old,
+          'nouveau_mot_de_passe' : password_new
+        }
+    );
+
+    switch(response.statusCode){
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = avertissement;
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 422:
+        apiResponse.error = avertissement;
+        String errorMessages = "";
+        final errors = jsonDecode(response.body)['errors'];
+        errors.forEach((field, message) {
+          errorMessages += "* ${message.join(', ')}\n";
+        });
+        apiResponse.data = errorMessages;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  }catch(e){
     apiResponse.error = serverError;
   }
 

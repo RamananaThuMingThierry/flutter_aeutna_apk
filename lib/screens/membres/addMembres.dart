@@ -38,7 +38,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
   DateTime? selectedDateDeNaissance = DateTime.now();
   DateTime? selectedDateDInscription = DateTime.now();
   int? numero_carte, axes_id, filieres_id, levels_id, fonctions_id, sections_id;
-  String? image, nom, prenom, contact,genre, date_de_naissance, lieu_de_naissance, cin, contact_personnel, contact_tuteur, facebook, adresse, date_inscription;
+  String? image, nom, prenom, contact,genre, date_de_naissance, lieu_de_naissance,etablissement, cin, contact_personnel, contact_tuteur, facebook, adresse, date_inscription;
   bool? sympathisant = false;
   File? imageFiles;
   CroppedFile? croppedImage;
@@ -432,7 +432,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                   padding: const EdgeInsets.only(left: 10),
                                   child: Row(
                                     children: [
-                                      Icon(Icons.local_library_sharp, color: Colors.grey,),
+                                      Icon(Icons.card_travel, color: Colors.grey,),
                                       SizedBox(width: 10,),
                                       DropdownButton(
                                           underline: SizedBox(height: 0,),
@@ -493,6 +493,20 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                   ),
                                 ),
                                 Ligne(color: Colors.grey),
+                                /** ======================================= Etablissement ======================== **/
+                                Titre("Etablissement"),
+                                MyTextFieldForm(
+                                    name: "Etablissement",
+                                    onChanged: () => (value){
+                                      setState(() {
+                                        etablissement = value;
+                                      });
+                                    },
+                                    validator: () => (value){
+                                    }, iconData: Icons.school_outlined,
+                                    textInputType: TextInputType.text,
+                                    edit: false,
+                                    value: ""),
                                 Titre("Axes"),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 10),
@@ -537,7 +551,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                       if(value == null || value.isEmpty){
                                         return 'Veuillez entrer votre adresse';
                                       }
-                                    }, iconData: Icons.local_library_sharp,
+                                    }, iconData: Icons.add_location,
                                     textInputType: TextInputType.text,
                                     edit: false,
                                     value: ""),
@@ -622,9 +636,6 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                       });
                                     },
                                     validator: () => (value){
-                                      if(value == null || value.isEmpty){
-                                        return 'Veuillez entrer votre facebook';
-                                      }
                                     }, iconData: Icons.facebook_rounded,
                                     textInputType: TextInputType.text,
                                     edit: false,
@@ -708,6 +719,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
 
   Future<void> _validation() async {
     if(_key.currentState!.validate()){
+
       if(image == null){
         MessageAvertissement(context, "Veuillez sélectionner votre image");
       }else if(genre == null){
@@ -722,10 +734,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
         MessageAvertissement(context, "Etes-vous sympathisant(e) ?");
       }
       else{
-        setState(() {
-          loading = true;
-        });
-
+        onLoading(context);
         String? _images = imageFiles == null ? null : getStringImage(imageFiles);
 
         ApiResponse apiResponse = await createMembre(
@@ -737,6 +746,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
           lieu_de_naissance: lieu_de_naissance,
           cin: cin,
           genre: genre,
+          etablissement: etablissement,
           fonctions_id: selectedFonctionsId,
           filieres_id: selectedFilieresId,
           sectionsId: selectedSecionsId,
@@ -750,30 +760,20 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
           date_inscription: date_inscription
         );
         if(apiResponse.error == null){
-          setState(() {
-            loading = false;
-          });
+            Navigator.pop(context);
             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => MembresScreen(user: user!)), (route) => false);
             MessageReussi(context, "${apiResponse.data}");
         }else if(apiResponse.error == avertissement){
-          setState(() {
-            loading = false;
-          });
+          Navigator.pop(context);
           MessageAvertissement(context, "${apiResponse.data}");
         }else if(apiResponse.error == unauthorized){
-          setState(() {
-            loading = false;
-          });
+          Navigator.pop(context);
           MessageErreurs(context, apiResponse.error);
         }else{
-          setState(() {
-            loading = false;
-          });
+          Navigator.pop(context);
           MessageErreurs(context, "${apiResponse.error}");
         }
       }
-    }else{
-      print("Non");
     }
   }
 

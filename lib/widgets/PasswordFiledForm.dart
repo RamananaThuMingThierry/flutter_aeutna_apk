@@ -1,3 +1,4 @@
+import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:flutter/material.dart';
 
 class PasswordFieldForm extends StatelessWidget {
@@ -13,6 +14,7 @@ class PasswordFieldForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return    TextFormField(
+      style: style_google.copyWith(color: Colors.grey),
       decoration: InputDecoration(
         hintText: name,
         suffixIconColor: Colors.grey,
@@ -26,11 +28,12 @@ class PasswordFieldForm extends StatelessWidget {
               color: Colors.blueGrey,
             )
         ),
+        prefixIcon: Icon(Icons.vpn_key, color: Colors.grey,),
         suffixIcon: GestureDetector(
           onTap: onTap(),
           child: visibility ? Icon(Icons.visibility_outlined, color: Colors.grey,) : Icon(Icons.visibility_off_outlined),
         ),
-        hintStyle: TextStyle(color: Colors.grey),
+        hintStyle: style_google.copyWith(color: Colors.grey),
       ),
       obscureText: visibility,
       keyboardType: TextInputType.text,

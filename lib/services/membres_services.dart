@@ -21,6 +21,8 @@ Future<ApiResponse> getAllMembres() async{
         }
     );
 
+    print("======================== Membres : ${response.body}");
+
     switch(response.statusCode){
       case 200:
         apiResponse.data = jsonDecode(response.body)['membres'];
@@ -122,6 +124,7 @@ Future<ApiResponse> createMembre({
   int? sectionsId,
   int? filieres_id,
   int? niveau_id,
+  String? etablissement,
   int? fonctions_id,
   String? facebook,
   String? adresse,
@@ -149,6 +152,7 @@ Future<ApiResponse> createMembre({
             "sectionsId : $sectionsId \n"
             "filiereId : $filieres_id \n"
             "niveauId : $niveau_id \n"
+            "etablissement : $etablissement\n"
             "fonctionId : $fonctions_id \n"
             "axesId : $axesId \n"
             "date_inscription : $date_inscription \n"
@@ -171,20 +175,19 @@ Future<ApiResponse> createMembre({
               'lieu_de_naissance' : lieu_de_naissance,
               'genre' : genre,
               'contact_personnel' : contact_personnel,
+              'etablissement' : etablissement.toString(),
               'contact_tuteur' : contact_tuteur,
                'sympathisant' : "${sympathisant == true ? 1 : 0}",
               'fonctions_id' : fonctions_id.toString(),
               'axes_id' : "${axesId == 0 ? null : axesId}",
                'levels_id' : niveau_id.toString(),
               'sections_id' : sectionsId.toString(),
-              'facebook' : facebook,
+              'facebook' : facebook.toString(),
               'adresse' : adresse,
               'filieres_id' : filieres_id.toString(),
               'date_inscription' : date_inscription.toString(),
             }
     );
-
-    print("---------------> status : ${rep.statusCode} : ${rep.body}");
 
     switch(rep.statusCode){
       case 200:
@@ -232,8 +235,6 @@ Future<ApiResponse> searchMembres(String? value) async{
           'Authorization' : 'Bearer $token'
         }
     );
-
-    print("----------- ${jsonDecode(rep.body)['membres']}");
 
     switch(rep.statusCode){
       case 200:
@@ -622,6 +623,7 @@ Future<ApiResponse> updateMembre({
   int? sectionsId,
   int? filieres_id,
   int? niveau_id,
+  String? etablissement,
   int? fonctions_id,
   String? facebook,
   String? adresse,
@@ -650,6 +652,7 @@ Future<ApiResponse> updateMembre({
           "contact tuteur : $contact_tuteur"
           "sectionsId : $sectionsId \n"
           "filiereId : $filieres_id \n"
+          "etablissement : $etablissement\n"
           "fonctionId : $fonctions_id \n"
           "axesId : $axesId \n"
           "date_inscription : $date_inscription \n"
@@ -673,8 +676,9 @@ Future<ApiResponse> updateMembre({
           'cin' : cin.toString(),
           'contact_personnel' : contact_personnel,
           'contact_tuteur' : contact_tuteur,
-          'facebook' : facebook,
+          'facebook' : facebook.toString(),
           'genre' : genre,
+          'etablissement' : etablissement.toString(),
           'fonctions_id' : fonctions_id.toString(),
           'filieres_id' : filieres_id.toString(),
           'levels_id' : niveau_id.toString(),

@@ -83,7 +83,7 @@ class SplashScreenState extends State<SplashScreen>{
             child: Row(
               children: [
                 Expanded(child: Divider(color: Color(0xffE2C222),thickness: 1,)),
-                Text("A.E.U.T.N.A.", style: GoogleFonts.roboto(color: Colors.blueGrey, fontSize: 25, fontWeight: FontWeight.bold),),
+                Text("A.E.U.T.N.A", style: style_google.copyWith(fontSize: 25, fontWeight: FontWeight.bold)),
                 Expanded(child: Divider(color: Color(0xffE2C222),thickness: 1,)),
               ],
             ),

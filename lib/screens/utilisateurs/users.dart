@@ -21,6 +21,7 @@ class _UsersScreenState extends State<UsersScreen> {
   List<dynamic> _usersList = [];
   bool loading = true;
   String? recherche;
+  bool _searchAutorisation = false;
   TextEditingController pseudo = TextEditingController();
   TextEditingController search = TextEditingController();
 
@@ -44,6 +45,20 @@ class _UsersScreenState extends State<UsersScreen> {
     }
   }
 
+  /** =============================================== Search User Valide ===================================== **/
+  Future _searchUsersValide(String? search) async{
+    ApiResponse apiResponse = await searchUserValide(search);
+    if(apiResponse.error == null){
+      setState(() {
+        _usersList = apiResponse.data as List<dynamic>;
+      });
+    }else if(apiResponse.error == unauthorized){
+      ErreurLogin(context);
+    }else{
+      MessageErreurs(context, apiResponse.error);
+    }
+  }
+
 
   @override
   void initState() {
@@ -58,16 +73,68 @@ class _UsersScreenState extends State<UsersScreen> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: (){
-            Navigator.pop(context);
+            if(_searchAutorisation){
+              setState(() {
+                search.clear();
+                _searchAutorisation = !_searchAutorisation;
+              });
+              _getallUsersValide();
+            }else{
+              Navigator.pop(context);
+            }
           },
           icon: Icon(Icons.keyboard_backspace, color: Colors.blueGrey,),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
         actions: [
-          IconButton(onPressed: (){}, icon: Icon(Icons.people, color: Colors.blueGrey,))
+          _searchAutorisation ? SizedBox() : IconButton(onPressed: (){
+            setState(() {
+              _searchAutorisation = !_searchAutorisation;
+            });
+          }, icon: Icon(Icons.search_outlined, color: Colors.blueGrey,))
         ],
-        title: Text("Utilisateurs", style: style_google.copyWith(fontWeight: FontWeight.bold),),
+        title: _searchAutorisation
+            ? Container(
+          width: double.infinity,
+          height: 40,
+          decoration: BoxDecoration(
+              color: Colors.grey,
+              borderRadius: BorderRadius.circular(5)
+          ),
+          child: Center(
+            child: TextFormField(
+              controller: search,
+              style: style_google.copyWith(color: Colors.white),
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search, color: Colors.white,),
+                suffixIcon: IconButton(
+                  onPressed: (){
+                    _getallUsersValide();
+                    setState(() {
+                      search.clear();
+                    });
+                  },
+                  icon: Icon(Icons.clear, color: Colors.redAccent,),
+                ),
+                hintText: "Recherche...",
+                hintStyle: style_google.copyWith(color: Colors.white),
+                border: InputBorder.none,
+              ),
+              onChanged: (value){
+                setState(() {
+                  recherche = value;
+                });
+                if(recherche!.isEmpty) {
+                  _getallUsersValide();
+                }else{
+                  _searchUsersValide(recherche);
+                }
+              },
+            ),
+          ),
+        )
+        : Text("Liste des Utilisateurs", style: style_google.copyWith(fontWeight: FontWeight.bold)),
       ),
       body: loading
           ? OnLoadingMembreShimmer()
@@ -90,14 +157,11 @@ class _UsersScreenState extends State<UsersScreen> {
                       elevation: 1,
                       child: ListTile(
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => ShowUsers(user: users!))),
-                        leading: Padding(
-                          padding: EdgeInsets.all(10),
-                          child: CircleAvatar(
-                            backgroundImage: users.image == null ? AssetImage("assets/photo.png"): NetworkImage(users.image!) as ImageProvider,
-                          ),
+                        leading: CircleAvatar(
+                          backgroundImage: users.image == null ? AssetImage("assets/photo.png"): NetworkImage(users.image!) as ImageProvider,
                         ),
                         title: Text("${users.pseudo}", style: style_google.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
-                        subtitle: Text("${users.email}",style: style_google.copyWith(fontSize: 14, color: Colors.grey),),
+                        subtitle: Text("${users.email}",style: style_google.copyWith(fontSize: 12, color: Colors.grey),),
                         trailing: Icon(Icons.chevron_right, color: Colors.blueGrey,),
                       ),
                     );

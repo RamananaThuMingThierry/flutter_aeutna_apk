@@ -29,8 +29,6 @@ class _AcceuilState extends State<Acceuil> {
   Widget build(BuildContext context) {
 
     List<Widget> page = [
-      Container(),
-      Container(),
       MembresScreen(user: users!),
       users == null
           ?
@@ -54,20 +52,11 @@ class _AcceuilState extends State<Acceuil> {
         key: _key,
         body: page[currentIndex],
         bottomNavigationBar: BottomNavigationBar(
+          elevation: 1,
           onTap: (int index){
             setState(() {
               currentIndex = index;
             });
-            if(index == 1){
-              setState(() {
-                currentIndex = 0;
-              });
-            }
-            if(index == 2){
-              setState(() {
-                currentIndex = 0;
-              });
-            }
           },
           currentIndex: currentIndex,
           selectedItemColor: Colors.blueGrey,
@@ -78,20 +67,6 @@ class _AcceuilState extends State<Acceuil> {
           type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(
-                icon: Icon(Icons.home_outlined),
-                activeIcon: Icon(Icons.home),
-                label: "Acceuil",
-                backgroundColor: Colors.white
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.message_outlined),
-              activeIcon: Icon(Icons.message),
-              label: "Message",
-            ),BottomNavigationBarItem(
-              icon: Icon(Icons.add),
-              activeIcon: Icon(Icons.add),
-              label: "Publication",
-            ),BottomNavigationBarItem(
                 icon: Icon(Icons.people_alt_outlined),
                 activeIcon: Icon(Icons.people),
                 label: "Membres",

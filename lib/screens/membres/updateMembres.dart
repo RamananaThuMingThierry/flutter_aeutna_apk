@@ -41,7 +41,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
   Membres? membres;
   User? user;
   int? numero_carte, axes_id, filieres_id, levels_id, fonctions_id, sections_id;
-  String? image, nom, prenom, contact,genre, date_de_naissance, lieu_de_naissance, cin, contact_personnel, contact_tuteur, facebook, adresse, date_inscription;
+  String? image, nom, prenom, contact,genre, date_de_naissance, lieu_de_naissance,etablissement, cin, contact_personnel, contact_tuteur, facebook, adresse, date_inscription;
   String? image_update;
   bool? image_existe;
   bool? sympathisant;
@@ -67,7 +67,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
           selectedSecionsId = 0;
         });
       }else{
-        selectedSecionsId = int.parse(membres!.sections_id!);
+        selectedSecionsId = membres!.sections_id!;
       }
 
     }else if(apiResponse.error == unauthorized){
@@ -95,7 +95,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
         });
       }else{
         setState(() {
-          selectedAxesId = int.parse(membres!.axes_id!) ?? 0;
+          selectedAxesId = membres!.axes_id! ?? 0;
         });
       }
 
@@ -124,7 +124,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
         });
       }else{
         setState(() {
-          selectedFonctionsId = int.parse(membres!.fonctions_id!);
+          selectedFonctionsId = membres!.fonctions_id!;
         });
       }
 
@@ -152,7 +152,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
         });
       }else{
         setState(() {
-          selectedFilieresId = int.parse(membres!.filieres_id!);
+          selectedFilieresId = membres!.filieres_id!;
         });
       }
     }else if(apiResponse.error == unauthorized){
@@ -180,7 +180,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
         });
       }else{
         setState(() {
-          selectedNiveauId = int.parse(membres!.levels_id!);
+          selectedNiveauId = membres!.levels_id!;
         });
       }
 
@@ -204,17 +204,18 @@ class _ModifierMembresState extends State<ModifierMembres> {
     _getAllFilieres();
     _getAllNiveau();
     _getallSections();
-    numero_carte = int.parse(membres!.numero_carte!);
+    numero_carte = membres!.numero_carte!;
     nom = membres!.nom;
     prenom = membres!.prenom ?? '';
     lieu_de_naissance = membres!.lieu_de_naissance;
     adresse = membres!.adresse;
-    facebook  = membres!.facebook;
+    facebook  = membres!.facebook ?? '';
     genre = membres!.genre;
-    cin = membres!.cin ?? '';
+    cin = membres!.cin == "null" ? '' : membres!.cin;
+    etablissement = membres!.etablissement == null ? '' : membres!.etablissement;
     contact_personnel = membres!.contact_personnel;
     contact_tuteur = membres!.contact_tuteur;
-    sympathisant = membres!.symapthisant == "0" ? false : true;
+    sympathisant = membres!.symapthisant == 0 ? false : true;
     image_update = membres!.image;
     image_existe = membres!.image == null ? false : true;
     setState(() {
@@ -510,6 +511,20 @@ class _ModifierMembresState extends State<ModifierMembres> {
                                 ),
                               ),
                               Ligne(color: Colors.grey),
+                              /** ============================= Etablissement ================================== **/
+                              Titre("Etablissement"),
+                              MyTextFieldForm(
+                                  name: "Etablissement",
+                                  onChanged: () => (value){
+                                    setState(() {
+                                      etablissement = value;
+                                    });
+                                  },
+                                  validator: () => (value){
+                                  }, iconData: Icons.school_outlined,
+                                  textInputType: TextInputType.text,
+                                  edit: true,
+                                  value: etablissement!),
                               Titre("Axes"),
                               Padding(
                                 padding: const EdgeInsets.only(left: 10),
@@ -554,7 +569,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
                                     if(value == null || value.isEmpty){
                                       return 'Veuillez entrer votre adresse';
                                     }
-                                  }, iconData: Icons.local_library_sharp,
+                                  }, iconData: Icons.add_location,
                                   textInputType: TextInputType.text,
                                   edit: true,
                                   value: adresse!),
@@ -742,6 +757,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
         }else{
           _images = imageFiles == null ? null : getStringImage(imageFiles);
         }
+        onLoading(context);
         ApiResponse apiResponse = await updateMembre(
             membreIdUpdate: membres!.id,
             image: _images,
@@ -752,6 +768,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
             lieu_de_naissance: lieu_de_naissance,
             cin: cin == '' ? null : cin,
             genre: genre,
+            etablissement: etablissement,
             fonctions_id: selectedFonctionsId,
             filieres_id: selectedFilieresId,
             sectionsId: selectedSecionsId,
@@ -766,16 +783,17 @@ class _ModifierMembresState extends State<ModifierMembres> {
         );
 
         if(apiResponse.error == null){
-          setState(() {
-            loading = false;
-          });
+          Navigator.pop(context);
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => MembresScreen(user: user!)), (route) => false);
           MessageReussi(context, "${apiResponse.data}");
         }else if(apiResponse.error == avertissement){
+          Navigator.pop(context);
           MessageAvertissement(context, "${apiResponse.data}");
         }else if(apiResponse.error == unauthorized){
+          Navigator.pop(context);
           MessageErreurs(context, apiResponse.error);
         }else{
+          Navigator.pop(context);
           MessageErreurs(context, "${apiResponse.error}");
         }
       }

@@ -47,7 +47,7 @@ class _ShowMembresState extends State<ShowMembres> {
     membre = widget.membres;
     user = widget.user;
 
-    print(user);
+    print("Membres :${membre} et Users : ${user!.pseudo!}");
 
     if(membre!.axes_id == null){
       axes_null = null;
@@ -62,7 +62,7 @@ class _ShowMembresState extends State<ShowMembres> {
   }
 
   void getSections() async{
-    ApiResponse apiResponse = await showSections(int.parse(membre!.sections_id!));
+    ApiResponse apiResponse = await showSections(membre!.sections_id!);
     if(apiResponse.error == null){
       setState(() {
         compte = compte! + 1;
@@ -77,7 +77,7 @@ class _ShowMembresState extends State<ShowMembres> {
 
   void getAxes() async{
     if(membre!.axes_id != null){
-      ApiResponse apiResponse = await showAxes(int.parse(membre!.axes_id!));
+      ApiResponse apiResponse = await showAxes(membre!.axes_id!);
       if (apiResponse.error == null) {
         setState(() {
           compte = compte! + 1;
@@ -98,7 +98,7 @@ class _ShowMembresState extends State<ShowMembres> {
 
   void getFilieres() async{
 
-    ApiResponse apiResponse = await showFilieres(int.parse(membre!.filieres_id!));
+    ApiResponse apiResponse = await showFilieres(membre!.filieres_id!);
 
     if(apiResponse.error == null){
 
@@ -116,7 +116,7 @@ class _ShowMembresState extends State<ShowMembres> {
 
   void getNiveau() async{
 
-    ApiResponse apiResponse = await showNiveau(int.parse(membre!.levels_id!));
+    ApiResponse apiResponse = await showNiveau(membre!.levels_id!);
 
     if(apiResponse.error == null){
       setState(() {
@@ -132,7 +132,7 @@ class _ShowMembresState extends State<ShowMembres> {
   }
 
   void getFonctions() async{
-    ApiResponse apiResponse = await showFonctions(int.parse(membre!.fonctions_id!));
+    ApiResponse apiResponse = await showFonctions(membre!.fonctions_id!);
     if(apiResponse.error == null){
       setState(() {
         compte = compte! + 1;
@@ -159,14 +159,13 @@ class _ShowMembresState extends State<ShowMembres> {
           icon: Icon(Icons.arrow_back, color: Colors.blueGrey,),
         ),
         actions: [
-          compte != 5 ? SizedBox() : IconButton(onPressed: (){
+          compte != 5 ? SizedBox() : membre!.contact_personnel == null ? SizedBox() : IconButton(onPressed: (){
             ContactezNous(numero: "${membre!.contact_personnel}", action: "tel");
           }, icon: Icon(Icons.call, color: Colors.blueGrey,)),
-          compte != 5 ? SizedBox() :IconButton(onPressed: (){
+          compte != 5 ? SizedBox() : membre!.contact_personnel == null ? SizedBox() : IconButton(onPressed: (){
             ContactezNous(numero: "${membre!.contact_personnel}", action: "sms");
           }, icon: Icon(Icons.sms, color: Colors.blueGrey,)),
-          compte != 5 ? SizedBox() : IconButton(onPressed: (){
-          }, icon: Icon(Icons.email, color: Colors.blueGrey,)),
+          SizedBox(width: 10,)
         ],
       ),
       body:
@@ -237,7 +236,7 @@ class _ShowMembresState extends State<ShowMembres> {
                         ),
                       ),
                     )
-                        : Icon(Icons.person), // Widget par défaut si imageUrl est null
+                        : Icon(Icons.person, color: Colors.black,size: 80,), // Widget par défaut si imageUrl est null
                   ),
                 )
                 ),
@@ -251,32 +250,6 @@ class _ShowMembresState extends State<ShowMembres> {
                 ],
               ),
             ),
-            SizedBox(height: 10,),
-            // membre!.lien_membre_id == 0
-            //     ? SizedBox()
-            //     : membre!.lien_membre_id != user!.id
-            //               ?  Padding(
-            //     padding: EdgeInsets.symmetric(horizontal: 5),
-            //     child: Row(
-            //       children: [
-            //         Container(
-            //           width: 350,
-            //           child: TextButton.icon(
-            //               style: ButtonStyle(
-            //                 backgroundColor: MaterialStateProperty.all(Colors.blue),
-            //               ),
-            //               onPressed: (){},
-            //               icon: Icon(
-            //                 Icons.message,
-            //                 color: Colors.white,
-            //               ),
-            //               label: Text("Envoyer un message", style: TextStyle(color: Colors.white),),
-            //         ),
-            //         ),
-            //       ],
-            //     ),
-            // )
-            //               : SizedBox(),
             SizedBox(height: 15,),
             TextTitre(name: "Nom"),
             CardText(context, iconData: Icons.account_box_rounded, value: "${membre!.nom}"),
@@ -323,6 +296,9 @@ class _ShowMembresState extends State<ShowMembres> {
             TextTitre(name: "Niveau"),
             CardText(context, iconData: Icons.stacked_bar_chart_sharp, value: "${niveau!.niveau}"),
             SizedBox(height: 10,),
+            TextTitre(name: "Etablissement"),
+            CardText(context, iconData: Icons.school_outlined, value: membre!.etablissement == "null" ? '-' : membre!.etablissement),
+            SizedBox(height: 10,),
             TextTitre(name: "Contact Personnel"),
             GestureDetector(child: CardText(context, iconData: Icons.phone_outlined, value: "${membre!.contact_personnel}"), onTap: (){
               ActionsCallOrMessage(context, "${membre!.contact_personnel}");
@@ -334,11 +310,13 @@ class _ShowMembresState extends State<ShowMembres> {
               },),
             SizedBox(height: 10,),
             TextTitre(name: "Adresse"),
-            CardText(context, iconData: Icons.location_city, value: "${membre!.adresse}"),
+            CardText(context, iconData: Icons.home_outlined, value: "${membre!.adresse}"),
             SizedBox(height: 10,),
             TextTitre(name: "Sections"),
             CardText(context, iconData: Icons.dashboard_outlined, value: "${sections!.nom_sections}"),
             SizedBox(height: 10,),
+            TextTitre(name: "Axes"),
+            CardText(context, iconData: Icons.local_library_sharp, value: "${axes_null ?? '-'}"),
             TextTitre(name: "Facebook"),
             GestureDetector(
                 onTap: (){
@@ -348,20 +326,10 @@ class _ShowMembresState extends State<ShowMembres> {
             user!.roles == "Administrateurs"
                 ? SizedBox(height: 10,)
                 : SizedBox(),
-            user!.roles == "Administrateurs"
-                ? TextTitre(name: "Sympathisant(e)")
-                : SizedBox(),
-            user!.roles == "Administrateurs"
-                ? CardText(context, iconData: Icons.account_tree, value: "${membre!.symapthisant == "0" ? "Non" : "Oui"}")
-                : SizedBox(),
+                TextTitre(name: "Sympathisant(e)"),
+                CardText(context, iconData: Icons.account_tree, value: "${membre!.symapthisant == 0 ? "Non" : "Oui"}"),
             user!.roles == "Administrateurs"
                 ? SizedBox(height: 10,)
-                : SizedBox(),
-            user!.roles == "Administrateurs"
-                ? TextTitre(name: "Axes")
-                : SizedBox(),
-            user!.roles == "Administrateurs"
-                ? CardText(context, iconData: Icons.local_library_sharp, value: "${axes_null ?? '-'}")
                 : SizedBox(),
             user!.roles == "Administrateurs"
                 ? SizedBox(height: 10,)

@@ -1,5 +1,6 @@
 import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:aeutna/widgets/itemHistoriques.dart';
+import 'package:aeutna/widgets/showImageWidget.dart';
 import 'package:flutter/material.dart';
 
 class HistoriquesScreen extends StatefulWidget {
@@ -160,10 +161,10 @@ class _HistoriquesScreenState extends State<HistoriquesScreen> {
                 ],
             ),
           ),
-          listeDesPrisidents(image_path: "assets/logo.jpeg", nom: "Hyacinte", date_mandat: "2013 - 2018"),
-          listeDesPrisidents(image_path: "assets/flerio.jpg", nom: "JAO Flerio", date_mandat: "2018 - 2021"),
-          listeDesPrisidents(image_path: "assets/romain.jpg", nom: "KOMODY ROMAIN", date_mandat: "2021 - 2023"),
           listeDesPrisidents(image_path: "assets/keini.jpg", nom: "Keini Morrodon", date_mandat: "2023 - à nos jours"),
+          listeDesPrisidents(image_path: "assets/romain.jpg", nom: "KOMODY ROMAIN", date_mandat: "2021 - 2023"),
+          listeDesPrisidents(image_path: "assets/flerio.jpg", nom: "JAO Flerio", date_mandat: "2018 - 2021"),
+          listeDesPrisidents(image_path: "assets/logo.jpeg", nom: "Hyacinte", date_mandat: "2013 - 2018"),
         ],
       ),
     );
@@ -172,16 +173,18 @@ class _HistoriquesScreenState extends State<HistoriquesScreen> {
   Card listeDesPrisidents({String? image_path, String? nom, String? date_mandat}){
     return Card(
       elevation: 1,
-      margin: EdgeInsets.symmetric(vertical: 1),
-      shape: Border(
-      ),
+      margin: EdgeInsets.symmetric(vertical: 0.2),
+      shape: Border(),
       child: ListTile(
-        leading: CircleAvatar(
-          radius: 30,
-          backgroundColor: Colors.blueGrey,
+        leading: GestureDetector(
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => ShowImageWidget(image: image_path))),
           child: CircleAvatar(
-            radius: 25,
-            backgroundImage: AssetImage(image_path!),
+            radius: 30,
+            backgroundColor: Colors.blueGrey,
+            child: CircleAvatar(
+              radius: 25,
+              backgroundImage: AssetImage(image_path!),
+            ),
           ),
         ),
         title: Text(nom!, style: style_google.copyWith(fontWeight: FontWeight.bold),),

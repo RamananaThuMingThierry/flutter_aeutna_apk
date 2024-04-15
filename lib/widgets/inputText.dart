@@ -14,12 +14,11 @@ class InputText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 10, left: 10, right: 10),
+      margin: EdgeInsets.only(top: 5, left: 8, right: 8),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(5)),
           color: Colors.white
       ),
-      padding: EdgeInsets.only(left: 10),
       child: TextFormField(
         style: style_google.copyWith(color: Colors.blueGrey),
         keyboardType: TextInputType.text,

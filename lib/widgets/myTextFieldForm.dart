@@ -1,3 +1,4 @@
+import 'package:aeutna/constants/fonctions_constant.dart';
 import 'package:flutter/material.dart';
 
 class MyTextFieldForm extends StatelessWidget {
@@ -14,12 +15,12 @@ class MyTextFieldForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return   TextFormField(
-      style: TextStyle(color: Colors.grey),
+      style: style_google.copyWith(color: Colors.grey),
       initialValue: edit ? value : null,
       decoration: InputDecoration(
         hintText: name,
         prefixIcon: Icon(iconData),
-        hintStyle: TextStyle(color: Colors.grey),
+        hintStyle: style_google.copyWith(color: Colors.grey),
         prefixIconColor: Colors.grey,
         enabledBorder : UnderlineInputBorder(
           borderSide: BorderSide(
