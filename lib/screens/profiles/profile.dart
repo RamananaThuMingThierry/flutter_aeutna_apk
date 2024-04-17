@@ -66,7 +66,7 @@ class _ProfileState extends State<Profile> {
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                   ),
                   alignment: Alignment.center,
-                  child: Text("Modifier votre mot de passe", style: style_google.copyWith(color: Colors.white, fontSize: 15),),
+                  child: Text("Changer votre mot de passe", style: style_google.copyWith(color: Colors.white, fontSize: 15),),
                 ),
               ),
             )

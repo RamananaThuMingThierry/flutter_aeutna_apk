@@ -237,11 +237,11 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
                           ),
                             child: Text("${fonctions.fonctions!.substring(0, 1).toUpperCase()}", style: TextStyle(color: Colors.white),),
                           ),
-                          title: Text("${fonctions.fonctions}", style: style_google.copyWith(color: Colors.black87,)),
+                          title: Text("${fonctions.fonctions}", style: style_google.copyWith(color: Colors.grey,)),
                           trailing: PopupMenuButton(
                             child: Padding(
                               padding: EdgeInsets.only(right: 10),
-                              child: Icon(Icons.more_vert, color: Colors.black,),
+                              child: Icon(Icons.more_vert, color: Colors.blueGrey,),
                             ),
                             onSelected: (valeur){
                               if(valeur == "Modifier"){
@@ -294,8 +294,9 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: loading == true ? SizedBox() : FloatingActionButton(
         onPressed: (){
+          _getallFonctions();
           setState(() {
             editFonctions = 0;
             nom_fonctions.clear();
@@ -373,6 +374,7 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
             Form(
                 key: _formKey,
                 child: TextFormField(
+                  style: style_google,
                   controller: nom_fonctions,
                   validator: (value){
                     if(value!.isEmpty){
@@ -383,7 +385,7 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
                   decoration: InputDecoration(
                     hintText: "Nom fonction",
                     suffixIcon: Icon(Icons.card_travel),
-                    hintStyle: TextStyle(color: Colors.blueGrey),
+                    hintStyle: style_google,
                     suffixIconColor: Colors.grey,
                     enabledBorder : UnderlineInputBorder(
                       borderSide: BorderSide(

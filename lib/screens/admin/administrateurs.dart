@@ -35,9 +35,9 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
 
  List<Pages> pages = [
    Pages("Axes", Icons.local_library_sharp),
-   Pages("Niveau", Icons.stacked_bar_chart),
-   Pages("Filières", Icons.card_travel),
    Pages("Fonctions", Icons.account_tree),
+   Pages("Filières", Icons.card_travel),
+   Pages("Niveau", Icons.stacked_bar_chart),
    Pages("Membres", Icons.credit_card_rounded),
    Pages("Message Groupes", Icons.message_outlined),
    Pages("Utilisateurs En attente", Icons.people_alt_outlined),

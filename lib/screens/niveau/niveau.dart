@@ -255,11 +255,11 @@ class _NiveauScreenState extends State<NiveauScreen> {
                             ),
                             child: Text("${niveau.niveau!.substring(0, 1).toUpperCase()}", style: TextStyle(color: Colors.white),),
                           ),
-                          title: Text("${niveau.niveau}", style: style_google.copyWith(color: Colors.black87),),
+                          title: Text("${niveau.niveau}", style: style_google.copyWith(color: Colors.grey),),
                           trailing: PopupMenuButton(
                             child: Padding(
                               padding: EdgeInsets.only(right: 10),
-                              child: Icon(Icons.more_vert, color: Colors.black,),
+                              child: Icon(Icons.more_vert, color: Colors.blueGrey,),
                             ),
                             onSelected: (valeur){
                               if(valeur == "Modifier"){
@@ -312,9 +312,13 @@ class _NiveauScreenState extends State<NiveauScreen> {
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: loading == true ? SizedBox() :  FloatingActionButton(
         onPressed: (){
           _getallNiveau();
+          setState(() {
+            nom_niveau.clear();
+            editNiveau = 0;
+          });
           showDialog(context: context, builder: (BuildContext context) => niveauForm(context, editNiveau));
         },
         child: Icon(Icons.add),
@@ -382,6 +386,7 @@ class _NiveauScreenState extends State<NiveauScreen> {
             Form(
                 key: _formKey,
                 child: TextFormField(
+                  style: style_google,
                   controller: nom_niveau,
                   validator: (value){
                     if(value!.isEmpty){
@@ -392,7 +397,7 @@ class _NiveauScreenState extends State<NiveauScreen> {
                   decoration: InputDecoration(
                     hintText: "Niveau",
                     suffixIcon: Icon(Icons.card_travel),
-                    hintStyle: TextStyle(color: Colors.blueGrey),
+                    hintStyle: style_google,
                     suffixIconColor: Colors.grey,
                     enabledBorder : UnderlineInputBorder(
                       borderSide: BorderSide(

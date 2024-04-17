@@ -351,7 +351,7 @@ class _ShowMembresState extends State<ShowMembres> {
                       ),
                       onPressed: (){
                         print("Supprimer");
-                      }, icon: Icon(Icons.delete, color: Colors.white,), label: Text("Supprimer", style: GoogleFonts.roboto(color: Colors.white),))),
+                      }, icon: Icon(Icons.delete, color: Colors.white,), label: Text("Supprimer", style: style_google.copyWith(color: Colors.white)))),
                   SizedBox(width: 5,),
                   Expanded(child: TextButton.icon(
                       style: ButtonStyle(
@@ -360,7 +360,7 @@ class _ShowMembresState extends State<ShowMembres> {
                       onPressed: (){
                         Navigator.push(context,MaterialPageRoute(builder: (ctx) => ModifierMembres(membres: membre, user: user,)));
                         print("Modifier");
-                      }, icon: Icon(Icons.edit, color: Colors.white,), label: Text("Modifier", style: GoogleFonts.roboto(color: Colors.white),))),
+                      }, icon: Icon(Icons.edit, color: Colors.white,), label: Text("Modifier", style: style_google.copyWith(color: Colors.white),))),
                 ],
               ),
             ) : SizedBox()

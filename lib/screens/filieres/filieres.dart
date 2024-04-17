@@ -248,11 +248,11 @@ class _FilieresScreenState extends State<FilieresScreen> {
                                 ),
                                 child: Text("${filieres.nom_filieres!.substring(0, 1).toUpperCase()}", style: TextStyle(color: Colors.white),),
                               ),
-                              title: Text("${filieres.nom_filieres!}", style: TextStyle(color: Colors.blueGrey),),
+                              title: Text("${filieres.nom_filieres!}", style: TextStyle(color: Colors.grey),),
                               trailing: PopupMenuButton(
                                       child: Padding(
                                         padding: EdgeInsets.only(right: 10),
-                                        child: Icon(Icons.more_vert, color: Colors.black,),
+                                        child: Icon(Icons.more_vert, color: Colors.blueGrey,),
                                       ),
                                       onSelected: (valeur){
                                         if(valeur == "Modifier"){
@@ -305,8 +305,13 @@ class _FilieresScreenState extends State<FilieresScreen> {
             ],
           ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: loading == true ? SizedBox() : FloatingActionButton(
         onPressed: (){
+          _getallFilieres();
+          setState(() {
+            nom_filieres.clear();
+            editFiliere = 0;
+          });
           showDialog(context: context, builder: (BuildContext context) => filiereForm(context, editFiliere));
         },
         child: Icon(Icons.add),
@@ -374,6 +379,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
             Form(
                 key: _formKey,
                 child: TextFormField(
+                  style: style_google,
                   controller: nom_filieres,
                   validator: (value){
                     if(value!.isEmpty){
@@ -384,7 +390,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
                   decoration: InputDecoration(
                     hintText: "Nom filière",
                     suffixIcon: Icon(Icons.card_travel),
-                    hintStyle: TextStyle(color: Colors.blueGrey),
+                    hintStyle: style_google,
                     suffixIconColor: Colors.grey,
                     enabledBorder : UnderlineInputBorder(
                       borderSide: BorderSide(

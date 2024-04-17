@@ -255,11 +255,11 @@ class _AxesState extends State<AxesScreen> {
                           ),
                            child: Text("${axes.nom_axes!.substring(0, 1).toUpperCase()}", style: TextStyle(color: Colors.white),),
                           ),
-                          title: Text("${axes.nom_axes}", style: style_google.copyWith(color: Colors.black87),),
+                          title: Text("${axes.nom_axes}", style: style_google.copyWith(color: Colors.grey),),
                           trailing: PopupMenuButton(
                             child: Padding(
                               padding: EdgeInsets.only(right: 10),
-                              child: Icon(Icons.more_vert, color: Colors.black,),
+                              child: Icon(Icons.more_vert, color: Colors.blueGrey,),
                             ),
                             onSelected: (valeur){
                               if(valeur == "Modifier"){
@@ -312,9 +312,13 @@ class _AxesState extends State<AxesScreen> {
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: loading == true ? SizedBox() : FloatingActionButton(
         onPressed: (){
           _getallAxes();
+          setState(() {
+            editAxes = 0;
+            nom_axes.clear();
+          });
           showDialog(context: context, builder: (BuildContext context) => axesForm(context, editAxe: editAxes));
         },
         child: Icon(Icons.add),
@@ -408,6 +412,7 @@ class _AxesState extends State<AxesScreen> {
             Form(
                 key: _formKey,
                 child: TextFormField(
+                  style: style_google,
                   controller: nom_axes,
                   validator: (value){
                     if(value!.isEmpty){
@@ -418,7 +423,7 @@ class _AxesState extends State<AxesScreen> {
                   decoration: InputDecoration(
                     hintText: "Nom axes",
                     suffixIcon: Icon(Icons.card_travel),
-                    hintStyle: TextStyle(color: Colors.blueGrey),
+                    hintStyle: style_google,
                     suffixIconColor: Colors.grey,
                     enabledBorder : UnderlineInputBorder(
                       borderSide: BorderSide(

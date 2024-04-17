@@ -216,7 +216,7 @@ class _MembresState extends State<MembresScreen> {
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: user!.roles == "Administrateurs" ? FloatingActionButton(
+      floatingActionButton: loading == true ? SizedBox() : user!.roles == "Administrateurs" ? FloatingActionButton(
         onPressed: (){
           Navigator.push(context, MaterialPageRoute(builder: (ctx) => AddMembresScreen(user: user!,)));
         },
