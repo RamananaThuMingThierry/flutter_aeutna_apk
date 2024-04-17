@@ -72,8 +72,13 @@ Future<ApiResponse> createNiveau({String? niveau}) async{
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 422:
+        apiResponse.error = avertissement;
+        String errorMessages = "";
         final errors = jsonDecode(rep.body)['errors'];
-        apiResponse.error = errors[errors.keys.elementAt(0)][0];
+        errors.forEach((field, message) {
+          errorMessages += "* ${message.join(', ')}\n";
+        });
+        apiResponse.data = errorMessages;
         break;
       default:
         apiResponse.error = somethingWentWrong;
@@ -192,8 +197,13 @@ Future<ApiResponse> updateNiveau({int? niveauId, String? niveau}) async{
         apiResponse.data = jsonDecode(rep.body)['message'];
         break;
       case 422:
+        apiResponse.error = avertissement;
+        String errorMessages = "";
         final errors = jsonDecode(rep.body)['errors'];
-        apiResponse.error = errors[errors.keys.elementAt(0)][0];
+        errors.forEach((field, message) {
+          errorMessages += "* ${message.join(', ')}\n";
+        });
+        apiResponse.data = errorMessages;
         break;
       default:
         apiResponse.error = somethingWentWrong;
