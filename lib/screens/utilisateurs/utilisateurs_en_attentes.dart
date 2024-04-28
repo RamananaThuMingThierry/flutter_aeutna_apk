@@ -93,8 +93,8 @@ class _UtilisateursEnAttentesState extends State<UtilisateursEnAttentes> {
                       leading: CircleAvatar(
                         backgroundImage: AssetImage("assets/photo.png"),
                       ),
-                      title: Text("${users.pseudo}", style: style_google.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
-                      subtitle: Text("${users.email}",style: style_google.copyWith(fontSize: 12, color: Colors.grey),),
+                      title: Text("${users.pseudo}", style: style_google.copyWith(fontWeight: FontWeight.bold, fontSize: 15), overflow: TextOverflow.ellipsis,),
+                      subtitle: Text("${users.email}",style: style_google.copyWith(fontSize: 12, color: Colors.grey), overflow: TextOverflow.ellipsis,),
                       trailing: Icon(Icons.chevron_right, color: Colors.grey,),
                     ),
                   );

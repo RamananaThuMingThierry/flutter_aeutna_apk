@@ -160,8 +160,8 @@ class _UsersScreenState extends State<UsersScreen> {
                         leading: CircleAvatar(
                           backgroundImage: users.image == null ? AssetImage("assets/photo.png"): NetworkImage(users.image!) as ImageProvider,
                         ),
-                        title: Text("${users.pseudo}", style: style_google.copyWith(fontWeight: FontWeight.bold, fontSize: 15),),
-                        subtitle: Text("${users.email}",style: style_google.copyWith(fontSize: 12, color: Colors.grey),),
+                        title: Text("${users.pseudo}", style: style_google.copyWith(fontWeight: FontWeight.bold, fontSize: 15),overflow: TextOverflow.ellipsis,),
+                        subtitle: Text("${users.email}",style: style_google.copyWith(color: Colors.grey),overflow: TextOverflow.ellipsis,),
                         trailing: Icon(Icons.chevron_right, color: Colors.blueGrey,),
                       ),
                     );

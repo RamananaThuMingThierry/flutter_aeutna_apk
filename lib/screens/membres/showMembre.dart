@@ -284,7 +284,7 @@ class _ShowMembresState extends State<ShowMembres> {
                 ? TextTitre(name: "C.I.N")
                 : SizedBox(),
             user!.roles == "Administrateurs"
-                ? CardText(context, iconData: Icons.credit_card_rounded, value: membre!.cin == "null" ? '-' : separerParEspace("${membre!.cin}"))
+                ? CardText(context, iconData: Icons.credit_card_rounded, value: membre!.cin == null ? '-' : separerParEspace("${membre!.cin}"))
                 : SizedBox(),
             SizedBox(height: 10,),
             TextTitre(name: "Fonctions"),

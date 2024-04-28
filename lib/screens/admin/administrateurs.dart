@@ -113,7 +113,7 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
                       : Icon(Icons.person, color: Colors.black, size: 50,), // Widget par défaut si imageUrl est null
                 ),
                   // backgroundImage: (userm!.image == null) ? Image.asset("assets/photo.png").image : Image.network(userm!.image!).image
-                accountName: Text("${data!.pseudo ?? "Aucun"}", style: style_google.copyWith(color: Colors.white)),
+                accountName: Text("${data!.pseudo ?? "Aucun"}",overflow: TextOverflow.ellipsis, style: style_google.copyWith(color: Colors.white)),
                 accountEmail: Text("${data!.email ?? "Aucun"}", overflow: TextOverflow.ellipsis, style: style_google.copyWith(color: Colors.white)),
                 decoration: BoxDecoration(
                     image: DecorationImage(

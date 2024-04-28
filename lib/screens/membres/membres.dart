@@ -95,7 +95,7 @@ class _MembresState extends State<MembresScreen> {
              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => AdministrateursScreen(user: user!,)), (route) => false);
           },
           icon: Icon(Icons.keyboard_backspace, color: Colors.blueGrey,),
-        ) : IconButton(onPressed: (){}, icon: Icon(Icons.people_alt_outlined, color: Colors.blueGrey,)),
+        ) : null,
       ),
       body: Column(
         children: [
@@ -208,7 +208,10 @@ class _MembresState extends State<MembresScreen> {
                               ),
                               trailing: Icon(Icons.chevron_right_outlined, color: Colors.blueGrey,),
                               title: Text("${membres.numero_carte}", style: TextStyle(fontSize: 15, color: Colors.blueGrey, fontWeight: FontWeight.bold),),
-                              subtitle: Text("${membres.nom} ${membres.prenom ?? ''}", style: TextStyle(fontSize: 13),),
+                              subtitle: Text(
+                                "${membres.nom} ${membres.prenom ?? ''}",
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontSize: 13),),
                             ),
                           ),
                         );
