@@ -29,7 +29,6 @@ import 'package:intl/intl.dart';
 class ModifierMembres extends StatefulWidget {
   Membres? membres;
   User? user;
-
   ModifierMembres({required this.membres, required this.user});
 
   @override
@@ -67,7 +66,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
           selectedSecionsId = 0;
         });
       }else{
-        selectedSecionsId = membres!.sections_id!;
+        selectedSecionsId = int.parse(membres!.sections_id!);
       }
 
     }else if(apiResponse.error == unauthorized){
@@ -95,7 +94,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
         });
       }else{
         setState(() {
-          selectedAxesId = membres!.axes_id! ?? 0;
+          selectedAxesId = int.parse(membres!.axes_id!);
         });
       }
 
@@ -124,7 +123,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
         });
       }else{
         setState(() {
-          selectedFonctionsId = membres!.fonctions_id!;
+          selectedFonctionsId = int.parse(membres!.fonctions_id!);
         });
       }
 
@@ -152,7 +151,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
         });
       }else{
         setState(() {
-          selectedFilieresId = membres!.filieres_id!;
+          selectedFilieresId = int.parse(membres!.filieres_id!);
         });
       }
     }else if(apiResponse.error == unauthorized){
@@ -180,7 +179,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
         });
       }else{
         setState(() {
-          selectedNiveauId = membres!.levels_id!;
+          selectedNiveauId = int.parse(membres!.levels_id!);
         });
       }
 
@@ -204,7 +203,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
     _getAllFilieres();
     _getAllNiveau();
     _getallSections();
-    numero_carte = membres!.numero_carte!;
+    numero_carte = int.parse( membres!.numero_carte!);
     nom = membres!.nom;
     prenom = membres!.prenom ?? '';
     lieu_de_naissance = membres!.lieu_de_naissance;
@@ -215,7 +214,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
     etablissement = membres!.etablissement == null ? '' : membres!.etablissement;
     contact_personnel = membres!.contact_personnel;
     contact_tuteur = membres!.contact_tuteur;
-    sympathisant = membres!.symapthisant == 0 ? false : true;
+    sympathisant = membres!.symapthisant == "0" ? false : true;
     image_update = membres!.image;
     image_existe = membres!.image == null ? false : true;
     setState(() {
@@ -492,7 +491,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
                                         items: [
                                           DropdownMenuItem<int>(
                                               value: 0,
-                                              child: Center(child: Text('Nouveau bachelier', style: style_google.copyWith(color: Colors.grey),))
+                                              child: Center(child: Text('Aucun', style: style_google.copyWith(color: Colors.grey),))
                                           ),
                                           ..._listNiveau.map<DropdownMenuItem<int>>((Niveau niveau){
                                             return DropdownMenuItem<int>(
@@ -742,6 +741,10 @@ class _ModifierMembresState extends State<ModifierMembres> {
     if(_key.currentState!.validate()){
       if(genre == null){
         MessageAvertissement(context, "Veuillez sélectionner votre genre");
+      }else if(selectedFilieresId == 0 && selectedNiveauId != 0){
+        MessageAvertissement(context, "Veuillez sélectionner votre filière");
+      }else if(selectedFilieresId != 0 && selectedNiveauId == 0){
+        MessageAvertissement(context, "Veuillez sélectionner votre niveau");
       }else if(date_de_naissance == null){
         MessageAvertissement(context, "Veuillez sélectionner votre date de naissance");
       }else if(date_inscription == null){
@@ -773,7 +776,7 @@ class _ModifierMembresState extends State<ModifierMembres> {
             filieres_id: selectedFilieresId,
             sectionsId: selectedSecionsId,
             niveau_id: selectedNiveauId,
-            axesId: selectedAxesId == 0 ? null : selectedAxesId,
+            axesId: selectedAxesId,
             adresse: adresse,
             contact_personnel: contact_personnel,
             contact_tuteur: contact_tuteur,

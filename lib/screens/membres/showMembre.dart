@@ -23,7 +23,6 @@ import 'package:intl/intl.dart';
 class ShowMembres extends StatefulWidget {
   Membres? membres;
   User? user;
-
   ShowMembres({this.membres, this.user});
 
   @override
@@ -46,13 +45,6 @@ class _ShowMembresState extends State<ShowMembres> {
   void initState() {
     membre = widget.membres;
     user = widget.user;
-
-    print("Membres :${membre} et Users : ${user!.pseudo!}");
-
-    if(membre!.axes_id == null){
-      axes_null = null;
-    }
-
     getAxes();
     getFilieres();
     getNiveau();
@@ -62,7 +54,7 @@ class _ShowMembresState extends State<ShowMembres> {
   }
 
   void getSections() async{
-    ApiResponse apiResponse = await showSections(membre!.sections_id!);
+    ApiResponse apiResponse = await showSections(int.parse(membre!.sections_id!));
     if(apiResponse.error == null){
       setState(() {
         compte = compte! + 1;
@@ -77,7 +69,7 @@ class _ShowMembresState extends State<ShowMembres> {
 
   void getAxes() async{
     if(membre!.axes_id != null){
-      ApiResponse apiResponse = await showAxes(membre!.axes_id!);
+      ApiResponse apiResponse = await showAxes(int.parse(membre!.axes_id!));
       if (apiResponse.error == null) {
         setState(() {
           compte = compte! + 1;
@@ -97,42 +89,50 @@ class _ShowMembresState extends State<ShowMembres> {
   }
 
   void getFilieres() async{
+    if(membre!.filieres_id != null){
+      ApiResponse apiResponse = await showFilieres(int.parse(membre!.filieres_id!));
+      if(apiResponse.error == null){
+        setState(() {
+          compte = compte! + 1;
+          filieres = apiResponse.data as Filieres?;
+        });
 
-    ApiResponse apiResponse = await showFilieres(membre!.filieres_id!);
-
-    if(apiResponse.error == null){
-
+      }else if(apiResponse.error == unauthorized){
+        ErreurLogin(context);
+      }else{
+        MessageErreurs(context, "${apiResponse.error}");
+      }
+    }else{
       setState(() {
         compte = compte! + 1;
-        filieres = apiResponse.data as Filieres?;
       });
-
-    }else if(apiResponse.error == unauthorized){
-      ErreurLogin(context);
-    }else{
-      MessageErreurs(context, "${apiResponse.error}");
     }
   }
 
   void getNiveau() async{
+    if(membre!.levels_id != null){
+      ApiResponse apiResponse = await showNiveau(int.parse(membre!.levels_id!));
 
-    ApiResponse apiResponse = await showNiveau(membre!.levels_id!);
+      if(apiResponse.error == null){
+        setState(() {
+          compte = compte! + 1;
+          niveau = apiResponse.data as Niveau?;
+        });
 
-    if(apiResponse.error == null){
+      }else if(apiResponse.error == unauthorized){
+        ErreurLogin(context);
+      }else{
+        MessageErreurs(context, "${apiResponse.error}");
+      }
+    }else{
       setState(() {
         compte = compte! + 1;
-        niveau = apiResponse.data as Niveau?;
       });
-
-    }else if(apiResponse.error == unauthorized){
-      ErreurLogin(context);
-    }else{
-      MessageErreurs(context, "${apiResponse.error}");
     }
   }
 
   void getFonctions() async{
-    ApiResponse apiResponse = await showFonctions(membre!.fonctions_id!);
+    ApiResponse apiResponse = await showFonctions(int.parse(membre!.fonctions_id!));
     if(apiResponse.error == null){
       setState(() {
         compte = compte! + 1;
@@ -291,13 +291,13 @@ class _ShowMembresState extends State<ShowMembres> {
             CardText(context, iconData: Icons.account_tree, value: "${fonctionModel!.fonctions}"),
             SizedBox(height: 10,),
             TextTitre(name: "Filières"),
-            CardText(context, iconData: Icons.card_travel, value: "${filieres!.nom_filieres!}"),
+            CardText(context, iconData: Icons.card_travel, value: membre!.filieres_id == null ? '-' : filieres!.nom_filieres),
             SizedBox(height: 10,),
             TextTitre(name: "Niveau"),
-            CardText(context, iconData: Icons.stacked_bar_chart_sharp, value: "${niveau!.niveau}"),
+            CardText(context, iconData: Icons.stacked_bar_chart_sharp, value: membre!.levels_id == null ? '-' : niveau!.niveau),
             SizedBox(height: 10,),
             TextTitre(name: "Etablissement"),
-            CardText(context, iconData: Icons.school_outlined, value: membre!.etablissement == "null" ? '-' : membre!.etablissement),
+            CardText(context, iconData: Icons.school_outlined, value: membre!.etablissement == null ? '-' : membre!.etablissement),
             SizedBox(height: 10,),
             TextTitre(name: "Contact Personnel"),
             GestureDetector(child: CardText(context, iconData: Icons.phone_outlined, value: "${membre!.contact_personnel}"), onTap: (){
@@ -327,7 +327,7 @@ class _ShowMembresState extends State<ShowMembres> {
                 ? SizedBox(height: 10,)
                 : SizedBox(),
                 TextTitre(name: "Sympathisant(e)"),
-                CardText(context, iconData: Icons.account_tree, value: "${membre!.symapthisant == 0 ? "Non" : "Oui"}"),
+                CardText(context, iconData: Icons.account_tree, value: "${membre!.symapthisant == "0" ? "Non" : "Oui"}"),
             user!.roles == "Administrateurs"
                 ? SizedBox(height: 10,)
                 : SizedBox(),
@@ -358,7 +358,7 @@ class _ShowMembresState extends State<ShowMembres> {
                           backgroundColor: MaterialStateProperty.all(Colors.lightBlue)
                       ),
                       onPressed: (){
-                        Navigator.push(context,MaterialPageRoute(builder: (ctx) => ModifierMembres(membres: membre, user: user,)));
+                        Navigator.push(context,MaterialPageRoute(builder: (ctx) => ModifierMembres(membres: membre, user: user)));
                         print("Modifier");
                       }, icon: Icon(Icons.edit, color: Colors.white,), label: Text("Modifier", style: style_google.copyWith(color: Colors.white),))),
                 ],

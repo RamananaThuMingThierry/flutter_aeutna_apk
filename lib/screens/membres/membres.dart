@@ -86,7 +86,9 @@ class _MembresState extends State<MembresScreen> {
             )
           )
         ],
-        title: Text("${_membresList.length < 2 ? '${_membresList.length} - Membre' : '${_membresList.length} - Membres'}", style: style_google.copyWith(fontWeight: FontWeight.bold)),
+        title: user!.roles == "Administrateurs"
+            ?  Text("Membres", style: style_google.copyWith(fontWeight: FontWeight.bold))
+            : Text("A.E.U.T.N.A", style: style_google.copyWith(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
         leading: user!.roles == "Administrateurs" ?  IconButton(
           onPressed: (){
@@ -218,7 +220,9 @@ class _MembresState extends State<MembresScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: loading == true ? SizedBox() : user!.roles == "Administrateurs" ? FloatingActionButton(
         onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (ctx) => AddMembresScreen(user: user!,)));
+          Navigator.push(context, MaterialPageRoute(builder: (ctx) => AddMembresScreen(user: user!,onMemberUpdated: (){
+            _getallMembres();
+          },)));
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.blueGrey,

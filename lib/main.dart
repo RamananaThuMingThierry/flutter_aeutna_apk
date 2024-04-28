@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
     ]);
 
     return MaterialApp(
-      title: 'AEUTNA',
+      title: 'A.E.U.T.N.A',
       home: SplashScreen(),
       debugShowCheckedModeBanner: false,
     );

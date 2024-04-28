@@ -4,6 +4,7 @@ import 'package:aeutna/api/api_response.dart';
 import 'package:aeutna/constants/constants.dart';
 import 'package:aeutna/models/membres.dart';
 import 'package:aeutna/services/user_services.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 /** ---------------- Get alL Membres ---------------- **/
@@ -177,10 +178,10 @@ Future<ApiResponse> createMembre({
               'contact_personnel' : contact_personnel,
               'etablissement' : etablissement.toString(),
               'contact_tuteur' : contact_tuteur,
-               'sympathisant' : "${sympathisant == true ? 1 : 0}",
+              'sympathisant' : "${sympathisant == true ? 1 : 0}",
               'fonctions_id' : fonctions_id.toString(),
-              'axes_id' : "${axesId == 0 ? null : axesId}",
-               'levels_id' : niveau_id.toString(),
+              'axes_id' : axesId.toString(),
+              'levels_id' : niveau_id.toString(),
               'sections_id' : sectionsId.toString(),
               'facebook' : facebook.toString(),
               'adresse' : adresse,
@@ -188,6 +189,8 @@ Future<ApiResponse> createMembre({
               'date_inscription' : date_inscription.toString(),
             }
     );
+
+    debugPrint("-------- body : ${rep.body} et staus : ${rep.statusCode}");
 
     switch(rep.statusCode){
       case 200:
@@ -652,6 +655,7 @@ Future<ApiResponse> updateMembre({
           "contact tuteur : $contact_tuteur"
           "sectionsId : $sectionsId \n"
           "filiereId : $filieres_id \n"
+          "niveauId : $niveau_id \n"
           "etablissement : $etablissement\n"
           "fonctionId : $fonctions_id \n"
           "axesId : $axesId \n"
@@ -682,7 +686,7 @@ Future<ApiResponse> updateMembre({
           'fonctions_id' : fonctions_id.toString(),
           'filieres_id' : filieres_id.toString(),
           'levels_id' : niveau_id.toString(),
-          'axes_id' : axesId == 0 ? null : axesId.toString(),
+          'axes_id' : axesId.toString(),
           'sections_id' : sectionsId.toString(),
           'sympathisant' : "${sympathisant! ? 1 : 0}",
           'date_inscription' : date_inscription,

@@ -353,6 +353,8 @@ Future<ApiResponse> login({String? email, String? mot_de_passe}) async{
       }
     );
 
+    print("------- body : ${response.body} et status : ${response.statusCode}");
+
     switch(response.statusCode){
       case 200:
         apiResponse.data = User.fromJson(jsonDecode(response.body));
@@ -400,6 +402,8 @@ Future<ApiResponse> register({String? pseudo, String? email, String? mot_de_pass
           'mot_de_passe_confirmation': mot_de_passe
         }
     );
+
+    print("------- body : ${response.body} et status : ${response.statusCode}");
 
     switch(response.statusCode){
       case 200:

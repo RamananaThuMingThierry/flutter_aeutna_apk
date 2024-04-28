@@ -4,7 +4,7 @@ class Membres{
 
   int? id;
   String? image;
-  int? numero_carte;
+  String? numero_carte;
   String? nom;
   String? prenom;
   String? date_de_naissance;
@@ -17,12 +17,12 @@ class Membres{
   String? contact_tuteur;
   String? adresse;
   String? date_inscription;
-  int? fonctions_id;
-  int? filieres_id;
-  int? levels_id;
-  int? axes_id;
-  int? sections_id;
-  int? symapthisant;
+  String? fonctions_id;
+  String? filieres_id;
+  String? levels_id;
+  String? axes_id;
+  String? sections_id;
+  String? symapthisant;
 
   Membres({
     this.id,

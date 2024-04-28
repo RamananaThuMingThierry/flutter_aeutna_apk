@@ -7,7 +7,7 @@ class Users{
   String? image;
   String? roles;
   String? adresse;
-  int? status;
+  String? status;
 
   Users({
     this.id,

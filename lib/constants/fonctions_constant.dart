@@ -280,13 +280,11 @@ String formatTimeAgo(DateTime dateTime) {
 
 void onLoadingLogin(BuildContext context, User user){
 
-  print("************* $user");
-
   showDialog(
       context: context,
       builder: (BuildContext context){
         Future.delayed(Duration(seconds: 3), () async {
-          if(int.parse(user.status.toString()) == 0){
+          if(int.parse(user.status!) == 0){
             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => EnAttente(user: user)), (route) => false);
           }else{
             if(user.roles == "Administrateurs"){
@@ -438,7 +436,7 @@ Dialog ShowImages(BuildContext context, String? images){
               children: [
                 CachedNetworkImage(
                   imageUrl: images!, // URL de l'image
-                  placeholder: (context, url) => CircularProgressIndicator(),
+                  placeholder: (context, url) => Center(child: CircularProgressIndicator()),
                   errorWidget: (context, url, error) => Icon(Icons.error),
                   width: double.infinity, // Largeur de l'image
                   height: 350, // Hauteur de l'image

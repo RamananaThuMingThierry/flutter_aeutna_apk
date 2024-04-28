@@ -25,8 +25,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class AddMembresScreen extends StatefulWidget {
-  User user;
-  AddMembresScreen({required this.user});
+  final User user;
+  final Function onMemberUpdated;
+  AddMembresScreen({required this.user, required this.onMemberUpdated});
 
   @override
   State<AddMembresScreen> createState() => _AddMembresScreenState();
@@ -395,6 +396,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                     ],
                                   ),
                                 ),
+                                /** ================================================= Fonctions ============================================**/
                                 Titre("Fonctions"),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 10),
@@ -427,6 +429,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                   ),
                                 ),
                                 Ligne(color: Colors.grey),
+                                /** ================================================= Filière ============================================**/
                                 Titre("Filières"),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 10),
@@ -441,7 +444,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                           items: [
                                             DropdownMenuItem<int>(
                                                 value: 0,
-                                                child: Center(child: Text('Veuillez sélectionner votre filière', style: style_google,))
+                                                child: Center(child: Text('Aucun', style: style_google.copyWith(color: Colors.grey),))
                                             ),
                                             ..._listFilieres.map<DropdownMenuItem<int>>((Filieres filiere){
                                               return DropdownMenuItem<int>(
@@ -460,6 +463,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                   ),
                                 ),
                                 Ligne(color: Colors.grey),
+                                /** ================================================= Niveau ============================================**/
                                 Titre("Niveau"),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 10),
@@ -474,7 +478,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                           items: [
                                             DropdownMenuItem<int>(
                                                 value: 0,
-                                                child: Center(child: Text('Veuillez sélectionner votre niveau', style: style_google,))
+                                                child: Center(child: Text('Aucun', style: style_google.copyWith(color: Colors.grey),))
                                             ),
                                             ..._listNiveau.map<DropdownMenuItem<int>>((Niveau niveau){
                                               return DropdownMenuItem<int>(
@@ -493,7 +497,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                   ),
                                 ),
                                 Ligne(color: Colors.grey),
-                                /** ======================================= Etablissement ======================== **/
+                                /** ================================================= Etablissement ===================================== **/
                                 Titre("Etablissement"),
                                 MyTextFieldForm(
                                     name: "Etablissement",
@@ -507,6 +511,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                     textInputType: TextInputType.text,
                                     edit: false,
                                     value: ""),
+                                /** ================================================= Axes ===============================================**/
                                 Titre("Axes"),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 10),
@@ -539,6 +544,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                   ),
                                 ),
                                 Ligne(color: Colors.grey),
+                                /** ================================================= Adresse =============================================**/
                                 Titre("Adresse"),
                                 MyTextFieldForm(
                                     name: "Adresse",
@@ -555,6 +561,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                     textInputType: TextInputType.text,
                                     edit: false,
                                     value: ""),
+                                /** ================================================= Sections ============================================**/
                                 Titre("Sections"),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 10),
@@ -587,6 +594,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                   ),
                                 ),
                                 Ligne(color: Colors.grey),
+                                /** ================================================= Contact Personnel ====================================**/
                                 Titre("Contact Personnel"),
                                 MyTextFieldForm(
                                     name: "Contact Personnel",
@@ -607,6 +615,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                     textInputType: TextInputType.number,
                                     edit: false,
                                     value: ""),
+                                /** ================================================= Contact Tuteur ou Parent ==============================**/
                                 Titre("Contact Tuteur"),
                                 MyTextFieldForm(
                                     name: "Contact Tuteur",
@@ -627,6 +636,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                     textInputType: TextInputType.number,
                                     edit: false,
                                     value: ""),
+                                /** ================================================= Facebook ==============================================**/
                                 Titre("Facebook"),
                                 MyTextFieldForm(
                                     name: "Facebook",
@@ -640,6 +650,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                     textInputType: TextInputType.text,
                                     edit: false,
                                     value: ""),
+                                /** ================================================= Sympathisant ==========================================**/
                                 Titre("Sympathisant"),
                                 Padding(
                                   padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
@@ -678,6 +689,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                   ),
                                 ),
                                 Ligne(color: Colors.grey),
+                                /** ================================================= Date d'inscription =====================================**/
                                 Titre("Date d'inscription"),
                                 Row(
                                   children: [
@@ -689,6 +701,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
                                 ),
                                 Ligne(color: Colors.grey),
                                 SizedBox(height: 5,),
+                                /** ================================================= Button d'enregistrement ================================**/
                                 Row(
                                   children: [
                                     InkWell(
@@ -719,11 +732,15 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
 
   Future<void> _validation() async {
     if(_key.currentState!.validate()){
-
       if(image == null){
         MessageAvertissement(context, "Veuillez sélectionner votre image");
-      }else if(genre == null){
+      }else
+      if(genre == null){
         MessageAvertissement(context, "Veuillez sélectionner votre genre");
+      }else if(selectedFilieresId == 0 && selectedNiveauId != 0){
+        MessageAvertissement(context, "Veuillez sélectionner votre filière");
+      }else if(selectedFilieresId != 0 && selectedNiveauId == 0){
+        MessageAvertissement(context, "Veuillez sélectionner votre niveau");
       }else if(date_de_naissance == null){
         MessageAvertissement(context, "Veuillez sélectionner votre date de naissance");
       }else if(date_inscription == null){
@@ -735,6 +752,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
       }
       else{
         onLoading(context);
+
         String? _images = imageFiles == null ? null : getStringImage(imageFiles);
 
         ApiResponse apiResponse = await createMembre(
@@ -751,7 +769,7 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
           filieres_id: selectedFilieresId,
           sectionsId: selectedSecionsId,
           niveau_id: selectedNiveauId,
-          axesId: selectedAxesId == 0 ? null : selectedAxesId,
+          axesId: selectedAxesId,
           adresse: adresse,
           contact_personnel: contact_personnel,
           contact_tuteur: contact_tuteur,
@@ -759,9 +777,12 @@ class _AddMembresScreenState extends State<AddMembresScreen> {
           sympathisant: sympathisant,
           date_inscription: date_inscription
         );
+
         if(apiResponse.error == null){
             Navigator.pop(context);
-            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => MembresScreen(user: user!)), (route) => false);
+            Navigator.pop(context);
+            widget.onMemberUpdated();
+            //Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => MembresScreen(user: user!)), (route) => false);
             MessageReussi(context, "${apiResponse.data}");
         }else if(apiResponse.error == avertissement){
           Navigator.pop(context);

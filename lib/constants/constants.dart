@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 /** ------------- String -----------**/
-const baseURL = 'http://192.168.1.107:8000/api';
+// const baseURL = 'http://192.168.1.107:8000/api';
 // const baseURL = 'http://192.168.88.47:8000/api';
-// const baseURL = 'https://aeutna.masovia-madagascar.com/api';
+const baseURL = 'https://aeutna.masovia-madagascar.com/api';
 const loginURL = baseURL + '/login';
 const registerURL = baseURL + '/register';
 const logoutURL = baseURL + '/logout';

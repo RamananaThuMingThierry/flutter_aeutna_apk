@@ -206,12 +206,12 @@ class _UpdateProfileState extends State<UpdateProfile> {
       if(image_existe == false){
         MessageAvertissement(context, "Veuillez sélectionner votre photo!");
       }else{
+        onLoading(context);
         if(image == null){
           _images = image_update!;
         }else{
           _images = imageFiles == null ? null : getStringImage(imageFiles);
         }
-
         ApiResponse apiResponse = await updateUser(
             image: _images,
             userId: user!.id,
@@ -220,14 +220,17 @@ class _UpdateProfileState extends State<UpdateProfile> {
             contact: contact,
             adresse: adresse
         );
-
         if(apiResponse.error == null){
+          Navigator.pop(context);
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (ctx) => SplashScreen()), (route) => false);
         }else if(apiResponse.error == avertissement){
+          Navigator.pop(context);
           MessageAvertissement(context, "${apiResponse.data}");
         }else if(apiResponse.error == unauthorized){
+          Navigator.pop(context);
           MessageErreurs(context, apiResponse.error);
         }else{
+          Navigator.pop(context);
           MessageErreurs(context, "${apiResponse.error}");
         }
       }

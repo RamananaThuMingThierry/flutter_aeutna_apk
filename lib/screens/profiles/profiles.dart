@@ -44,8 +44,7 @@ class _ProfilesState extends State<Profiles> {
   RegExp regExp = RegExp(r'''
 (([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$''');
 
-  String? id,pseudo,nom,prenom,roles, email, genre, facebook, adresse, etablissement, contact,lieu_naissance, image,numero_carte, filiere, cin, sympathisant, date_naissance, contact_personnel, contact_parent;
-  int? status;
+  String? id,pseudo,nom,prenom,roles, email, genre, facebook, adresse, etablissement, contact,lieu_naissance, image,numero_carte, filiere, cin, sympathisant, date_naissance, contact_personnel, contact_parent, status;
 
   @override
   void initState() {
@@ -126,7 +125,7 @@ class _ProfilesState extends State<Profiles> {
                             adresse: adresse,
                             contact: contact_personnel,
                             roles: roles,
-                            status: status),
+                            status: int.parse(status!)),
                     ],
                   ),
                 ),
