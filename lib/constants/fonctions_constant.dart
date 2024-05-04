@@ -12,8 +12,32 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:fluttertoast/fluttertoast.dart';
 
 TextStyle style_google = GoogleFonts.k2d(color: Colors.blueGrey);
+
+String formatPhoneNumber(String phoneNumber) {
+  return phoneNumber.replaceAllMapped(
+    RegExp(r'^(\d{3})(\d{2})(\d{3})(\d{2})$'),
+        (Match m) => '${m[1]} ${m[2]} ${m[3]} ${m[4]}',
+  );
+}
+
+void showToast({int? count, String? message_count_null, String? message_count_one,String? message_count_many}) {
+  Fluttertoast.showToast(
+    msg: "${count == 0
+        ? message_count_null
+        : count == 1
+        ? message_count_one
+        : message_count_many}",
+    toastLength: Toast.LENGTH_LONG,
+    gravity: ToastGravity.CENTER,
+    backgroundColor: Colors.blueGrey,
+    textColor: Colors.white,
+    fontSize: 16.0,
+  );
+}
+
 Text TitreText(String titre){
   return Text(titre, style: style_google.copyWith(fontWeight: FontWeight.bold),);
 }

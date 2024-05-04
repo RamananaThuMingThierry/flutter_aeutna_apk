@@ -44,6 +44,12 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
         _fonctionsList = fonctions;
         loading = false;
       });
+      showToast(
+          count: _fonctionsList.length,
+          message_count_null: "Il n'y a aucun fonction",
+          message_count_one: "Il y un seul fonction",
+          message_count_many: "Il y a ${_fonctionsList.length} fonctions"
+      );
     }else if(apiResponse.error == unauthorized){
       ErreurLogin(context);
     }else{
@@ -148,7 +154,7 @@ class _FonctionsScreenState extends State<FonctionsScreen> {
         ],
         elevation: 0,
         backgroundColor: Colors.white,
-        title: Text("Fonctions", style: style_google),
+        title: Text("Liste des fonctions", style: style_google),
       ),
       body: Column(
         children: [

@@ -128,7 +128,7 @@ class _AdministrateursScreenState extends State<AdministrateursScreen> {
                   iconData: Icons.home_outlined),
               Ligne(color: Colors.grey,),
               ItemDrawer(
-                titre: "Profiles",
+                titre: "Profile",
                 iconData: Icons.person_2_outlined,
                 onTap: () => () => Navigator.push(context, MaterialPageRoute(builder: (ctx) => Profile(user: data!))),
               ),

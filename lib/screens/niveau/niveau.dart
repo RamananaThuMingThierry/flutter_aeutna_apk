@@ -48,6 +48,12 @@ class _NiveauScreenState extends State<NiveauScreen> {
         _niveauList = niveaux;
         loading = false;
       });
+      showToast(
+          count: _niveauList.length,
+          message_count_null: "Il n'y a aucun niveau",
+          message_count_one: "Il y un seul niveau",
+          message_count_many: "Il y a ${_niveauList.length} niveaux"
+      );
     }else if(apiResponse.error == unauthorized){
       MessageErreurs(context, "${apiResponse.data}");
       ErreurLogin(context);

@@ -56,6 +56,7 @@ dependencies:
   pdf: ^3.10.7
   path_provider: ^2.1.1
   fl_chart: ^0.62.0
+  fluttertoast: ^8.2.5
 
 
 dev_dependencies:
@@ -84,6 +85,7 @@ flutter:
     - assets/romain.jpg
     - assets/flerio.jpg
     - assets/no_data.png
+    - assets/hyacinthe.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

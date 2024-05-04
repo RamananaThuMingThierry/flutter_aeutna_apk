@@ -48,6 +48,12 @@ class _AxesState extends State<AxesScreen> {
         _axesList = axes;
         loading = false;
       });
+      showToast(
+        count: _axesList.length,
+        message_count_null: "Il n'y a aucun axes",
+        message_count_one: "Il y un seul axes",
+        message_count_many: "Il y a ${_axesList.length} axes"
+      );
     }else if(apiResponse.error == unauthorized){
       ErreurLogin(context);
     }else{
@@ -165,7 +171,7 @@ class _AxesState extends State<AxesScreen> {
         ],
         elevation: 0,
         backgroundColor: Colors.white,
-        title: Text("Axes", style: style_google,),
+        title: Text("Liste des axes", style: style_google,),
       ),
       body: Column(
         children: [

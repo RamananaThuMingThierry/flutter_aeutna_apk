@@ -300,12 +300,12 @@ class _ShowMembresState extends State<ShowMembres> {
             CardText(context, iconData: Icons.school_outlined, value: membre!.etablissement == null ? '-' : membre!.etablissement),
             SizedBox(height: 10,),
             TextTitre(name: "Contact Personnel"),
-            GestureDetector(child: CardText(context, iconData: Icons.phone_outlined, value: "${membre!.contact_personnel}"), onTap: (){
+            GestureDetector(child: CardText(context, iconData: Icons.phone_outlined, value: formatPhoneNumber(membre!.contact_personnel!)), onTap: (){
               ActionsCallOrMessage(context, "${membre!.contact_personnel}");
             },),
             SizedBox(height: 10,),
             TextTitre(name: "Contact Tuteur"),
-            GestureDetector(child: CardText(context, iconData: Icons.phone, value: "${membre!.contact_tuteur}"), onTap: (){
+            GestureDetector(child: CardText(context, iconData: Icons.phone, value: formatPhoneNumber(membre!.contact_tuteur!)), onTap: (){
               ActionsCallOrMessage(context, "${membre!.contact_tuteur}");
               },),
             SizedBox(height: 10,),

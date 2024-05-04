@@ -236,7 +236,7 @@ class UserInfo extends StatelessWidget{
                           onTap: () => ActionsCallOrMessage(context, users!.contact),
                           leading: Icon(Icons.call_outlined, color: Colors.blueGrey,),
                           title: Text("Contact", style: style_google.copyWith(fontWeight: FontWeight.w500),),
-                          subtitle: Text("${users!.contact}"),
+                          subtitle: Text(formatPhoneNumber(users!.contact!)),
                         ),
                         ListTile(
                           leading: Icon(Icons.person_2_outlined, color: Colors.blueGrey,),

@@ -50,6 +50,12 @@ class _FilieresScreenState extends State<FilieresScreen> {
         _filieresList = filieres;
         loading = false;
       });
+      showToast(
+          count: _filieresList.length,
+          message_count_null: "Il n'y a aucun filière",
+          message_count_one: "Il y un seul filière",
+          message_count_many: "Il y a ${_filieresList.length} filières"
+      );
     }else if(apiResponse.error == unauthorized){
       ErreurLogin(context);
     }else{
@@ -161,7 +167,7 @@ class _FilieresScreenState extends State<FilieresScreen> {
         ],
         elevation: 0,
         backgroundColor: Colors.white,
-        title: Text("Filières", style: style_google),
+        title: Text("Liste des filières", style: style_google),
       ),
       body: Column(
             children: [
